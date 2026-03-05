@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMS智能仓储管理系统 - 八米科技</title>
+    <meta name="description" content="八米WMS智能仓储管理系统，支持多货主、多仓库、多平台，覆盖入库、上架、库存、拣货、出库全流程">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .page-header {
+            padding: 160px 0 80px;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            text-align: center;
+        }
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            padding: 80px 0;
+        }
+        .module-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            transition: var(--transition);
+        }
+        .module-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+        }
+        .module-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .feature-list {
+            margin-top: 16px;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+            color: var(--gray-light);
+        }
+        .feature-list li:before {
+            content: "✓ ";
+            color: var(--accent);
+            font-weight: bold;
+        }
+        .tech-stack {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin: 40px 0;
+        }
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 24px;
+        }
+        .tech-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+        }
+        .tech-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .demo-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">BAMi</span>
+                <span class="logo-sub">八米科技</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="ai-agent.html">AI智能体</a></li>
+                <li><a href="wms.html" class="active">智能仓储</a></li>
+                <li><a href="solutions.html">解决方案</a></li>
+                <li><a href="cases.html">客户案例</a></li>
+                <li><a href="about.html">关于我们</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="http://asc.8bami.com" target="_blank" class="btn btn-outline">登录系统</a>
+                <a href="#contact" class="btn btn-primary">免费咨询</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <span class="section-tag">WMS System</span>
+            <h1 class="page-title">WMS智能仓储管理系统</h1>
+            <p class="page-subtitle">专业的仓储管理系统，助力企业实现仓储数字化、智能化升级</p>
+        </div>
+    </header>
+
+    <section class="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">核心功能</span>
+                <h2 class="section-title">九大核心模块全覆盖</h2>
+            </div>
+            <div class="module-grid">
+                <div class="module-card">
+                    <div class="module-icon">📦</div>
+                    <h3>入库管理</h3>
+                    <p>采购入库、退货入库、调拨入库等多种入库类型支持</p>
+                    <ul class="feature-list">
+                        <li>到货预约管理</li>
+                        <li>质检结果记录</li>
+                        <li>上架策略配置</li>
+                        <li>异常处理流程</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">📍</div>
+                    <h3>上架管理</h3>
+                    <p>智能推荐库位，支持多种上架策略</p>
+                    <ul class="feature-list">
+                        <li>ABC分类上架</li>
+                        <li>批次混放管理</li>
+                        <li>库位容量预警</li>
+                        <li>RF上架指引</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">📊</div>
+                    <h3>库存管理</h3>
+                    <p>实时库存可视化，多维度库存查询</p>
+                    <ul class="feature-list">
+                        <li>批次/序列号管理</li>
+                        <li>库存冻结/解冻</li>
+                        <li>库存盘点</li>
+                        <li>库存预警</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">🔄</div>
+                    <h3>补货管理</h3>
+                    <p>智能补货建议，优化库内作业</p>
+                    <ul class="feature-list">
+                        <li>动态补货计算</li>
+                        <li>补货任务生成</li>
+                        <li>补货路径优化</li>
+                        <li>补货效率统计</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">🚚</div>
+                    <h3>出库管理</h3>
+                    <p>销售出库、调拨出库、退供出库全流程覆盖</p>
+                    <ul class="feature-list">
+                        <li>智能波次分配</li>
+                        <li>拣货路径优化</li>
+                        <li>出库复核</li>
+                        <li>面单打印</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">📋</div>
+                    <h3>库存台账</h3>
+                    <p>完整的库存流水记录，支持多维度查询</p>
+                    <ul class="feature-list">
+                        <li>出入库流水</li>
+                        <li>库存变动记录</li>
+                        <li>库龄分析</li>
+                        <li>周转率统计</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">🏭</div>
+                    <h3>基础数据</h3>
+                    <p>商品、仓库、货主等基础数据管理</p>
+                    <ul class="feature-list">
+                        <li>多货主管理</li>
+                        <li>多仓库管理</li>
+                        <li>商品档案</li>
+                        <li>库位规划</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">📱</div>
+                    <h3>RF手持终端</h3>
+                    <p>移动端作业支持，随时随地处理仓储业务</p>
+                    <ul class="feature-list">
+                        <li>扫码收货</li>
+                        <li>移动上架</li>
+                        <li>波次拣货</li>
+                        <li>库存查询</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">🤖</div>
+                    <h3>AI智能体</h3>
+                    <p>AI深度集成，让仓储作业更智能</p>
+                    <ul class="feature-list">
+                        <li>智能质检</li>
+                        <li>智能上架推荐</li>
+                        <li>智能波次</li>
+                        <li>AI异常预警</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ai-showcase" style="background: var(--dark-light);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">技术架构</span>
+                <h2 class="section-title">稳定可靠的技术底座</h2>
+            </div>
+            <div class="tech-stack">
+                <p style="text-align: center; color: var(--gray-light); margin-bottom: 24px;">
+                    采用主流技术栈，确保系统稳定性与可扩展性
+                </p>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <div class="tech-icon">☕</div>
+                        <h4>Java 8+</h4>
+                        <p style="font-size: 12px; color: var(--gray);">后端开发</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">🍃</div>
+                        <h4>Spring Boot</h4>
+                        <p style="font-size: 12px; color: var(--gray);">微服务框架</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">🗄️</div>
+                        <h4>MySQL 5.7+</h4>
+                        <p style="font-size: 12px; color: var(--gray);">数据存储</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">⚡</div>
+                        <h4>Redis 5.x</h4>
+                        <p style="font-size: 12px; color: var(--gray);">缓存加速</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">🖥️</div>
+                        <h4>Vue.js 2.7</h4>
+                        <p style="font-size: 12px; color: var(--gray);">前端框架</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">🎨</div>
+                        <h4>Ant Design</h4>
+                        <p style="font-size: 12px; color: var(--gray);">UI组件库</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">📊</div>
+                        <h4>ECharts</h4>
+                        <p style="font-size: 12px; color: var(--gray);">数据可视化</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">🔧</div>
+                        <h4>MyBatis</h4>
+                        <p style="font-size: 12px; color: var(--gray);">ORM框架</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-box">
+        <div class="container">
+            <h2 style="margin-bottom: 16px;">🚀 在线体验</h2>
+            <p style="color: var(--gray-light); margin-bottom: 24px;">
+                测试环境已开放，欢迎体验八米WMS的强大功能
+            </p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <div style="background: rgba(0,0,0,0.3); padding: 16px 24px; border-radius: var(--radius);">
+                    <p style="font-size: 12px; color: var(--gray); margin-bottom: 4px;">测试地址</p>
+                    <p style="font-weight: 600;">http://asc.8bami.com</p>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 16px 24px; border-radius: var(--radius);">
+                    <p style="font-size: 12px; color: var(--gray); margin-bottom: 4px;">测试账号</p>
+                    <p style="font-weight: 600;">ysadmin</p>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 16px 24px; border-radius: var(--radius);">
+                    <p style="font-size: 12px; color: var(--gray); margin-bottom: 4px;">测试密码</p>
+                    <p style="font-weight: 600;">zzz123456</p>
+                </div>
+            </div>
+            <a href="http://asc.8bami.com" target="_blank" class="btn btn-primary btn-large" style="margin-top: 24px;">
+                立即体验演示环境
+            </a>
+        </div>
+    </section>
+
+    <section class="process">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">系统优势</span>
+                <h2 class="section-title">为什么选择八米WMS</h2>
+            </div>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">01</div>
+                    <div class="step-icon">🏢</div>
+                    <h3 class="step-title">多租户架构</h3>
+                    <p class="step-desc">支持多货主、多仓库，一套系统管理多个业务主体</p>
+                </div>
+                <div class="process-arrow">→</div>
+                <div class="process-step">
+                    <div class="step-number">02</div>
+                    <div class="step-icon">📈</div>
+                    <h3 class="step-title">高并发处理</h3>
+                    <p class="step-desc">支持日均百万级订单处理，系统稳定可靠</p>
+                </div>
+                <div class="process-arrow">→</div>
+                <div class="process-step">
+                    <div class="step-number">03</div>
+                    <div class="step-icon">🔌</div>
+                    <h3 class="step-title">开放API</h3>
+                    <p class="step-desc">标准RESTful API，轻松对接ERP、电商平台</p>
+                </div>
+                <div class="process-arrow">→</div>
+                <div class="process-step">
+                    <div class="step-number">04</div>
+                    <div class="step-icon">🤖</div>
+                    <h3 class="step-title">AI深度集成</h3>
+                    <p class="step-desc">与AI智能体无缝融合，让仓储更智能</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" id="contact">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">开启智能仓储新时代</h2>
+                <p class="cta-desc">立即咨询，获取专属解决方案</p>
+                <div class="cta-actions">
+                    <a href="tel:18926200599" class="btn btn-white btn-large">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                        189-2620-0599
+                    </a>
+                    <a href="http://asc.8bami.com" target="_blank" class="btn btn-outline-white btn-large">体验演示环境</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="../index.html" class="footer-logo">
+                        <span class="logo-icon">◈</span>
+                        <span>BAMi 八米科技</span>
+                    </a>
+                    <p class="footer-desc">领先的智能仓储与AI智能体解决方案提供商</p>
+                    <div class="footer-contact">
+                        <p>📍 佛山市南海区石龙南路1号嘉邦国金中心</p>
+                        <p>📍 广州市天河区天源路401号盛大国际</p>
+                        <p>📧 27270234@qq.com</p>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>产品服务</h4>
+                    <ul>
+                        <li><a href="ai-agent.html">AI智能体</a></li>
+                        <li><a href="wms.html">WMS仓储系统</a></li>
+                        <li><a href="solutions.html">行业解决方案</a></li>
+                        <li><a href="cases.html">客户案例</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>关于我们</h4>
+                    <ul>
+                        <li><a href="about.html">公司介绍</a></li>
+                        <li><a href="about.html#team">团队风采</a></li>
+                        <li><a href="about.html#news">新闻动态</a></li>
+                        <li><a href="about.html#join">加入我们</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>支持与帮助</h4>
+                    <ul>
+                        <li><a href="#">帮助中心</a></li>
+                        <li><a href="#">系统文档</a></li>
+                        <li><a href="#">API接口</a></li>
+                        <li><a href="#">服务状态</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 八米科技 BAMi. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行业解决方案 - 八米科技</title>
+    <meta name="description" content="八米科技行业解决方案，涵盖跨境电商、快消品、制造业等多个领域">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .page-header {
+            padding: 160px 0 80px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(217, 70, 239, 0.1) 100%);
+            text-align: center;
+        }
+        .solution-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            padding: 40px 0;
+            flex-wrap: wrap;
+        }
+        .solution-tab {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .solution-tab:hover,
+        .solution-tab.active {
+            background: var(--gradient-1);
+            border-color: transparent;
+        }
+        .solution-content {
+            display: none;
+        }
+        .solution-content.active {
+            display: block;
+        }
+        .solution-detail {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        .solution-header {
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+        }
+        .solution-icon-large {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        .solution-title-large {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .solution-desc-large {
+            color: var(--gray-light);
+            font-size: 16px;
+        }
+        .solution-body {
+            padding: 40px;
+        }
+        .pain-points {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .pain-points h4 {
+            color: #ef4444;
+            margin-bottom: 12px;
+        }
+        .pain-points ul {
+            list-style: none;
+        }
+        .pain-points li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        .pain-points li:before {
+            content: "✗";
+            position: absolute;
+            left: 0;
+            color: #ef4444;
+        }
+        .solution-features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin: 24px 0;
+        }
+        .solution-feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 24px;
+        }
+        .solution-feature-card h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .solution-feature-card p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .benefit-item {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+        }
+        .benefit-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #10b981;
+        }
+        .benefit-label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">BAMi</span>
+                <span class="logo-sub">八米科技</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="ai-agent.html">AI智能体</a></li>
+                <li><a href="wms.html">智能仓储</a></li>
+                <li><a href="solutions.html" class="active">解决方案</a></li>
+                <li><a href="cases.html">客户案例</a></li>
+                <li><a href="about.html">关于我们</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="http://asc.8bami.com" target="_blank" class="btn btn-outline">登录系统</a>
+                <a href="#contact" class="btn btn-primary">免费咨询</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <span class="section-tag">Solutions</span>
+            <h1 class="page-title">行业解决方案</h1>
+            <p class="page-subtitle">为不同行业提供定制化的智能仓储与AI解决方案</p>
+        </div>
+    </header>
+
+    <section class="services">
+        <div class="container">
+            <div class="solution-tabs">
+                <div class="solution-tab active" onclick="showSolution('crossborder')">跨境电商</div>
+                <div class="solution-tab" onclick="showSolution('retail')">快消零售</div>
+                <div class="solution-tab" onclick="showSolution('manufacturing')">制造业</div>
+                <div class="solution-tab" onclick="showSolution('logistics')">第三方物流</div>
+            </div>
+
+            <!-- 跨境电商解决方案 -->
+            <div id="crossborder" class="solution-content active">
+                <div class="solution-detail">
+                    <div class="solution-header">
+                        <div class="solution-icon-large">🌐</div>
+                        <h2 class="solution-title-large">跨境电商解决方案</h2>
+                        <p class="solution-desc-large">面向跨境出口企业，提供多平台、多仓库、多货主的智能仓储管理方案</p>
+                    </div>
+                    <div class="solution-body">
+                        <div class="pain-points">
+                            <h4>行业痛点</h4>
+                            <ul>
+                                <li>多平台订单（Amazon、eBay、Shopify等）难以统一管理</li>
+                                <li>SKU数量庞大，库存管理混乱，经常出现超卖</li>
+                                <li>多仓库布局，库存数据不统一，调拨困难</li>
+                                <li>旺季订单激增，拣货效率低下，发货延迟</li>
+                                <li>退换货处理繁琐，影响客户体验</li>
+                            </ul>
+                        </div>
+                        <h3>解决方案</h3>
+                        <div class="solution-features-grid">
+                            <div class="solution-feature-card">
+                                <h4>📦 多平台订单集成</h4>
+                                <p>一键对接主流电商平台，自动同步订单，统一处理</p>
+                            </div>
+                            <div class="solution-feature-card">
+                                <h4>🔄 智能库存分配</h4>
+                                <p>基于销售预测智能分配库存，避免超卖和断货</p>
+                            </div>
+                            <div class="solution-feature-card">
+                                <h4>🚀 智能波次拣货</h4>
+                                <p>AI优化拣货路径，支持爆品单、多品单等多种策略</p>
+                            </div>
+                            <div class="solution-feature-card">
+                                <h4>📊 实时库存可视化</h4>
+                                <p>多仓库存统一视图，实时掌握库存状态</p>
+                            </div>
+                        </div>
+                        <h3>实施效果</h3>
+                        <div class="benefits-grid">
+                            <div class="benefit-item">
+                                <div class="benefit-value">+40%</div>
+                                <div class="benefit-label">拣货效率</div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-value">99.9%</div>
+                                <div class="benefit-label">发货准确率</div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-value">0</div>
+                                <div class="benefit-label">超卖事故</div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-value">-50%</div>
+                                <div class="benefit-label">退货处理时间</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快消零售解决方案 -->
+            <div id="retail" class="solution-content">
+                <div class="solution-detail">
+                    <div class="solution-header">
+                        <div class="solution-icon-large">🏪</div>
+                        <h2 class="solution-title-large">快消零售解决方案</h2>
+                        <p class="solution-desc-large">为连锁零售、品牌经销商提供高效的仓储配送方案</p>
+                    </div>
+                    <div class="solution-body">
+                        <div class="pain-points">
+                            <h4>行业痛点</h4>
+                            <ul>
+                                <li>SKU更新快，商品生命周期短，库存周转压力大</li>
+                                <li>促销频繁，订单波动大，难以预测</li>
+                                <li>对效期管理要求高，临期商品处理困难</li>
+                                <li>多渠道销售，库存分配不均</li>
+                            </ul>
+                        </div>
+                        <h3>解决方案</h3>
+                        <div class="solution-features-grid">
+                            <div class="solution-feature-card">
+                                <h4>📅 效期智能管理</h4>
+                                <p>先进先出强制管控，临期预警，减少损耗</p>
+                            </div>
+                            <div class="solution-feature-card">
+                                <h4>⚡ 动态库存分配</h4>
+                                <p>根据销售速度动态调整库存，优化周转</p>
+                            </div>
+                            <div class="solution-feature-card">
+                                <h4>🎯 促销预配置</h4>
+                                <p>提前配置促销策略，自动触发库存锁定</p>
+                            </div>
+                            <div class="solution-feature-card">
+                                <h4>🤖 AI需求预测</h4>
+                                <p>基于历史数据预测需求，智能补货建议</p>
+                            </div>
+                        </div>
+                        <h3>实施效果</h3>
+                        <div class="benefits-grid">
+                            <div class="benefit-item">
+                                <div class="benefit-value">-30%</div>
+                                <div class="benefit-label">临期损耗</div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-value">+25%</div>
+                                <div class="benefit-label">库存周转</div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-value">+35%</div>
+                                <div class="benefit-label">配送效率</div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-value">99.5%</div>
+                                <div class="benefit-label">订单满足率</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 制造业解决方案 -->
+            <div id="manufacturing" class="solution-content">
+                <div class="solution-detail">
+                    <div class="solution-header">
+                        <div class="solution-icon-large">🏭</div>
+                        <h2 class="solution-title-large">制造业解决方案</h2>
+                        <p class="solution-desc-large">为制造企业提供原材料、半成品、成品的全流程仓储管理</p>
+                    </div>
+                    <div class="solution-body">
+                        <div class="pain-points">
+                            <h4>行业痛点</h4>
+                            <ul>
+                                <li>原材料种类多，批次管理复杂，追溯困难</li>
+                                <li>生产计划与库存脱节，经常出现停工待料</li>
+                                <li>质量追溯要求高，出现问题难以定位</li>
+                                <li>呆滞料多，资金占用大</li>
+                            </ul>
+                        </div>
+                        <h3>解决方案</h3>
+                        <div class="solution-features-grid">
+                            <div class="solution-feature-card">
+                                <h4>🔢 序列号追踪</h4>
+                                <p>单品级序列号管理，全流程可追溯</p>
+                            </div>
+                            <div class="solution-feature-card">
+                                <h4>🔗 生产协同</h4>
+                                <p>WMS与MES集成，实现生产与库存联动</p>
+                            </div>
+                            <div class="solution-feature-card">
+                                <h4>📋 质量追溯</h4>
+                                <p>批次/序列号全程记录，质量问题快速定位</p>
+                            </div>
+                            <div class="solution-feature-card">
+                                <h4>⚠️ 呆滞预警</h4>
+                                <p>智能分析库存周转，提前预警呆滞风险</p>
+                            </div>
+                        </div>
+                        <h3>实施效果</h3>
+                        <div class="benefits-grid">
+                            <div class="benefit-item">
+                                <div class="benefit-value">100%</div>
+                                <div class="benefit-label">质量可追溯</div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-value">-60%</div>
+                                <div class="benefit-label">停工待料</div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-value">-40%</div>
+                                <div class="benefit-label">呆滞库存</div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-value">+30%</div>
+                                <div class="benefit-label">库存周转</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第三方物流解决方案 -->
+            <div id="logistics" class="solution-content">
+                <div class="solution-detail">
+                    <div class="solution-header">
+                        <div class="solution-icon-large">🚚</div>
+                        <h2 class="solution-title-large">第三方物流解决方案</h2>
+                        <p class="solution-desc-large">为3PL企业提供多货主、多仓库的综合仓储管理方案</p>
+                    </div>
+                    <div class="solution-body">
+                        <div class="pain-points">
+                            <h4>行业痛点</h4>
+                            <ul>
+                                <li>货主众多，计费规则复杂，结算困难</li>
+                                <li>客户要求各异，系统难以统一满足</li>
+                                <li>服务标准化难，服务质量参差不齐</li>
+                                <li>客户对账频繁，人工处理效率低</li>
+                            </ul>
+                        </div>
+                        <h3>解决方案</h3>
+                        <div class="solution-features-grid">
+                            <div class="solution-feature-card">
+                                <h4>👥 多货主管理</h4>
+                                <p>独立库存、独立权限、独立报表，数据隔离</p>
+                            </div>
+                            <div class="solution-feature-card">
+                                <h4>💰 灵活计费</h4>
+                                <p>支持多种计费模式，自动计费，账单自动生成</p>
+                            </div>
+                            <div class="solution-feature-card">
+                                <h4>📊 客户报表</h4>
+                                <p>自动生成客户报表，支持自定义配置</p>
+                            </div>
+                            <div class="solution-feature-card">
+                                <h4>🔌 开放API</h4>
+                                <p>标准API接口，方便客户系统集成</p>
+                            </div>
+                        </div>
+                        <h3>实施效果</h3>
+                        <div class="benefits-grid">
+                            <div class="benefit-item">
+                                <div class="benefit-value">+50%</div>
+                                <div class="benefit-label">对账效率</div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-value">-80%</div>
+                                <div class="benefit-label">计费错误</div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-value">+20</div>
+                                <div class="benefit-label">货主容量</div>
+                            </div>
+                            <div class="benefit-item">
+                                <div class="benefit-value">4.8</div>
+                                <div class="benefit-label">客户满意度</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" id="contact">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">获取专属解决方案</h2>
+                <p class="cta-desc">我们的专家团队将为您量身定制最优方案</p>
+                <div class="cta-actions">
+                    <a href="tel:18926200599" class="btn btn-white btn-large">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                        189-2620-0599
+                    </a>
+                    <a href="mailto:27270234@qq.com" class="btn btn-outline-white btn-large">预约咨询</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="../index.html" class="footer-logo">
+                        <span class="logo-icon">◈</span>
+                        <span>BAMi 八米科技</span>
+                    </a>
+                    <p class="footer-desc">领先的智能仓储与AI智能体解决方案提供商</p>
+                    <div class="footer-contact">
+                        <p>📍 佛山市南海区石龙南路1号嘉邦国金中心</p>
+                        <p>📍 广州市天河区天源路401号盛大国际</p>
+                        <p>📧 27270234@qq.com</p>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>产品服务</h4>
+                    <ul>
+                        <li><a href="ai-agent.html">AI智能体</a></li>
+                        <li><a href="wms.html">WMS仓储系统</a></li>
+                        <li><a href="solutions.html">行业解决方案</a></li>
+                        <li><a href="cases.html">客户案例</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>关于我们</h4>
+                    <ul>
+                        <li><a href="about.html">公司介绍</a></li>
+                        <li><a href="about.html#team">团队风采</a></li>
+                        <li><a href="about.html#news">新闻动态</a></li>
+                        <li><a href="about.html#join">加入我们</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>支持与帮助</h4>
+                    <ul>
+                        <li><a href="#">帮助中心</a></li>
+                        <li><a href="#">系统文档</a></li>
+                        <li><a href="#">API接口</a></li>
+                        <li><a href="#">服务状态</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 八米科技 BAMi. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        function showSolution(id) {
+            // Hide all contents
+            document.querySelectorAll('.solution-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            // Remove active from all tabs
+            document.querySelectorAll('.solution-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Show selected content
+            document.getElementById(id).classList.add('active');
+            // Add active to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

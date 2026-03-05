@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们 - 八米科技</title>
+    <meta name="description" content="了解八米科技，领先的智能仓储与AI智能体解决方案提供商">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .page-header {
+            padding: 160px 0 80px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            text-align: center;
+        }
+        .about-intro {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            padding: 80px 0;
+        }
+        .about-text h2 {
+            font-size: 36px;
+            margin-bottom: 24px;
+        }
+        .about-text p {
+            color: var(--gray-light);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+        .about-stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            text-align: center;
+        }
+        .about-stat-number {
+            font-size: 40px;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .about-stat-label {
+            color: var(--gray);
+            margin-top: 8px;
+        }
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            padding: 60px 0;
+        }
+        .value-card {
+            text-align: center;
+            padding: 32px;
+        }
+        .value-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .value-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .value-desc {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        .team-section {
+            padding: 80px 0;
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 40px;
+        }
+        .team-member {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            text-align: center;
+        }
+        .member-avatar {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+        }
+        .member-info {
+            padding: 20px;
+        }
+        .member-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .member-role {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+        .timeline {
+            position: relative;
+            padding: 60px 0;
+        }
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(99, 102, 241, 0.3);
+            transform: translateX(-50%);
+        }
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .timeline-item:nth-child(even) .timeline-content {
+            grid-column: 2;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            border: 4px solid var(--dark);
+        }
+        .timeline-year {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+        .timeline-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 8px 0;
+        }
+        .timeline-desc {
+            color: var(--gray);
+        }
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            padding: 60px 0;
+        }
+        .contact-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            text-align: center;
+        }
+        .contact-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+        .contact-label {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+        .contact-value {
+            font-size: 16px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon">◈</span>
+                <span class="logo-text">BAMi</span>
+                <span class="logo-sub">八米科技</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="ai-agent.html">AI智能体</a></li>
+                <li><a href="wms.html">智能仓储</a></li>
+                <li><a href="solutions.html">解决方案</a></li>
+                <li><a href="cases.html">客户案例</a></li>
+                <li><a href="about.html" class="active">关于我们</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="http://asc.8bami.com" target="_blank" class="btn btn-outline">登录系统</a>
+                <a href="#contact" class="btn btn-primary">免费咨询</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <span class="section-tag">About Us</span>
+            <h1 class="page-title">关于八米科技</h1>
+            <p class="page-subtitle">专注智能仓储与AI智能体，助力企业数字化转型</p>
+        </div>
+    </header>
+
+    <section class="services">
+        <div class="container">
+            <div class="about-intro">
+                <div class="about-text">
+                    <h2>让技术创造<br>真正的商业价值</h2>
+                    <p>八米科技（BAMi）成立于2015年，是一家专注于智能仓储管理系统（WMS）和AI智能体解决方案的高新技术企业。</p>
+                    <p>我们深耕仓储物流行业多年，深刻理解行业痛点，致力于通过技术创新帮助企业实现数字化转型。2025年，我们推出AI智能体平台，将大模型技术与仓储业务深度融合，为企业提供从"系统辅助"到"AI共创"的全新工作范式。</p>
+                    <p>截至目前，八米科技已服务超过500家企业客户，涵盖跨境电商、快消品、制造业等多个行业，助力客户实现降本增效。</p>
+                </div>
+                <div class="about-stats">
+                    <div class="about-stat-card">
+                        <div class="about-stat-number">500+</div>
+                        <div class="about-stat-label">服务客户</div>
+                    </div>
+                    <div class="about-stat-card">
+                        <div class="about-stat-number">10年</div>
+                        <div class="about-stat-label">行业经验</div>
+                    </div>
+                    <div class="about-stat-card">
+                        <div class="about-stat-number">50+</div>
+                        <div class="about-stat-label">技术团队</div>
+                    </div>
+                    <div class="about-stat-card">
+                        <div class="about-stat-number">99.9%</div>
+                        <div class="about-stat-label">系统稳定性</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ai-showcase" style="background: var(--dark-light);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Core Values</span>
+                <h2 class="section-title">核心价值观</h2>
+            </div>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">🎯</div>
+                    <h3 class="value-title">客户价值优先</h3>
+                    <p class="value-desc">技术的价值在于解决实际问题，我们始终聚焦客户业务成果</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">💡</div>
+                    <h3 class="value-title">持续创新</h3>
+                    <p class="value-desc">紧跟技术前沿，将最新的AI能力转化为企业可用的解决方案</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🤝</div>
+                    <h3 class="value-title">长期陪伴</h3>
+                    <p class="value-desc">不只是软件供应商，更是企业数字化转型的长期合作伙伴</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🔒</div>
+                    <h3 class="value-title">安全可靠</h3>
+                    <p class="value-desc">数据安全是底线，我们提供私有化部署，确保企业数据安全</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team-section" id="team">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Our Team</span>
+                <h2 class="section-title">核心团队</h2>
+            </div>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar">👨‍💼</div>
+                    <div class="member-info">
+                        <div class="member-name">创始人</div>
+                        <div class="member-role">CEO / 首席执行官</div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">👩‍💻</div>
+                    <div class="member-info">
+                        <div class="member-name">技术总监</div>
+                        <div class="member-role">CTO / 首席技术官</div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">👨‍💻</div>
+                    <div class="member-info">
+                        <div class="member-name">产品总监</div>
+                        <div class="member-role">CPO / 首席产品官</div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-avatar">👩‍💼</div>
+                    <div class="member-info">
+                        <div class="member-name">运营总监</div>
+                        <div class="member-role">COO / 首席运营官</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="process">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">History</span>
+                <h2 class="section-title">发展历程</h2>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-year">2015</div>
+                        <h3 class="timeline-title">公司成立</h3>
+                        <p class="timeline-desc">八米科技成立，专注仓储管理系统研发</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-year">2017</div>
+                        <h3 class="timeline-title">产品发布</h3>
+                        <p class="timeline-desc">BAMi WMS 1.0正式发布，服务首批客户</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-year">2020</div>
+                        <h3 class="timeline-title">快速扩张</h3>
+                        <p class="timeline-desc">客户突破100家，团队扩展至30人</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-year">2023</div>
+                        <h3 class="timeline-title">技术升级</h3>
+                        <p class="timeline-desc">WMS 3.0发布，引入AI能力</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-year">2025</div>
+                        <h3 class="timeline-title">AI智能体平台</h3>
+                        <p class="timeline-desc">正式发布AI智能体平台，开启人机协同新时代</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ai-showcase" id="contact" style="background: var(--dark-light);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Contact Us</span>
+                <h2 class="section-title">联系我们</h2>
+            </div>
+            <div class="contact-info">
+                <div class="contact-card">
+                    <div class="contact-icon">📍</div>
+                    <div class="contact-label">公司地址</div>
+                    <div class="contact-value">佛山市南海区石龙南路1号<br>嘉邦国金中心2座1403</div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">📞</div>
+                    <div class="contact-label">联系电话</div>
+                    <div class="contact-value">189-2620-0599<br>400-XXX-XXXX</div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">📧</div>
+                    <div class="contact-label">电子邮箱</div>
+                    <div class="contact-value">27270234@qq.com<br>contact@bamitims.com</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">加入八米科技</h2>
+                <p class="cta-desc">与我们一起，用技术改变行业</p>
+                <div class="cta-actions">
+                    <a href="mailto:27270234@qq.com" class="btn btn-white btn-large">查看招聘职位</a>
+                    <a href="#" class="btn btn-outline-white btn-large">了解公司文化</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="../index.html" class="footer-logo">
+                        <span class="logo-icon">◈</span>
+                        <span>BAMi 八米科技</span>
+                    </a>
+                    <p class="footer-desc">领先的智能仓储与AI智能体解决方案提供商</p>
+                    <div class="footer-contact">
+                        <p>📍 佛山市南海区石龙南路1号嘉邦国金中心</p>
+                        <p>📍 广州市天河区天源路401号盛大国际</p>
+                        <p>📧 27270234@qq.com</p>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>产品服务</h4>
+                    <ul>
+                        <li><a href="ai-agent.html">AI智能体</a></li>
+                        <li><a href="wms.html">WMS仓储系统</a></li>
+                        <li><a href="solutions.html">行业解决方案</a></li>
+                        <li><a href="cases.html">客户案例</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>关于我们</h4>
+                    <ul>
+                        <li><a href="about.html">公司介绍</a></li>
+                        <li><a href="about.html#team">团队风采</a></li>
+                        <li><a href="about.html#news">新闻动态</a></li>
+                        <li><a href="about.html#join">加入我们</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>支持与帮助</h4>
+                    <ul>
+                        <li><a href="#">帮助中心</a></li>
+                        <li><a href="#">系统文档</a></li>
+                        <li><a href="#">API接口</a></li>
+                        <li><a href="#">服务状态</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 八米科技 BAMi. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>
