@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务介绍 - 车拉拉</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF6B35;
+            --primary-dark: #E55A2B;
+            --dark: #1A1A2E;
+            --light: #F8F9FA;
+            --gradient: linear-gradient(135deg, #FF6B35 0%, #FF8E53 100%);
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--dark);
+        }
+        
+        .logo-text span {
+            color: var(--primary);
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            font-size: 16px;
+            position: relative;
+            transition: color 0.3s;
+        }
+        
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: var(--primary);
+        }
+        
+        .nav-menu a.active::after {
+            width: 100%;
+        }
+        
+        .btn {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
+        }
+        
+        /* 页面标题 */
+        .page-header {
+            background: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+            padding: 160px 0 80px;
+            text-align: center;
+            color: white;
+        }
+        
+        .page-header h1 {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+        
+        .page-header h1 span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .breadcrumb {
+            color: rgba(255,255,255,0.6);
+            font-size: 16px;
+        }
+        
+        .breadcrumb a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+        }
+        
+        /* 服务卡片 */
+        .services-section {
+            padding: 100px 0;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        
+        .section-title h2 {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+        
+        .section-title h2 span {
+            color: var(--primary);
+        }
+        
+        .section-title p {
+            font-size: 18px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        
+        .service-image {
+            height: 200px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 60px;
+        }
+        
+        .service-content {
+            padding: 30px;
+        }
+        
+        .service-content h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+        
+        .service-content p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .service-features {
+            list-style: none;
+        }
+        
+        .service-features li {
+            padding: 8px 0;
+            color: #555;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .service-features li i {
+            color: var(--primary);
+        }
+        
+        /* 价格方案 */
+        .pricing-section {
+            background: var(--light);
+            padding: 100px 0;
+        }
+        
+        .pricing-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            position: relative;
+            transition: transform 0.3s;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .pricing-card.popular {
+            border: 3px solid var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient);
+            color: white;
+            padding: 8px 24px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .pricing-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+        
+        .price {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .price span {
+            font-size: 16px;
+            color: #666;
+            font-weight: 400;
+        }
+        
+        .pricing-features {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .pricing-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .pricing-features li i {
+            color: var(--primary);
+        }
+        
+        /* 页脚 */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .footer p {
+            color: rgba(255,255,255,0.4);
+        }
+        
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .services-grid,
+            .pricing-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .services-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <span class="logo-text">车拉<span>拉</span></span>
+            </a>
+            
+            <ul class="nav-menu">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="about.html">关于我们</a></li>
+                <li><a href="services.html" class="active">服务介绍</a></li>
+                <li><a href="join.html">加盟合作</a></li>
+                <li><a href="contact.html">联系我们</a></li>
+            </ul>
+            
+            <a href="contact.html" class="btn btn-primary">立即下单</a>
+        </div>
+    </nav>
+
+    <!-- 页面标题 -->
+    <header class="page-header">
+        <h1>服务<span>介绍</span></h1>
+        <div class="breadcrumb">
+            <a href="index.html">首页</a> / 服务介绍
+        </div>
+    </header>
+
+    <!-- 服务卡片 -->
+    <section class="services-section">
+        <div class="section-title">
+            <h2>我们的<span>服务</span></h2>
+            <p>为货主、司机、加盟商提供全方位的货运解决方案</p>
+        </div>
+        
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-image">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="service-content">
+                    <h3>货主服务</h3>
+                    <p>为企业和个人货主提供高效、便捷、低成本的货运服务</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> 快速下单，智能匹配</li>
+                        <li><i class="fas fa-check"></i> 实时追踪，全程可视</li>
+                        <li><i class="fas fa-check"></i> 价格透明，2%服务费</li>
+                        <li><i class="fas fa-check"></i> 发票合规，财务无忧</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-image">
+                    <i class="fas fa-truck-driver"></i>
+                </div>
+                <div class="service-content">
+                    <h3>司机服务</h3>
+                    <p>为货运司机提供更多订单、更高收入、更好保障</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> 海量订单，稳定收入</li>
+                        <li><i class="fas fa-check"></i> 98%收入归司机</li>
+                        <li><i class="fas fa-check"></i> 区域保护，避免恶性竞争</li>
+                        <li><i class="fas fa-check"></i> 保险保障，安全出行</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-image">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <div class="service-content">
+                    <h3>加盟服务</h3>
+                    <p>省-市-区县四级加盟体系，轻资产创业，共享平台红利</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> 低门槛加盟，轻松创业</li>
+                        <li><i class="fas fa-check"></i> 区域独家保护</li>
+                        <li><i class="fas fa-check"></i> 平台技术赋能</li>
+                        <li><i class="fas fa-check"></i> 持续分润收益</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 价格方案 -->
+    <section class="pricing-section">
+        <div class="pricing-container">
+            <div class="section-title">
+                <h2>服务<span>价格</span></h2>
+                <p>透明定价，让每一笔交易都清晰可见</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>个人货主</h3>
+                    <div class="price">2%<span>/单</span></div>
+                    <p>服务费低至2%</p>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 在线下单</li>
+                        <li><i class="fas fa-check"></i> 司机匹配</li>
+                        <li><i class="fas fa-check"></i> 订单追踪</li>
+                        <li><i class="fas fa-check"></i> 电子发票</li>
+                    </ul>
+                    <a href="contact.html" class="btn btn-primary" style="width: 100%; justify-content: center;">立即使用</a>
+                </div>
+                
+                <div class="pricing-card popular">
+                    <div class="popular-badge">最受欢迎</div>
+                    <h3>企业客户</h3>
+                    <div class="price">1.5%<span>/单</span></div>
+                    <p>月订单量100单以上</p>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 专属客户经理</li>
+                        <li><i class="fas fa-check"></i> API对接</li>
+                        <li><i class="fas fa-check"></i> 账期结算</li>
+                        <li><i class="fas fa-check"></i> 数据分析报表</li>
+                    </ul>
+                    <a href="contact.html" class="btn btn-primary" style="width: 100%; justify-content: center;">联系销售</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>加盟商</h3>
+                    <div class="price">详询<span>/联系</span></div>
+                    <p>区域加盟合作</p>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 区域独家授权</li>
+                        <li><i class="fas fa-check"></i> 技术培训支持</li>
+                        <li><i class="fas fa-check"></i> 运营指导</li>
+                        <li><i class="fas fa-check"></i> 持续收益分润</li>
+                    </ul>
+                    <a href="join.html" class="btn btn-primary" style="width: 100%; justify-content: center;">了解详情</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="index.html">首页</a>
+                <a href="about.html">关于我们</a>
+                <a href="services.html">服务介绍</a>
+                <a href="join.html">加盟合作</a>
+                <a href="contact.html">联系我们</a>
+            </div>
+            <p>&copy; 2026 车拉拉. All rights reserved. | 八米科技旗下品牌</p>
+        </div>
+    </footer>
+</body>
+</html>
