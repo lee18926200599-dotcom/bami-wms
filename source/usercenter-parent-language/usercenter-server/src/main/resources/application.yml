@@ -1,0 +1,94 @@
+#eureka client配置
+eureka:
+  instance:
+    # 注册时使用ip而不是主机名
+    preferIpAddress: true
+    instanceId: ${spring.cloud.client.ip-address}:${server.port}
+    health-check-url-path: /actuator/health
+    # 状态地址为api地址
+    statusPageUrlPath: /${server.servlet.contextpath:}/doc.html
+    leaseRenewalIntervalInSeconds: 5 #租期更新时间间隔（默认30秒） 客户端发送心跳检测时间间隔
+    leaseExpirationDurationInSeconds: 10 #租期到期时间（默认90秒）
+#    ipAddress: 192.168.0.132
+
+server:
+  servlet:
+    contextpath:
+  port: 9810
+
+spring:
+  profiles:
+    active: test
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+apidoc:
+  groups:
+    service:
+      groupName: 用户中心服务
+      title: 用户中心接口文档
+      description: 用户中心接口文档
+      basePackage: com.usercenter.server.controller
+      version: 1.0.0
+
+#springboot admin配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+hystrix:
+  threadpool:
+    default:
+      coreSize: 50
+      maxQueueSize: 100
+      queueSizeRejectionThreshold: 500
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 65000
+
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 15000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 0
+
+feign:
+  hystrix:
+    enabled: true
+
+
+zzz.services:
+    basedata:
+      name: zzz-base-data-server
+      url: ""
+
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+  type-aliases-package: com.usercenter.server.entity
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true # 开启驼峰命名转换
+    auto-mapping-behavior: full # 启用全自动映射
+
+reliable-rabbit:
+  application: ${spring.application.name}
+  producer.rely.enabled: true
+  consumer.idempotent.enabled: true
+usr:
+  password:
+    salt: Plat
+    algorithm: MD5
+
+redis:
+  cache:
+    prefix: zzz-usercenter-server
+
+#多租户配置
+tenant:
+  enable: false

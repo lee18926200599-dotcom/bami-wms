@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basedata.server.mapper.BasePlatformStoreMapper">
+    <select id="findList" resultType="com.basedata.server.entity.BasePlatformStore">
+        select ps.id, config_code, config_name, platform_code, platform_name, auth_store_code, auth_store_name,belong_owner_id,belong_owner_name,
+        group_id, service_provider_id, service_provider_name, state, remark, created_by, created_name, created_date, modified_by,
+        modified_name, modified_date, version, deleted_flag from base_platform_store ps
+        where ps.deleted_flag = 0
+            <if test="groupId != null "> and ps.group_id = #{groupId}</if>
+            <if test="serviceProviderId != null "> and ps.service_provider_id = #{serviceProviderId}</if>
+            <if test="serviceProviderIdList != null and serviceProviderIdList.size >0">
+                and ps.service_provider_id in
+                <foreach collection="serviceProviderIdList" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="configCode != null  and configCode != ''"> and ps.config_code = #{configCode}</if>
+            <if test="configName != null  and configName != ''"> and ps.config_name like concat('%', #{configName}, '%')</if>
+            <if test="platformCode != null  and platformCode != ''"> and ps.platform_code = #{platformCode}</if>
+            <if test="platformCodeList !=null and platformCodeList.size >0">
+                and ps.platform_code in
+                <foreach collection="platformCodeList" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="platformName != null  and platformName != ''"> and ps.platform_name like concat('%', #{platformName}, '%')</if>
+            <if test="authStoreCodeLike != null  and authStoreCodeLike != ''"> and ps.auth_store_code like concat('%', concat(#{authStoreCodeLike}, '%'))</if>
+            <if test="authStoreNameLike != null  and authStoreNameLike != ''"> and ps.auth_store_name like concat('%', concat(#{authStoreNameLike}, '%'))</if>
+            <if test="state != null"> and ps.state = #{state}</if>
+            <if test="belongOwnerId != null"> and ps.belong_owner_id = #{belongOwnerId}</if>
+            <if test="belongOwnerIdList !=null and belongOwnerIdList.size >0">
+                and ps.belong_owner_id in
+                <foreach collection="belongOwnerIdList" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="id != null"> and ps.id = #{id}</if>
+            <if test="ids !=null and ids.size >0">
+                and ps.id in
+                <foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        order by ps.created_date desc
+    </select>
+
+    <update id="updateById">
+        update base_platform_store
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="configCode != null">config_code = #{configCode},</if>
+            <if test="configName != null">config_name = #{configName},</if>
+            <if test="platformCode != null and platformCode != ''">platform_code = #{platformCode},</if>
+            <if test="platformName != null">platform_name = #{platformName},</if>
+            <if test="authStoreCode != null and authStoreCode != ''">auth_store_code = #{authStoreCode},</if>
+            <if test="authStoreName != null and authStoreName != ''">auth_store_name = #{authStoreName},</if>
+            <if test="serviceProviderId != null">service_provider_id = #{serviceProviderId},</if>
+            <if test="serviceProviderName != null">service_provider_name = #{serviceProviderName},</if>
+            <if test="belongOwnerId != null">belong_owner_id = #{belongOwnerId},</if>
+            <if test="belongOwnerName != null">belong_owner_name = #{belongOwnerName},</if>
+            <if test="state != null and state != ''">state = #{state},</if>
+            <if test="remark != null">remark = #{remark},</if>
+
+            <if test="modifiedBy != null">modified_by = #{modifiedBy},</if>
+            <if test="modifiedName != null">modified_name = #{modifiedName},</if>
+            <if test="modifiedDate != null">modified_date = #{modifiedDate},</if>
+            <if test="version != null">version = version + 1,,</if>
+            <if test="deletedFlag != null">deleted_flag = #{deletedFlag},</if>
+        </trim>
+        where id = #{id}
+        <if test="version != null">
+            and version = #{version}
+        </if>
+    </update>
+
+    <update id="batchUpdate">
+        update base_platform_store
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="state != null">state = #{state},</if>
+            <if test="deletedFlag != null">deleted_flag = #{deletedFlag},</if>
+            <if test="modifiedBy != null">modified_by = #{modifiedBy},</if>
+            <if test="modifiedName != null and modifiedName !=''">modified_name = #{modifiedName},</if>
+            <if test="modifiedDate != null">modified_date = #{modifiedDate},</if>
+        </trim>
+        where id in
+        <foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

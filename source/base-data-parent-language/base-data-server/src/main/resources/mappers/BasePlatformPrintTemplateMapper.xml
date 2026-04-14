@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basedata.server.mapper.BasePlatformPrintTemplateMapper">
+
+    <select id="findTemplateList" resultType="com.basedata.server.entity.BasePlatformPrintTemplate">
+        select id, platform_code, platform_name, platform_logistics_code, platform_logistics_name, template_id, template_type, template_name,
+        template_url, preview_url, brand_code, template_ext_info, auto_get_flag, type, state, remark, created_by, created_name, created_date,
+        modified_by, modified_name, modified_date, version, deleted_flag
+        from base_platform_print_template pt
+        where pt.deleted_flag = 0
+        <if test="platformCode != null and platformCode !=''">
+            and pt.platform_code = #{platformCode}
+        </if>
+        <if test="platformLogisticsCode != null and platformLogisticsCode !=''">
+            and pt.platform_logistics_code = #{platformLogisticsCode,jdbcType=VARCHAR}
+        </if>
+        <if test="templateId != null">
+            and pt.template_id = #{templateId}
+        </if>
+        <if test="templateId != null">
+            and pt.template_type = #{templateId}
+        </if>
+        <if test="type != null">
+            and pt.type = #{type}
+        </if>
+    </select>
+
+    <insert id="saveTemplate">
+        insert into base_platform_print_template
+        (platform_code, platform_name, platform_logistics_code, platform_logistics_name, template_id, template_type, template_name,
+        template_url, preview_url, brand_code, template_ext_info, auto_get_flag, type, state, remark, created_by, created_name, created_date, version, deleted_flag)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.platformCode},#{item.platformName},#{item.platformLogisticsCode},#{item.platformLogisticsName}, #{item.templateId},#{item.templateType},#{item.templateName},
+            #{item.templateUrl},#{item.previewUrl},#{item.brandCode},#{item.templateExtInfo},#{item.autoGetFlag},#{item.type},#{item.state},#{item.remark},#{item.createdBy},#{item.createdName}, #{item.createdDate},#{item.version},#{item.deletedFlag}
+            )
+        </foreach>
+    </insert>
+
+    <update id="batchUpdate">
+        update base_platform_print_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="state != null">state = #{state},</if>
+            <if test="deletedFlag != null">deleted_flag = #{deletedFlag},</if>
+            <if test="modifiedBy != null">modified_by = #{modifiedBy},</if>
+            <if test="modifiedName != null and modifiedName !=''">modified_name = #{modifiedName},</if>
+            <if test="modifiedDate != null">modified_date = #{modifiedDate},</if>
+        </trim>
+        where id in
+        <foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+</mapper>

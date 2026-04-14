@@ -1,0 +1,100 @@
+#eureka client配置
+eureka:
+  instance:
+    # 注册时使用ip而不是主机名
+    preferIpAddress: true
+    instanceId: ${spring.cloud.client.ip-address}:${server.port}
+    health-check-url-path: /actuator/health
+    # 状态地址为api地址
+    statusPageUrlPath: /${server.servlet.contextpath:}/doc.html
+    leaseRenewalIntervalInSeconds: 5 #租期更新时间间隔（默认30秒） 客户端发送心跳检测时间间隔
+    leaseExpirationDurationInSeconds: 10 #租期到期时间（默认90秒）
+#    ipAddress: 192.168.0.132
+
+server:
+  servlet:
+    contextpath:
+  port: 8011
+
+spring:
+  application:
+    name: zzz-base-data-server
+  profiles:
+    active: local
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  messages:
+    basename: i18n/messages
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+hystrix:
+  threadpool:
+    default:
+      coreSize: 50
+      maxQueueSize: 100
+      queueSizeRejectionThreshold: 500
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 65000
+
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 15000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 0
+
+feign:
+  hystrix:
+    enabled: true
+
+
+
+reliable-rabbit:
+  application: ${spring.application.name}
+  producer.rely.enabled: true
+  consumer.idempotent.enabled: true
+mybatis-plus:
+  mapper-locations: classpath*:mappers/**/*.xml
+  type-aliases-package: com.basedata.server.entity
+  configuration:
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+    map-underscore-to-camel-case: true # 开启驼峰命名转换
+    auto-mapping-behavior: full # 启用全自动映射
+  global-config:
+    db-config:
+      id-type: auto
+
+
+apidoc:
+  groups:
+    service:
+      groupName: 基础数据接口文档
+      title: 基础数据接口文档
+      description: 基础数据接口文档
+      basePackage: com.basedata.server.controller
+      version: 1.0.0
+    feign:
+      groupName: 基础数据Feign接口文档
+      title: 基础数据Feign接口文档
+      description: 基础数据Feign接口文档
+      basePackage: com.basedata.server.rpc
+      version: 1.0.0
+#多租户配置
+tenant:
+  enable: false
+  column: warehouse_id
+  filterTables:
+  ignoreTables:
+  ignoreLoginNames:

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.usercenter.server.mapper.BaseUserStaffMapMapper">
+
+	<update id="syncUserStaffMap" parameterType="String">
+		delete from base_user_staff_map;
+		INSERT INTO `base_user_staff_map` (
+		user_id,
+		staff_id,
+		create_user,
+		created_date
+		)
+		SELECT
+		bud.id,
+		bud.`archives_id`,
+		#{dateNumber},
+		UNIX_TIMESTAMP(NOW())
+		FROM
+		base_user_detail bud,
+		base_department_staff bds
+		WHERE bud.`archives_id` = bds.`id`
+		AND bud.`deleted` = 0
+		<![CDATA[ AND bds.`status` <> 4]]>;
+	</update>
+
+</mapper>
+

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basedata.server.mapper.BasePlatformAuthMapper">
+
+    <!-- 查询  -->
+    <select id="findList" resultType="com.basedata.server.entity.BasePlatformAuth">
+        select id, config_code, config_name, owner_id, owner_code, owner_name, platform_code, platform_name, customer_id, vendor_id, app_key, app_secret,
+        access_token, access_token_expired, refresh_token, group_id, service_provider_id, service_provider_name, state, remark, created_by, created_name,
+        created_date, modified_by, modified_name, modified_date, version, deleted_flag
+        from base_platform_auth bpa
+        where bpa.deleted_flag = 0
+        <if test="groupId != null">
+            and bpa.group_id = #{groupId}
+        </if>
+        <if test="serviceProviderId !=null">
+            and bpa.service_provider_id = #{serviceProviderId}
+        </if>
+        <if test="serviceProviderIdList != null and serviceProviderIdList.size >0">
+            and bpa.service_provider_id in
+            <foreach collection="serviceProviderIdList" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="ownerId !=null">
+            and bpa.owner_id = #{ownerId}
+        </if>
+        <if test="ownerIdList !=null and ownerIdList.size >0">
+            and bpa.owner_id in
+            <foreach collection="ownerIdList" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="state !=null">
+            and bpa.state = #{state}
+        </if>
+        <if test="configCode !=null and configCode !=''">
+            and bpa.config_code like concat('%', concat(#{configCode}, '%'))
+        </if>
+        <if test="platformCode !=null and platformCode !=''">
+            and bpa.platform_code = #{platformCode}
+        </if>
+        <if test="platformCodeList !=null and platformCodeList.size >0">
+            and bpa.platform_code in
+            <foreach collection="platformCodeList" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="id !=null">
+            and bpa.id = #{id}
+        </if>
+        <if test="ids !=null and ids.size >0">
+            and bpa.id in
+            <foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="expireDateStart !=null ">
+            and bpa.access_token_expired &gt; #{expireDateStart}
+        </if>
+        <if test="expireDateEnd !=null ">
+            and bpa.access_token_expired &lt; #{expireDateEnd}
+        </if>
+        <if test="createdDateBegin !=null ">
+            and bpa.created_date &gt; #{createdDateBegin}
+        </if>
+        <if test="createdDateEnd !=null ">
+            and bpa.created_date &lt; #{createdDateEnd}
+        </if>
+        <if test="modifiedDateBegin !=null ">
+            and bpa.modified_date &gt; #{modifiedDateBegin}
+        </if>
+        <if test="modifiedDateEnd !=null ">
+            and bpa.modified_date &lt; #{modifiedDateEnd}
+        </if>
+        order by bpa.created_date desc
+    </select>
+
+    <update id="batchUpdate">
+        update base_platform_auth
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="state != null">state = #{state},</if>
+            <if test="deletedFlag != null">deleted_flag = #{deletedFlag},</if>
+            <if test="modifiedBy != null">modified_by = #{modifiedBy},</if>
+            <if test="modifiedName != null and modifiedName !=''">modified_name = #{modifiedName},</if>
+            <if test="modifiedDate != null">modified_date = #{modifiedDate},</if>
+        </trim>
+        where id in
+        <foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="updateById">
+        update base_platform_auth
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="configCode != null">config_code = #{configCode},</if>
+            <if test="configName != null">config_name = #{configName},</if>
+            <if test="ownerId != null">owner_id = #{ownerId},</if>
+            <if test="ownerCode != null">owner_code = #{ownerCode},</if>
+            <if test="ownerName != null">owner_name = #{ownerName},</if>
+            <if test="platformCode != null">platform_code = #{platformCode},</if>
+            <if test="platformName != null">platform_name = #{platformName},</if>
+            <if test="customerId != null">customer_id = #{customerId},</if>
+            <if test="vendorId != null">vendor_id = #{vendorId},</if>
+            <if test="appKey != null">app_key = #{appKey},</if>
+            <if test="appSecret != null">app_secret = #{appSecret},</if>
+            <if test="accessToken != null">access_token = #{accessToken},</if>
+            <if test="accessTokenExpired != null">access_token_expired = #{accessTokenExpired},</if>
+            <if test="refreshToken != null">refresh_token = #{refreshToken},</if>
+            <if test="remark != null">remark = #{remark},</if>
+
+            <if test="version != null">version = version + 1,</if>
+            <if test="modifiedBy != null">modified_by = #{modifiedBy},</if>
+            <if test="modifiedName != null and modifiedName !=''">modified_name = #{modifiedName},</if>
+            <if test="modifiedDate != null">modified_date = #{modifiedDate},</if>
+        </trim>
+        where id = #{id}
+        <if test="version != null">
+            and version = #{version}
+        </if>
+    </update>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into base_platform_auth
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="configCode != null">config_code,</if>
+            <if test="configName != null">config_name,</if>
+            <if test="ownerId != null">owner_id,</if>
+            <if test="ownerCode != null">owner_code,</if>
+            <if test="ownerName != null">owner_name,</if>
+            <if test="platformCode != null">platform_code,</if>
+            <if test="platformName != null">platform_name,</if>
+            <if test="customerId != null">customer_id,</if>
+            <if test="vendorId != null">vendor_id,</if>
+            <if test="appKey != null">app_key,</if>
+            <if test="appSecret != null">app_secret,</if>
+            <if test="accessToken != null">access_token,</if>
+            <if test="accessTokenExpired != null">access_token_expired,</if>
+            <if test="refreshToken != null">refresh_token,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="serviceProviderId != null">service_provider_id,</if>
+            <if test="serviceProviderName != null">service_provider_name,</if>
+            <if test="state != null">state,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createdBy != null">created_by,</if>
+            <if test="createdName != null">created_name,</if>
+            <if test="createdDate != null">created_date,</if>
+            <if test="modifiedBy != null">modified_by,</if>
+            <if test="modifiedName != null">modified_name,</if>
+            <if test="modifiedDate != null">modified_date,</if>
+            <if test="version != null">version,</if>
+            <if test="deletedFlag != null">deleted_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="configCode != null">#{configCode},</if>
+            <if test="configName != null">#{configName},</if>
+            <if test="ownerId != null">#{ownerId},</if>
+            <if test="ownerCode != null">#{ownerCode},</if>
+            <if test="ownerName != null">#{ownerName},</if>
+            <if test="platformCode != null">#{platformCode},</if>
+            <if test="platformName != null">#{platformName},</if>
+            <if test="customerId != null">#{customerId},</if>
+            <if test="vendorId != null">#{vendor_id},</if>
+            <if test="appKey != null">#{appKey},</if>
+            <if test="appSecret != null">#{appSecret},</if>
+            <if test="accessToken != null">#{accessToken},</if>
+            <if test="accessTokenExpired != null">#{accessTokenExpired},</if>
+            <if test="refreshToken != null">#{refreshToken},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="serviceProviderId != null">#{serviceProviderId},</if>
+            <if test="serviceProviderName != null">#{serviceProviderName},</if>
+            <if test="state != null">#{state},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createdBy != null">#{createdBy},</if>
+            <if test="createdName != null">#{createdName},</if>
+            <if test="createdDate != null">#{createdDate},</if>
+            <if test="modifiedBy != null">#{modifiedBy},</if>
+            <if test="modifiedName != null">#{modifiedName},</if>
+            <if test="modifiedDate != null">#{modifiedDate},</if>
+            <if test="version != null">#{version},</if>
+            <if test="deletedFlag != null">#{deletedFlag},</if>
+        </trim>
+    </insert>
+</mapper>

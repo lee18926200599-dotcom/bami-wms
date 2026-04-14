@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basedata.server.mapper.BaseStorePrintTemplateMapper">
+    <select id="findList" resultType="com.basedata.server.entity.BaseStorePrintTemplate">
+        select id, config_code, config_name, logistics_id, logistics_code, logistics_name, platform_code, platform_name,
+        <!--auth_store_code, auth_store_name, -->belong_owner_id, belong_owner_name, group_id, service_provider_id,
+        service_provider_name, state, remark, created_by, created_name, created_date, modified_by, modified_name,
+        modified_date, version, deleted_flag
+        from base_store_print_template spt
+        where spt.deleted_flag = 0
+        <if test="groupId != null">
+            and spt.group_id = #{groupId}
+        </if>
+        <if test="serviceProviderId != null">
+            and spt.service_provider_id = #{serviceProviderId}
+        </if>
+        <if test="serviceProviderIdList != null and serviceProviderIdList.size >0">
+            and spt.service_provider_id in
+            <foreach collection="serviceProviderIdList" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="state != null">
+            and spt.state = #{state}
+        </if>
+        <if test="logisticsId != null">
+            and spt.logistics_id = #{logisticsId}
+        </if>
+        <if test="platformCode != null and platformCode !=''">
+            and spt.platform_code = #{platformCode}
+        </if>
+        <if test="platformCodeList !=null and platformCodeList.size >0">
+            and spt.platform_code in
+            <foreach collection="platformCodeList" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="belongOwnerId != null">
+            and spt.belong_owner_id = #{belongOwnerId}
+        </if>
+        <if test="belongOwnerIdList !=null and belongOwnerIdList.size >0">
+            and spt.belong_owner_id in
+            <foreach collection="belongOwnerIdList" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="id != null">
+            and spt.id = #{id}
+        </if>
+        <if test="ids !=null and ids.size >0">
+            and spt.id in
+            <foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        order by spt.created_date desc
+    </select>
+
+    <select id="findDetailList" resultType="com.basedata.server.dto.BaseStorePrintTemplateDetailDTO">
+        select id, config_id, logistics_id, logistics_code, logistics_name, platform_code, platform_name, <!--auth_store_code, auth_store_name,-->
+        belong_owner_id, belong_owner_name, type, template_id, template_type, template_name, external_template_name, template_url, preview_url,
+        brand_code, template_ext_info, auto_get_flag, service_provider_id, service_provider_name, state, remark, created_by, created_name,
+        created_date, modified_by, modified_name, modified_date, version, deleted_flag
+        from base_store_print_template_detail sptd
+        where sptd.deleted_flag = 0
+        <if test="serviceProviderId != null">
+            and sptd.service_provider_id = #{serviceProviderId}
+        </if>
+        <if test="configId != null">
+            and sptd.config_id = #{configId}
+        </if>
+        <if test="state != null">
+            and sptd.state = #{state}
+        </if>
+        <if test="logisticsId != null">
+            and sptd.logistics_id = #{logisticsId}
+        </if>
+        <if test="logisticsIdList !=null and logisticsIdList.size >0">
+            and sptd.logistics_id in
+            <foreach collection="logisticsIdList" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="platformCode != null and platformCode !=''">
+            and sptd.platform_code = #{platformCode}
+        </if>
+        <if test="templateType != null">
+            and sptd.template_type = #{templateType}
+        </if>
+        <if test="templateName != null and templateName !=''">
+            and sptd.template_name like concat('%', concat(#{templateName}, '%'))
+        </if>
+        <if test="templateUrl != null and templateUrl !=''">
+            and sptd.template_url like concat('%', concat(#{templateUrl}, '%'))
+        </if>
+    </select>
+
+    <insert id="saveHeader" useGeneratedKeys="true" keyProperty="id">
+        insert into base_store_print_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+<!--            <if test="id != null">id,</if>-->
+            <if test="configCode != null">config_code,</if>
+            <if test="configName != null">config_name,</if>
+            <if test="logisticsId != null">logistics_id,</if>
+            <if test="logisticsCode != null and logisticsCode != ''">logistics_code,</if>
+            <if test="logisticsName != null and logisticsName != ''">logistics_name,</if>
+            <if test="platformCode != null and platformCode != ''">platform_code,</if>
+            <if test="platformName != null and platformName !=''">platform_name,</if>
+<!--            <if test="authStoreCode != null and authStoreCode != ''">auth_store_code,</if>-->
+<!--            <if test="authStoreName != null and authStoreName !=''">auth_store_name,</if>-->
+            <if test="belongOwnerId != null">belong_owner_id,</if>
+            <if test="belongOwnerName != null and belongOwnerName != ''">belong_owner_name,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="serviceProviderId != null">service_provider_id,</if>
+            <if test="serviceProviderName != null">service_provider_name,</if>
+            <if test="state != null and state != ''">state,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createdBy != null">created_by,</if>
+            <if test="createdName != null">created_name,</if>
+            <if test="createdDate != null">created_date,</if>
+            <if test="modifiedBy != null">modified_by,</if>
+            <if test="modifiedName != null">modified_name,</if>
+            <if test="modifiedDate != null">modified_date,</if>
+            <if test="version != null">version,</if>
+            <if test="deletedFlag != null">deleted_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+<!--            <if test="id != null">#{id},</if>-->
+            <if test="configCode != null">#{configCode},</if>
+            <if test="configName != null">#{configName},</if>
+            <if test="logisticsId != null">#{logisticsId},</if>
+            <if test="logisticsCode != null and logisticsCode != ''">#{logisticsCode},</if>
+            <if test="logisticsName != null and logisticsName != ''">#{logisticsName},</if>
+            <if test="platformCode != null and platformCode != ''">#{platformCode},</if>
+            <if test="platformName != null and platformName !=''">#{platformName},</if>
+            <!--<if test="authStoreCode != null and authStoreCode != ''">#{authStoreCode},</if>-->
+            <!--<if test="authStoreName != null and authStoreName != ''">#{authStoreName},</if>-->
+            <if test="belongOwnerId != null">#{belongOwnerId},</if>
+            <if test="belongOwnerName != null and belongOwnerName != ''">#{belongOwnerName},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="serviceProviderId != null">#{serviceProviderId},</if>
+            <if test="serviceProviderName != null">#{serviceProviderName},</if>
+            <if test="state != null and state != ''">#{state},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createdBy != null">#{createdBy},</if>
+            <if test="createdName != null">#{createdName},</if>
+            <if test="createdDate != null">#{createdDate},</if>
+            <if test="modifiedBy != null">#{modifiedBy},</if>
+            <if test="modifiedName != null">#{modifiedName},</if>
+            <if test="modifiedDate != null">#{modifiedDate},</if>
+            <if test="version != null">#{version},</if>
+            <if test="deletedFlag != null">#{deletedFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="batchUpdate">
+        update base_store_print_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="state != null">state = #{state},</if>
+            <if test="deletedFlag != null">deleted_flag = #{deletedFlag},</if>
+            <if test="modifiedBy != null">modified_by = #{modifiedBy},</if>
+            <if test="modifiedName != null and modifiedName !=''">modified_name = #{modifiedName},</if>
+            <if test="modifiedDate != null">modified_date = #{modifiedDate},</if>
+        </trim>
+        where id in
+        <foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="updateDetailById">
+        update base_store_print_template_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="configId != null">config_id = #{configId},</if>
+            <if test="logisticsId != null">logistics_id = #{logisticsId},</if>
+            <if test="logisticsCode != null and logisticsCode != ''">logistics_code = #{logisticsCode},</if>
+            <if test="logisticsName != null and logisticsName != ''">logistics_name = #{logisticsName},</if>
+            <if test="platformCode != null and platformCode != ''">platform_code = #{platformCode},</if>
+            <if test="platformName != null">platform_name = #{platformName},</if>
+<!--            <if test="authStoreCode != null and authStoreCode != ''">auth_store_code = #{authStoreCode},</if>-->
+<!--            <if test="authStoreName != null">auth_store_name = #{authStoreName},</if>-->
+            <if test="belongOwnerId != null">belong_owner_id = #{belongOwnerId},</if>
+            <if test="belongOwnerName != null">belong_owner_name = #{belongOwnerName},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="templateId != null">template_id = #{templateId},</if>
+            <if test="templateType != null">template_type = #{templateType},</if>
+            <if test="templateName != null">template_name = #{templateName},</if>
+            <if test="externalTemplateName != null">external_template_name = #{externalTemplateName},</if>
+            <if test="templateUrl != null">template_url = #{templateUrl},</if>
+            <if test="previewUrl != null">preview_url = #{previewUrl},</if>
+            <if test="templateUrl != null">template_url = #{templateUrl},</if>
+            <if test="brandCode != null">brand_code = #{brandCode},</if>
+            <if test="templateExtInfo != null">template_ext_info = #{templateExtInfo},</if>
+            <if test="serviceProviderId != null">service_provider_id = #{serviceProviderId},</if>
+            <if test="serviceProviderName != null">service_provider_name = #{serviceProviderName},</if>
+            <if test="state != null and state != ''">state = #{state},</if>
+            <if test="remark != null">remark = #{remark},</if>
+
+            <if test="modifiedBy != null">modified_by = #{modifiedBy},</if>
+            <if test="modifiedName != null">modified_name = #{modifiedName},</if>
+            <if test="modifiedDate != null">modified_date = #{modifiedDate},</if>
+            <if test="version != null">version = #{version},</if>
+            <if test="deletedFlag != null">deleted_flag = #{deletedFlag},</if>
+        </trim>
+        where id = #{id}
+        <if test="version != null">
+            and version = #{version}
+        </if>
+    </update>
+
+    <insert id="batchSaveDetail">
+        insert into base_store_print_template_detail
+        (config_id, logistics_id, logistics_code, logistics_name, platform_code, platform_name, <!--auth_store_code, auth_store_name,--> belong_owner_id, belong_owner_name,
+        type, template_id, template_type, template_name, external_template_name, template_url, preview_url,
+        brand_code, template_ext_info, auto_get_flag, service_provider_id, service_provider_name,
+        state, remark, created_by, created_name, created_date, version, deleted_flag)
+        values
+        <foreach collection="addDetailList" item="item" index="index" separator=",">
+            (
+            #{item.configId},#{item.logisticsId},#{item.logisticsCode},#{item.logisticsName},#{item.platformCode},#{item.platformName},<!--#{item.authStoreCode},#{item.authStoreName},-->#{item.belongOwnerId},#{item.belongOwnerName},
+            #{item.type},#{item.templateId},#{item.templateType},#{item.templateName},#{item.externalTemplateName},#{item.templateUrl},#{item.previewUrl},
+            #{item.brandCode},#{item.templateExtInfo},#{item.autoGetFlag},#{item.serviceProviderId},#{item.serviceProviderName},
+            #{item.state},#{item.remark},#{item.createdBy},#{item.createdName},#{item.createdDate},#{item.version},#{item.deletedFlag}
+            )
+        </foreach>
+    </insert>
+</mapper>

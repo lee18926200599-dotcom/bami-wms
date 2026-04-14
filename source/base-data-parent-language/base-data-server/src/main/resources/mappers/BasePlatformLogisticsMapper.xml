@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.basedata.server.mapper.BasePlatformLogisticsMapper">
+
+
+    <insert id="saveHeader" useGeneratedKeys="true" keyProperty="id">
+        insert into base_platform_logistics
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <!--            <if test="id != null">id,</if>-->
+            <if test="configCode != null">config_code,</if>
+            <if test="configName != null">config_name,</if>
+            <if test="logisticsId != null">logistics_id,</if>
+            <if test="logisticsCode != null and logisticsCode != ''">logistics_code,</if>
+            <if test="logisticsName != null and logisticsName != ''">logistics_name,</if>
+            <if test="deliveryType != null">delivery_type,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="serviceProviderId != null">service_provider_id,</if>
+            <if test="serviceProviderName != null">service_provider_name,</if>
+            <if test="state != null and state != ''">state,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createdBy != null">created_by,</if>
+            <if test="createdName != null">created_name,</if>
+            <if test="createdDate != null">created_date,</if>
+            <if test="modifiedBy != null">modified_by,</if>
+            <if test="modifiedName != null">modified_name,</if>
+            <if test="modifiedDate != null">modified_date,</if>
+            <if test="version != null">version,</if>
+            <if test="deletedFlag != null">deleted_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <!--            <if test="id != null">#{id},</if>-->
+            <if test="configCode != null">#{configCode},</if>
+            <if test="configName != null">#{configName},</if>
+            <if test="logisticsId != null">#{logisticsId},</if>
+            <if test="logisticsCode != null and logisticsCode != ''">#{logisticsCode},</if>
+            <if test="logisticsName != null and logisticsName != ''">#{logisticsName},</if>
+            <if test="deliveryType != null">#{deliveryType},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="serviceProviderId != null">#{serviceProviderId},</if>
+            <if test="serviceProviderName != null">#{serviceProviderName},</if>
+            <if test="state != null and state != ''">#{state},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createdBy != null">#{createdBy},</if>
+            <if test="createdName != null">#{createdName},</if>
+            <if test="createdDate != null">#{createdDate},</if>
+            <if test="modifiedBy != null">#{modifiedBy},</if>
+            <if test="modifiedName != null">#{modifiedName},</if>
+            <if test="modifiedDate != null">#{modifiedDate},</if>
+            <if test="version != null">#{version},</if>
+            <if test="deletedFlag != null">#{deletedFlag},</if>
+        </trim>
+    </insert>
+
+    <select id="findList" resultType="com.basedata.server.entity.BasePlatformLogistics">
+        select id, config_code, config_name, logistics_id, logistics_code, logistics_name, delivery_type,
+        group_id, service_provider_id, service_provider_name, state, remark, created_by, created_name, created_date, modified_by,
+        modified_name, modified_date, version, deleted_flag
+        from base_platform_logistics bpl
+        where bpl.deleted_flag = 0
+        <if test="groupId != null">
+            and bpl.group_id = #{groupId}
+        </if>
+        <if test="state != null">
+            and bpl.state = #{state}
+        </if>
+        <if test="id != null">
+            and bpl.id = #{id}
+        </if>
+        <if test="serviceProviderId != null">
+            and bpl.service_provider_id = #{serviceProviderId}
+        </if>
+        <if test="serviceProviderIdList != null and serviceProviderIdList.size >0">
+            and bpl.service_provider_id in
+            <foreach collection="serviceProviderIdList" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="deliveryType != null">
+            and bpl.delivery_type = #{deliveryType}
+        </if>
+        <if test="logisticsId != null">
+            and bpl.logistics_id = #{logisticsId}
+        </if>
+        <if test="logisticsIdList != null and logisticsIdList.size >0">
+            and bpl.logistics_id in
+            <foreach collection="logisticsIdList" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="ids != null and ids.size >0">
+            and id in
+            <foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        order by bpl.created_date desc
+    </select>
+
+
+    <insert id="batchSaveDetail" parameterType="java.util.List" useGeneratedKeys="true">
+        insert into base_platform_logistics_detail
+        (config_id, config_state, config_code, config_name, config_type, logistics_id, logistics_code, logistics_name, delivery_type,
+        platform_logistics_code, platform_code, platform_name, external_logistics_code, warehouse_name, warehouse_code,
+        warehouse_id, owner_name, owner_id, service_provider_id, service_provider_name, state, remark, created_by,
+        created_name, created_date, version, deleted_flag)
+        values
+        <foreach collection="addDetailList" item="item" index="index" separator=",">
+            (
+            #{item.configId},#{item.configState}, #{item.configCode},#{item.configName},#{item.configType},#{item.logisticsId},#{item.logisticsCode},#{item.logisticsName}, #{item.deliveryType},
+            #{item.platformLogisticsCode},#{item.platformCode},#{item.platformName},#{item.externalLogisticsCode},#{item.warehouseName}, #{item.warehouseCode},
+            #{item.warehouseId}, #{item.ownerName},#{item.ownerId},#{item.serviceProviderId},#{item.serviceProviderName},#{item.state},#{item.remark}, #{item.createdBy},
+            #{item.createdName},#{item.createdDate},#{item.version},#{item.deletedFlag}
+            )
+        </foreach>
+    </insert>
+
+    <select id="findDetailList" resultType="com.basedata.server.entity.BasePlatformLogisticsDetail">
+        select id, config_id, config_state, config_code, config_name, config_type, logistics_id, logistics_code, logistics_name, delivery_type,
+        platform_logistics_code, platform_code, platform_name, external_logistics_code, warehouse_name, warehouse_code, warehouse_id, owner_name,
+        owner_id, service_provider_id, service_provider_name, state, remark, created_by, created_name, created_date, modified_by, modified_name,
+        modified_date, version, deleted_flag
+        from base_platform_logistics_detail d
+        where d.deleted_flag = 0
+        <if test="configId != null">
+            and d.config_id = #{configId}
+        </if>
+        <if test="configType != null">
+            and d.config_type = #{configType}
+        </if>
+        <if test="serviceProviderId != null">
+            and d.service_provider_id = #{serviceProviderId}
+        </if>
+        <if test="deliveryType != null">
+            and d.delivery_type = #{deliveryType}
+        </if>
+        <if test="logisticsId != null">
+            and d.logistics_id = #{logisticsId}
+        </if>
+        <if test="logisticsCode != null">
+            and d.logistics_code = #{logisticsCode}
+        </if>
+        <if test="platformCode != null and platformCode !=''">
+            and d.platform_code = #{platformCode}
+        </if>
+        <if test="platformLogisticsCode != null and platformLogisticsCode !=''">
+            and d.platform_logistics_code = #{platformLogisticsCode}
+        </if>
+        <if test="warehouseId != null">
+            and d.warehouse_id = #{warehouseId}
+        </if>
+        <if test="ownerId != null">
+            and d.owner_id = #{ownerId}
+        </if>
+        <if test="ownerIdList != null and ownerIdList.size >0">
+            and d.owner_id in
+            <foreach collection="ownerIdList" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="externalLogisticsCode != null and externalLogisticsCode !=''">
+            and d.external_logistics_code = #{externalLogisticsCode}
+        </if>
+    </select>
+
+    <update id="updateDetailById">
+        update base_platform_logistics_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="configId != null">config_id = #{configId},</if>
+            <if test="configState != null">config_state = #{configState},</if>
+            <if test="configCode != null">config_code = #{configCode},</if>
+            <if test="configName != null">config_name = #{configName},</if>
+            <if test="configType != null and configType != ''">config_type = #{configType},</if>
+            <if test="logisticsId != null">logistics_id = #{logisticsId},</if>
+            <if test="logisticsCode != null and logisticsCode != ''">logistics_code = #{logisticsCode},</if>
+            <if test="logisticsName != null and logisticsName != ''">logistics_name = #{logisticsName},</if>
+            <if test="deliveryType != null">delivery_type = #{deliveryType},</if>
+            <if test="platformLogisticsCode != null">platform_logistics_code = #{platformLogisticsCode},</if>
+            <if test="platformCode != null">platform_code = #{platformCode},</if>
+            <if test="platformName != null">platform_name = #{platformName},</if>
+            <if test="externalLogisticsCode != null">external_logistics_code = #{externalLogisticsCode},</if>
+            <if test="warehouseName != null">warehouse_name = #{warehouseName},</if>
+            <if test="warehouseCode != null">warehouse_code = #{warehouseCode},</if>
+            <if test="warehouseId != null">warehouse_id = #{warehouseId},</if>
+            <if test="ownerName != null">owner_name = #{ownerName},</if>
+            <if test="ownerId != null">owner_id = #{ownerId},</if>
+            <if test="serviceProviderId != null">service_provider_id = #{serviceProviderId},</if>
+            <if test="serviceProviderName != null">service_provider_name = #{serviceProviderName},</if>
+            <if test="state != null and state != ''">state = #{state},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createdBy != null">created_by = #{createdBy},</if>
+            <if test="createdName != null">created_name = #{createdName},</if>
+            <if test="createdDate != null">created_date = #{createdDate},</if>
+            <if test="modifiedBy != null">modified_by = #{modifiedBy},</if>
+            <if test="modifiedName != null">modified_name = #{modifiedName},</if>
+            <if test="modifiedDate != null">modified_date = #{modifiedDate},</if>
+            <if test="version != null">version = #{version},</if>
+            <if test="deletedFlag != null">deleted_flag = #{deletedFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="batchUpdate">
+        update base_platform_logistics
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="state != null">state = #{state},</if>
+            <if test="deletedFlag != null">deleted_flag = #{deletedFlag},</if>
+            <if test="modifiedBy != null">modified_by = #{modifiedBy},</if>
+            <if test="modifiedName != null and modifiedName !=''">modified_name = #{modifiedName},</if>
+            <if test="modifiedDate != null">modified_date = #{modifiedDate},</if>
+        </trim>
+        where id in
+        <foreach collection="ids" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="batchUpdateDetail">
+        update base_platform_logistics_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="configState != null">config_state = #{configState},</if>
+            <if test="deletedFlag != null">deleted_flag = #{deletedFlag},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="modifiedBy != null">modified_by = #{modifiedBy},</if>
+            <if test="modifiedName != null and modifiedName !=''">modified_name = #{modifiedName},</if>
+            <if test="modifiedDate != null">modified_date = #{modifiedDate},</if>
+        </trim>
+        where config_id in
+        <foreach collection="configIdList" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <!-- 查外部系统承运商编码和系统承运商编码的映射关系 -->
+    <select id="queryLogisticsByCondition" resultType="com.basedata.common.dto.BasePlatformLogisticsDetailDTO">
+        select d.id,  d.logistics_id, d.logistics_code, d.logistics_name,
+        d.platform_logistics_code, d.platform_code, d.platform_name, d.external_logistics_code, d.warehouse_name,
+        d.warehouse_code, d.warehouse_id, d.owner_name, d.owner_id, d.service_provider_id, d.service_provider_name,d.delivery_type
+        from base_platform_logistics_detail d
+        where d.deleted_flag = 0 and d.state = 1 and d.config_state = 1 and d.config_type = 2
+        <if test="serviceProviderId != null">
+            and d.service_provider_id = #{serviceProviderId}
+        </if>
+        <if test="logisticsCode != null and logisticsCode !=''">
+            and d.logistics_code = #{logisticsCode}
+        </if>
+        <if test="warehouseId != null">
+            and d.warehouse_id = #{warehouseId}
+        </if>
+        <if test="ownerId != null">
+            and d.owner_id = #{ownerId}
+        </if>
+        <if test="externalLogisticsCode != null and externalLogisticsCode !=''">
+            and d.external_logistics_code = #{externalLogisticsCode}
+        </if>
+        <if test="deliveryType != null and deliveryType !=''">
+            and d.delivery_type = #{deliveryType}
+        </if>
+
+    </select>
+
+    <!-- 查询电商平台下的承运商编码 -->
+    <select id="queryPlatformLogistics" resultType="com.basedata.common.dto.PlatformLogisticsRelationshipDTO">
+        select distinct d.platform_code, d.platform_logistics_code, d.logistics_code, d.logistics_name
+        from base_platform_logistics_detail d
+        where d.deleted_flag = 0
+        and d.config_type = 1
+        and d.state = 1
+        and d.delivery_type = 1
+        and d.config_state = 1
+        <if test="serviceProviderId != null">
+            and d.service_provider_id = #{serviceProviderId}
+        </if>
+        <if test="logisticsCode != null and logisticsCode !=''">
+            and d.logistics_code = #{logisticsCode}
+        </if>
+        <if test="logisticsCodeList !=null and logisticsCodeList.size >0">
+            and d.logistics_code in
+            <foreach collection="logisticsCodeList" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="platformCode != null and platformCode !=''">
+            and d.platform_code = #{platformCode}
+        </if>
+        <if test="platformCodeList !=null and platformCodeList.size >0">
+            and d.platform_code in
+            <foreach collection="platformCodeList" index="index" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        order by d.platform_code
+    </select>
+
+</mapper>

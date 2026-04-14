@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.basedata.server.mapper.AreaInfoMapper">
+    <!-- 全部字段列表，供查询单个实体使用-->
+    <sql id="Base_Column_List">
+        id
+        ,area_name,short_name,mnemonic_code,postcode,level,parent_id,country_id,state,spell,initial,sort_code,deleted_flag,created_by,created_name,created_date,modified_by,modified_name,modified_date
+    </sql>
+
+    <update id="updateById" parameterType="com.basedata.server.entity.AreaInfo">
+
+    </update>
+
+
+    <select id="selectByParentIdList" resultType="com.basedata.server.entity.AreaInfo"
+            parameterType="com.basedata.common.query.AreaInfoQuery">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        area_info
+        where true
+        <if test="areaIdList != null and areaIdList.size()>0">
+            and id in
+            <foreach collection="areaIdList" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="areaId != null">
+            and id = #{areaId}
+        </if>
+        <if test="parentId != null">
+            and parent_id = #{parentId}
+        </if>
+        <if test="parentIdList != null and parentIdList.size()>0">
+            and parent_id in
+            <foreach collection="parentIdList" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="areaName!=null">
+            and area_name=#{areaName,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <sql id="Where_Conditions">
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="areaIdList != null and areaIdList.size()>0">
+                and id in
+                <foreach collection="areaIdList" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+
+            </if>
+            <if test="areaName!=null">
+                and area_name=#{areaName,jdbcType=VARCHAR}
+            </if>
+            <if test="shortName!=null">
+                and short_name=#{shortName,jdbcType=VARCHAR}
+            </if>
+            <if test="mnemonicCode!=null">
+                and mnemonic_code=#{mnemonicCode,jdbcType=VARCHAR}
+            </if>
+            <if test="postcode!=null">
+                and postcode=#{postcode,jdbcType=VARCHAR}
+            </if>
+            <if test="level!=null">
+                and level=#{level,jdbcType=TINYINT}
+            </if>
+            <if test="parentId!=null">
+                and parent_id=#{parentId,jdbcType=BIGINT}
+            </if>
+            <if test="parentIdList != null and parentIdList.size()>0">
+                and parent_id in
+                <foreach collection="parentIdList" item="item" index="index" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+
+            </if>
+
+            <if test="countryId!=null">
+                and country_id=#{countryId,jdbcType=INTEGER}
+            </if>
+            <if test="state!=null">
+                and state=#{state,jdbcType=TINYINT}
+            </if>
+            <if test="spell!=null">
+                and spell=#{spell,jdbcType=VARCHAR}
+            </if>
+            <if test="initial!=null">
+                and initial=#{initial,jdbcType=VARCHAR}
+            </if>
+            <if test="sortCode!=null">
+                and sort_code=#{sortCode,jdbcType=INTEGER}
+            </if>
+            <if test="deletedFlag!=null">
+                and deleted_flag=#{deletedFlag,jdbcType=TINYINT}
+            </if>
+        </where>
+    </sql>
+
+</mapper>

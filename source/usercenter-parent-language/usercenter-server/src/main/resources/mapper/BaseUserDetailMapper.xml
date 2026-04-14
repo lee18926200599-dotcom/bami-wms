@@ -1,0 +1,970 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.usercenter.server.mapper.BaseUserDetailMapper">
+    <resultMap id="BaseResultMap" type="com.usercenter.server.entity.BaseUserDetail">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="user_code" jdbcType="VARCHAR" property="userCode"/>
+        <result column="head_img" jdbcType="VARCHAR" property="headImg"/>
+        <result column="org_id" jdbcType="BIGINT" property="orgId"/>
+        <result column="group_id" jdbcType="BIGINT" property="groupId"/>
+        <result column="source" jdbcType="INTEGER" property="source"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="manager_level" jdbcType="INTEGER" property="managerLevel"/>
+        <result column="identity_type" jdbcType="INTEGER" property="identityType"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="lock_flag" jdbcType="TINYINT" property="lockFlag"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="contact_email" jdbcType="VARCHAR" property="contactEmail"/>
+        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
+        <result column="effective_date" jdbcType="TIMESTAMP" property="effectiveDate"/>
+        <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="deleted_flag" jdbcType="TINYINT" property="deletedFlag"/>
+        <result column="password_flag" jdbcType="TINYINT" property="passwordFlag"/>
+        <result column="first_time_login_flag" jdbcType="TINYINT" property="firstTimeLoginFlag"/>
+        <result column="archives_id" jdbcType="BIGINT" property="archivesId"/>
+        <result column="global_customer_id" jdbcType="BIGINT" property="globalCustomerId"/>
+        <result column="user_system" jdbcType="INTEGER" property="userSystem"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+    </resultMap>
+    <resultMap id="BaseResultLoginMap" type="com.usercenter.server.entity.BaseUserInfo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="user_code" jdbcType="VARCHAR" property="userCode"/>
+        <result column="head_img" jdbcType="VARCHAR" property="headImg"/>
+        <result column="org_id" jdbcType="BIGINT" property="orgId"/>
+        <result column="group_id" jdbcType="BIGINT" property="groupId"/>
+        <result column="source" jdbcType="INTEGER" property="source"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="manager_level" jdbcType="INTEGER" property="managerLevel"/>
+        <result column="identity_type" jdbcType="INTEGER" property="identityType"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="lock_flag" jdbcType="TINYINT" property="lockFlag"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="contact_email" jdbcType="VARCHAR" property="contactEmail"/>
+        <result column="nickname" jdbcType="VARCHAR" property="nickname"/>
+        <result column="effective_date" jdbcType="TIMESTAMP" property="effectiveDate"/>
+        <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="deleted_flag" jdbcType="TINYINT" property="deletedFlag"/>
+        <result column="password_flag" jdbcType="TINYINT" property="passwordFlag"/>
+        <result column="first_time_login_flag" jdbcType="TINYINT" property="firstTimeLoginFlag"/>
+        <result column="archives_id" jdbcType="BIGINT" property="archivesId"/>
+        <result column="global_customer_id" jdbcType="BIGINT" property="globalCustomerId"/>
+        <result column="user_system" jdbcType="INTEGER" property="userSystem"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+    </resultMap>
+    <!-- 全部字段列表，供查询单个实体使用-->
+    <sql id="Base_Column_List">
+        id
+        ,user_id,user_code,head_img,org_id,group_id,source,real_name,manager_level,identity_type,state,lock_flag,password,user_name,contact_email,nickname,effective_date,expire_time,remark,deleted_flag,password_flag,first_time_login_flag,archives_id,global_customer_id,user_system,created_by,created_name,created_date,modified_by,modified_name,modified_date
+    </sql>
+
+    <update id="update" parameterType="com.usercenter.server.entity.BaseUserDetail">
+        update base_user_detail
+        <set>
+            <if test="userId!=null">
+                user_id=#{userId,jdbcType=BIGINT},
+            </if>
+            <if test="userCode!=null">
+                user_code=#{userCode,jdbcType=VARCHAR},
+            </if>
+            <if test="headImg!=null">
+                head_img=#{headImg,jdbcType=VARCHAR},
+            </if>
+            <if test="orgId!=null">
+                org_id=#{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="groupId!=null">
+                group_id=#{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="source!=null">
+                source=#{source,jdbcType=INTEGER},
+            </if>
+            <if test="realName!=null">
+                real_name=#{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="managerLevel!=null">
+                manager_level=#{managerLevel,jdbcType=INTEGER},
+            </if>
+            <if test="identityType!=null">
+                identity_type=#{identityType,jdbcType=INTEGER},
+            </if>
+            <if test="state!=null">
+                state=#{state,jdbcType=INTEGER},
+            </if>
+            <if test="lockFlag!=null">
+                lock_flag=#{lockFlag,jdbcType=TINYINT},
+            </if>
+            <if test="password!=null">
+                password=#{password,jdbcType=VARCHAR},
+            </if>
+            <if test="userName!=null">
+                user_name=#{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactEmail!=null">
+                contact_email=#{contactEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="nickname!=null">
+                nickname=#{nickname,jdbcType=VARCHAR},
+            </if>
+            <if test="effectiveDate!=null">
+                effective_date=#{effectiveDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expireTime!=null">
+                expire_time=#{expireTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark!=null">
+                remark=#{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="deletedFlag!=null">
+                deleted_flag=#{deletedFlag,jdbcType=TINYINT},
+            </if>
+            <if test="passwordFlag!=null">
+                password_flag=#{passwordFlag,jdbcType=TINYINT},
+            </if>
+            <if test="firstTimeLoginFlag!=null">
+                first_time_login_flag=#{firstTimeLoginFlag,jdbcType=TINYINT},
+            </if>
+            <if test="archivesId!=null">
+                archives_id=#{archivesId,jdbcType=BIGINT},
+            </if>
+            <if test="globalCustomerId!=null">
+                global_customer_id=#{globalCustomerId,jdbcType=BIGINT},
+            </if>
+            <if test="userSystem!=null">
+                user_system=#{userSystem,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy!=null">
+                created_by=#{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdName!=null">
+                created_name=#{createdName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdDate!=null">
+                created_date=#{createdDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateList" parameterType="List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update base_user_detail
+            <set>
+                <if test="item.userId!=null">
+                    user_id=#{item.userId,jdbcType=BIGINT},
+                </if>
+                <if test="item.userCode!=null">
+                    user_code=#{item.userCode,jdbcType=VARCHAR},
+                </if>
+                <if test="item.headImg!=null">
+                    head_img=#{item.headImg,jdbcType=VARCHAR},
+                </if>
+                <if test="item.orgId!=null">
+                    org_id=#{item.orgId,jdbcType=BIGINT},
+                </if>
+                <if test="item.groupId!=null">
+                    group_id=#{item.groupId,jdbcType=BIGINT},
+                </if>
+                <if test="item.source!=null">
+                    source=#{item.source,jdbcType=INTEGER},
+                </if>
+                <if test="item.realName!=null">
+                    real_name=#{item.realName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.managerLevel!=null">
+                    manager_level=#{item.managerLevel,jdbcType=INTEGER},
+                </if>
+                <if test="item.identityType!=null">
+                    identity_type=#{item.identityType,jdbcType=INTEGER},
+                </if>
+                <if test="item.state!=null">
+                    state=#{item.state,jdbcType=INTEGER},
+                </if>
+                <if test="item.lockFlag!=null">
+                    lock_flag=#{item.lockFlag,jdbcType=TINYINT},
+                </if>
+                <if test="item.password!=null">
+                    password=#{item.password,jdbcType=VARCHAR},
+                </if>
+                <if test="item.userName!=null">
+                    user_name=#{item.userName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.contactEmail!=null">
+                    contact_email=#{item.contactEmail,jdbcType=VARCHAR},
+                </if>
+                <if test="item.nickname!=null">
+                    nickname=#{item.nickname,jdbcType=VARCHAR},
+                </if>
+                <if test="item.effectiveDate!=null">
+                    effective_date=#{item.effectiveDate,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.expireTime!=null">
+                    expire_time=#{item.expireTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.remark!=null">
+                    remark=#{item.remark,jdbcType=VARCHAR},
+                </if>
+                <if test="item.deletedFlag!=null">
+                    deleted_flag=#{item.deletedFlag,jdbcType=TINYINT},
+                </if>
+                <if test="item.passwordFlag!=null">
+                    password_flag=#{item.passwordFlag,jdbcType=TINYINT},
+                </if>
+                <if test="item.firstTimeLoginFlag!=null">
+                    first_time_login_flag=#{item.firstTimeLoginFlag,jdbcType=TINYINT},
+                </if>
+                <if test="item.archivesId!=null">
+                    archives_id=#{item.archivesId,jdbcType=BIGINT},
+                </if>
+                <if test="item.globalCustomerId!=null">
+                    global_customer_id=#{item.globalCustomerId,jdbcType=BIGINT},
+                </if>
+                <if test="item.userSystem!=null">
+                    user_system=#{item.userSystem,jdbcType=INTEGER},
+                </if>
+                <if test="item.createdBy!=null">
+                    created_by=#{item.createdBy,jdbcType=BIGINT},
+                </if>
+                <if test="item.createdName!=null">
+                    created_name=#{item.createdName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.createdDate!=null">
+                    created_date=#{item.createdDate,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.modifiedBy!=null">
+                    modified_by=#{item.modifiedBy,jdbcType=BIGINT},
+                </if>
+                <if test="item.modifiedName!=null">
+                    modified_name=#{item.modifiedName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.modifiedDate!=null">
+                    modified_date=#{item.modifiedDate,jdbcType=TIMESTAMP}
+                </if>
+            </set>
+            where id = #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+
+    <insert id="insert" parameterType="com.usercenter.server.entity.BaseUserDetail" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into base_user_detail(id, user_id, user_code, head_img, org_id, group_id, source, real_name,
+                                     manager_level, identity_type, state, lock_flag, password, user_name, contact_email,
+                                     nickname, effective_date, expire_time, remark, deleted_flag, password_flag,
+                                     first_time_login_flag, archives_id, global_customer_id, user_system, created_by,
+                                     created_name, created_date, modified_by, modified_name, modified_date)
+        values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{userCode,jdbcType=VARCHAR},
+                #{headImg,jdbcType=VARCHAR}, #{orgId,jdbcType=BIGINT}, #{groupId,jdbcType=BIGINT},
+                #{source,jdbcType=INTEGER}, #{realName,jdbcType=VARCHAR}, #{managerLevel,jdbcType=INTEGER},
+                #{identityType,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}, #{lockFlag,jdbcType=TINYINT},
+                #{password,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{contactEmail,jdbcType=VARCHAR},
+                #{nickname,jdbcType=VARCHAR}, #{effectiveDate,jdbcType=TIMESTAMP}, #{expireTime,jdbcType=TIMESTAMP},
+                #{remark,jdbcType=VARCHAR}, #{deletedFlag,jdbcType=TINYINT}, #{passwordFlag,jdbcType=TINYINT},
+                #{firstTimeLoginFlag,jdbcType=TINYINT}, #{archivesId,jdbcType=BIGINT},
+                #{globalCustomerId,jdbcType=BIGINT}, #{userSystem,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT},
+                #{createdName,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{modifiedBy,jdbcType=BIGINT},
+                #{modifiedName,jdbcType=VARCHAR}, #{modifiedDate,jdbcType=TIMESTAMP})
+    </insert>
+
+    <insert id="insertList" parameterType="List">
+        insert into
+        base_user_detail(id,user_id,user_code,head_img,org_id,group_id,source,real_name,manager_level,identity_type,state,lock_flag,password,user_name,contact_email,nickname,effective_date,expire_time,remark,deleted_flag,password_flag,first_time_login_flag,archives_id,global_customer_id,user_system,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id,jdbcType=BIGINT},#{item.userId,jdbcType=BIGINT},#{item.userCode,jdbcType=VARCHAR},#{item.headImg,jdbcType=VARCHAR},#{item.orgId,jdbcType=BIGINT},#{item.groupId,jdbcType=BIGINT},#{item.source,jdbcType=INTEGER},#{item.realName,jdbcType=VARCHAR},#{item.managerLevel,jdbcType=INTEGER},#{item.identityType,jdbcType=INTEGER},#{item.state,jdbcType=INTEGER},#{item.lockFlag,jdbcType=TINYINT},#{item.password,jdbcType=VARCHAR},#{item.userName,jdbcType=VARCHAR},#{item.contactEmail,jdbcType=VARCHAR},#{item.nickname,jdbcType=VARCHAR},#{item.effectiveDate,jdbcType=TIMESTAMP},#{item.expireTime,jdbcType=TIMESTAMP},#{item.remark,jdbcType=VARCHAR},#{item.deletedFlag,jdbcType=TINYINT},#{item.passwordFlag,jdbcType=TINYINT},#{item.firstTimeLoginFlag,jdbcType=TINYINT},#{item.archivesId,jdbcType=BIGINT},#{item.globalCustomerId,jdbcType=BIGINT},#{item.userSystem,jdbcType=INTEGER},#{item.createdBy,jdbcType=BIGINT},#{item.createdName,jdbcType=VARCHAR},#{item.createdDate,jdbcType=TIMESTAMP},#{item.modifiedBy,jdbcType=BIGINT},#{item.modifiedName,jdbcType=VARCHAR},#{item.modifiedDate,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.usercenter.server.entity.BaseUserDetail">
+        insert into base_user_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id!=null">
+                id,
+            </if>
+            <if test="userId!=null">
+                user_id,
+            </if>
+            <if test="userCode!=null">
+                user_code,
+            </if>
+            <if test="headImg!=null">
+                head_img,
+            </if>
+            <if test="orgId!=null">
+                org_id,
+            </if>
+            <if test="groupId!=null">
+                group_id,
+            </if>
+            <if test="source!=null">
+                source,
+            </if>
+            <if test="realName!=null">
+                real_name,
+            </if>
+            <if test="managerLevel!=null">
+                manager_level,
+            </if>
+            <if test="identityType!=null">
+                identity_type,
+            </if>
+            <if test="state!=null">
+                state,
+            </if>
+            <if test="lockFlag!=null">
+                lock_flag,
+            </if>
+            <if test="password!=null">
+                password,
+            </if>
+            <if test="userName!=null">
+                user_name,
+            </if>
+            <if test="contactEmail!=null">
+                contact_email,
+            </if>
+            <if test="nickname!=null">
+                nickname,
+            </if>
+            <if test="effectiveDate!=null">
+                effective_date,
+            </if>
+            <if test="expireTime!=null">
+                expire_time,
+            </if>
+            <if test="remark!=null">
+                remark,
+            </if>
+            <if test="deletedFlag!=null">
+                deleted_flag,
+            </if>
+            <if test="passwordFlag!=null">
+                password_flag,
+            </if>
+            <if test="firstTimeLoginFlag!=null">
+                first_time_login_flag,
+            </if>
+            <if test="archivesId!=null">
+                archives_id,
+            </if>
+            <if test="globalCustomerId!=null">
+                global_customer_id,
+            </if>
+            <if test="userSystem!=null">
+                user_system,
+            </if>
+            <if test="createdBy!=null">
+                created_by,
+            </if>
+            <if test="createdName!=null">
+                created_name,
+            </if>
+            <if test="createdDate!=null">
+                created_date,
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by,
+            </if>
+            <if test="modifiedName!=null">
+                modified_name,
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id!=null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="userId!=null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="userCode!=null">
+                #{userCode,jdbcType=VARCHAR},
+            </if>
+            <if test="headImg!=null">
+                #{headImg,jdbcType=VARCHAR},
+            </if>
+            <if test="orgId!=null">
+                #{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="groupId!=null">
+                #{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="source!=null">
+                #{source,jdbcType=INTEGER},
+            </if>
+            <if test="realName!=null">
+                #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="managerLevel!=null">
+                #{managerLevel,jdbcType=INTEGER},
+            </if>
+            <if test="identityType!=null">
+                #{identityType,jdbcType=INTEGER},
+            </if>
+            <if test="state!=null">
+                #{state,jdbcType=INTEGER},
+            </if>
+            <if test="lockFlag!=null">
+                #{lockFlag,jdbcType=TINYINT},
+            </if>
+            <if test="password!=null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="userName!=null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactEmail!=null">
+                #{contactEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="nickname!=null">
+                #{nickname,jdbcType=VARCHAR},
+            </if>
+            <if test="effectiveDate!=null">
+                #{effectiveDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expireTime!=null">
+                #{expireTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark!=null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="deletedFlag!=null">
+                #{deletedFlag,jdbcType=TINYINT},
+            </if>
+            <if test="passwordFlag!=null">
+                #{passwordFlag,jdbcType=TINYINT},
+            </if>
+            <if test="firstTimeLoginFlag!=null">
+                #{firstTimeLoginFlag,jdbcType=TINYINT},
+            </if>
+            <if test="archivesId!=null">
+                #{archivesId,jdbcType=BIGINT},
+            </if>
+            <if test="globalCustomerId!=null">
+                #{globalCustomerId,jdbcType=BIGINT},
+            </if>
+            <if test="userSystem!=null">
+                #{userSystem,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy!=null">
+                #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdName!=null">
+                #{createdName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdDate!=null">
+                #{createdDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy!=null">
+                #{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                #{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                #{modifiedDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.Long">
+        delete
+        from base_user_detail
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByParam" parameterType="java.util.Map">
+        delete from base_user_detail
+        <include refid="Where_Conditions"/>
+    </delete>
+
+    <select id="load" resultType="com.usercenter.server.entity.BaseUserDetail" parameterType="java.lang.Long"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_user_detail where id=#{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="loadByParam" resultType="com.usercenter.server.entity.BaseUserDetail"
+            parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_user_detail
+        <include refid="Where_Conditions"/>
+    </select>
+
+    <select id="listByParam" resultType="com.usercenter.server.entity.BaseUserDetail"
+            parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_user_detail
+        <include refid="Where_Conditions"/>
+    </select>
+
+    <select id="find" resultType="com.usercenter.server.entity.BaseUserDetail" parameterType="java.util.Map"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_user_detail
+        <include refid="Where_Conditions"/>
+        <if test="sort!= null">
+            order by ${sort}
+            <if test="order!= null">${order}</if>
+        </if>
+        <if test="pageOffset!= null">limit #{pageOffset},#{pageSize}</if>
+    </select>
+
+    <select id="findCount" resultType="int" parameterType="java.util.Map">
+        select count(*) from base_user_detail
+        <include refid="Where_Conditions"/>
+    </select>
+
+    <sql id="Where_Conditions">
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="id!=null">
+                and id=#{id,jdbcType=BIGINT}
+            </if>
+            <if test="userId!=null">
+                and user_id=#{userId,jdbcType=BIGINT}
+            </if>
+            <if test="userCode!=null">
+                and user_code=#{userCode,jdbcType=VARCHAR}
+            </if>
+            <if test="headImg!=null">
+                and head_img=#{headImg,jdbcType=VARCHAR}
+            </if>
+            <if test="orgId!=null">
+                and org_id=#{orgId,jdbcType=BIGINT}
+            </if>
+            <if test="groupId!=null">
+                and group_id=#{groupId,jdbcType=BIGINT}
+            </if>
+            <if test="source!=null">
+                and source=#{source,jdbcType=INTEGER}
+            </if>
+            <if test="realName!=null">
+                and real_name=#{realName,jdbcType=VARCHAR}
+            </if>
+            <if test="managerLevel!=null">
+                and manager_level=#{managerLevel,jdbcType=INTEGER}
+            </if>
+            <if test="identityType!=null">
+                and identity_type=#{identityType,jdbcType=INTEGER}
+            </if>
+        </where>
+    </sql>
+
+    <sql id="base_detail_columns">
+        bud
+        .
+        `id`
+        ,
+		bud.`user_id`,
+		bu.`user_code`,
+		bud.`head_img`,
+		bud.`org_id`,
+		bud.`group_id`,
+		bud.`source`,
+		bud.`real_name`,
+		bud.`manager_level`,
+		bud.`identity_type`,
+		bud.`state`,
+		bu.`lock_flag`,
+		bu.`user_name`,
+		bud.`contact_email`,
+		bu.`email`,
+		bud.`nickname`,
+		bud.`effective_date`,
+		bud.`expire_time`,
+		bud.`remark`,
+		bud.`deleted_flag`,
+		bu.`password_flag`,
+		bu.`first_time_login_flag`,
+		bud.`archives_id`,
+		bud.`global_customer_id`,
+		bud.`user_system`,
+		bu.`phone`,
+        bud.created_by,bud.created_name,bud.created_date,
+        bud.modified_by,bud.modified_name,bud.modified_date
+    </sql>
+    <select id="selectDetailList" resultType="com.usercenter.server.entity.BaseUserInfo">
+        select
+        <include refid="base_detail_columns"/>
+        from base_user_detail bud,base_user bu
+        <include refid="detail_conditions"/>
+        <include refid="extends_conditions"/>
+        order by id desc
+    </select>
+    <sql id="detail_conditions">
+        <where>
+            bud.user_id = bu.id
+            <if test="id!=null and id!=''">
+                and bud.id = #{id}
+            </if>
+            <if test="groupId!=null and groupId!=''">
+                and bud.group_id = #{groupId}
+            </if>
+            <if test="deletedFlag!=null">
+                and bud.deleted_flag = #{deletedFlag}
+            </if>
+            <if test="userId!=null and userId!=''">
+                and bud.user_id = #{userId}
+            </if>
+            <if test="userCode!=null and userCode!=''">
+                and bu.user_code = #{userCode}
+            </if>
+            <if test="phone!=null and phone != ''">
+                and bu.phone = #{phone}
+            </if>
+            <if test="userName!=null and userName != ''">
+                and bu.user_name = #{userName}
+            </if>
+            <if test="email!=null and email != ''">
+                and bu.email = #{email}
+            </if>
+            <if test="contactEmail!=null and contactEmail !=''">
+                and bud.contact_email = #{contactEmail}
+            </if>
+            <if test="source!=null">
+                and bud.source = #{source}
+            </if>
+            <if test="state!=null">
+                and bud.state = #{state}
+            </if>
+            <if test="lockFlag!=null">
+                and bud.`lock_flag` = #{lockFlag}
+            </if>
+            <if test="managerLevel!=null">
+                and bud.`manager_level` = #{managerLevel}
+            </if>
+            <if test="orgIds!=null">
+                <foreach collection="orgIds" item="orgId" open=" and bud.org_id in(" close=")" separator=",">
+                    #{orgId}
+                </foreach>
+            </if>
+            <if test="ids!=null">
+                <foreach collection="ids" item="id" open=" and bud.id in(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="baseUserIds!=null">
+                <foreach collection="baseUserIds" item="id" open=" and bu.id in(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </sql>
+
+    <sql id="extends_conditions">
+        <if test="notEqualMap != null">
+            <foreach item="item" index = "key" collection="notEqualMap" >
+                <![CDATA[ and ${key} <> ${item} ]]>
+            </foreach>
+        </if>
+        <if test="likeMap != null">
+            <foreach item="item" index = "key" collection="likeMap" >
+                <if test="item !=null and item != ''">
+                    <![CDATA[ and ${key} like CONCAT('%',#{item},'%') ]]>
+                </if>
+            </foreach>
+        </if>
+        <if test="inMap != null">
+            <foreach item="item" index = "key" collection="inMap" >
+                <if test="item !=null">
+                    and ${key} in
+                    <foreach item="inItem" index="index" collection="item" open="(" separator="," close=")">
+                        #{inItem}
+                    </foreach>
+                </if>
+            </foreach>
+        </if>
+    </sql>
+    <select id="selectAdministratorByQuery" resultType="com.usercenter.server.entity.BaseUserInfo"
+            parameterType="com.usercenter.server.domain.vo.req.administratorsuser.AdministratorsQueryReq">
+        select
+        detail.id,
+        bu.id as user_id,
+        bu.email as contact_email,
+        bu.phone,
+        bu.user_name,
+        bu.user_code,
+        detail.manager_level,
+        detail.state,
+        bu.lock_flag,
+        detail.remark,
+        detail.org_id,
+        detail.group_id
+        from base_user bu join base_user_detail detail
+        on bu.id = detail.user_id
+        <where>
+            detail.deleted_flag = 0
+            <if test="groupId != null">
+                and detail.group_id = #{groupId}
+            </if>
+            <if test="level != null">
+                and detail.manager_level = #{level,jdbcType=INTEGER}
+            </if>
+            <if test="groupIds != null">
+                and detail.group_id in
+                <foreach collection="groupIds" item="group" open="(" close=")" separator=",">
+                    #{group}
+                </foreach>
+            </if>
+            <if test="userName != null and userName !=''">
+                and bu.user_name LIKE CONCAT('%',#{userName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="userCode != null">
+                and bu.user_code LIKE CONCAT('%',#{userCode,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="phone != null">
+                and bu.phone LIKE CONCAT('%',#{phone,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="userName != null">
+                and bu.user_name LIKE CONCAT('%',#{userName,jdbcType=VARCHAR},'%')
+            </if>
+        </where>
+        GROUP BY
+        detail.id,
+        bu.id,bu.email,bu.phone,detail.user_name,
+        detail.user_code,
+        detail.manager_level,
+        detail.state,
+        detail.lock_flag,
+        detail.remark
+        order by detail.created_date desc
+    </select>
+
+    <select id="selectDetail" resultType="com.usercenter.server.entity.BaseUserInfo">
+        select
+        <include refid="base_detail_columns"/>
+        from base_user_detail bud,base_user bu
+        <include refid="detail_conditions"/>
+        limit 1
+    </select>
+    <sql id="base_detail_columns_with_password">
+        bu.`password`,
+        <include refid="base_detail_columns"/>
+    </sql>
+    <select id="selectUserListByLoginName" parameterType="java.lang.String"
+            resultType="com.usercenter.server.entity.BaseUserInfo" >
+        select
+        <include refid="base_detail_columns_with_password"/>
+        from base_user_detail bud,base_user bu
+        <where>
+            bud.user_id = bu.id
+            <if test="loginName!=null">
+                and (bu.user_name =#{loginName} or bu.email=#{loginName} or bu.phone=#{loginName})
+            </if>
+            and bud.deleted_flag = 0
+        </where>
+    </select>
+
+    <select id="findUserList" parameterType="com.usercenter.common.dto.UserDto"
+            resultType="com.usercenter.server.entity.BaseUserInfo">
+        select
+        <include refid="base_detail_columns"/>
+        from base_user_detail bud,base_user bu
+        <where>
+            bud.user_id = bu.id
+        </where>
+        <if test="likeQuery">
+            <if test="userCode != null and userCode!='' ">
+                AND bu.user_code LIKE CONCAT('%',#{userCode,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="realName != null and realName!=''">
+                AND bud.real_name LIKE CONCAT('%',#{realName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="userName != null and userName!='' ">
+                AND bu.user_name LIKE CONCAT('%',#{userName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="phone != null and phone!='' ">
+                AND bu.phone LIKE CONCAT('%',#{phone,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="email != null and email!='' ">
+                AND bu.email LIKE CONCAT('%',#{email,jdbcType=VARCHAR},'%')
+            </if>
+        </if>
+        <if test="!likeQuery">
+            <if test="userCode != null and userCode!='' ">
+                AND bu.user_code = #{userCode,jdbcType=VARCHAR}
+            </if>
+            <if test="realName != null and realName!=''">
+                AND bud.real_name = #{realName,jdbcType=VARCHAR}
+            </if>
+            <if test="userName != null and userName!='' ">
+                AND bu.user_name = #{userName,jdbcType=VARCHAR}
+            </if>
+            <if test="phone != null and phone!='' ">
+                AND bu.phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="email != null and email!='' ">
+                AND bu.email = #{email,jdbcType=VARCHAR}
+            </if>
+        </if>
+
+        <if test="orgId != null and orgId!='' ">
+            AND bud.org_id IN (#{orgId})
+        </if>
+        <if test="groupId != null and groupId!='' ">
+            AND bud.group_id IN (#{groupId})
+        </if>
+        <if test="source != null and source!='' ">
+            AND bud.source IN (#{source})
+        </if>
+
+        <if test="managerLevel != null and managerLevel!=''">
+            AND bud.manager_level IN (#{managerLevel})
+        </if>
+        <if test="identityType != null and identityType!=''">
+            AND bud.identity_type IN (#{identityType})
+        </if>
+        <if test="state != null and state!=''">
+            AND bud.state IN (#{state})
+        </if>
+        <if test="lockFlag != null and lockFlag!=''">
+            AND bu.`lock_flag` IN (#{lockFlag})
+        </if>
+        <if test="deletedFlag != null">
+            AND bud.deleted_flag = #{deletedFlag,jdbcType=BIT}
+        </if>
+        <if test="archivesId != null and archivesId!='' ">
+            AND bud.archives_id IN (#{archivesId})
+        </if>
+        <if test="idSet != null">
+            <foreach collection="idSet" index="index" item="item" open="and bud.id in (" separator="," close=")">
+                #{item,jdbcType=BIGINT}
+            </foreach>
+        </if>
+        <if test="idNotInSet != null">
+            <foreach collection="idNotInSet" index="index" item="item" open="and bud.id not in (" separator=","
+                     close=")">
+                #{item,jdbcType=BIGINT}
+            </foreach>
+        </if>
+        <if test="id != null and id!='' ">
+            and bud.id = #{id,jdbcType=BIGINT}
+        </if>
+        <if test="condition!=null and condition!=''">
+            and
+            (
+            bu.user_code LIKE CONCAT('%',#{condition,jdbcType=VARCHAR},'%')
+            or bu.user_name LIKE CONCAT('%',#{condition,jdbcType=VARCHAR},'%')
+            or bud.real_name LIKE CONCAT('%',#{condition,jdbcType=VARCHAR},'%')
+            or bu.phone LIKE CONCAT('%',#{condition,jdbcType=VARCHAR},'%')
+            )
+        </if>
+        ORDER BY bud.created_date DESC
+    </select>
+    <select id="selectDetailListByUserId" resultMap="BaseResultMap">
+        SELECT *
+        FROM base_user_detail d1
+        WHERE EXISTS
+            (SELECT 1
+             FROM base_user_detail d2
+             WHERE d1.`user_id` = d2.`user_id`
+               AND d2.`id` = #{userId})
+          AND d1.`state` = 1
+    </select>
+    <select id="selectListByUserNames" resultType="com.usercenter.server.entity.BaseUserInfo">
+        select
+        <include refid="base_detail_columns"/>
+        from base_user_detail bud
+        inner join base_user bu
+        on bud.user_id = bu.id
+        where
+        <foreach collection="userNames" open="bu.user_name in(" close=")" separator="," item="userName">
+            #{userName,jdbcType=VARCHAR}
+        </foreach>
+        and bud.state = 1 and bu.`lock_flag` = 0
+        <if test="withDeleted != null and withDeleted == false ">
+            and bud.`deleted_flag`=0
+        </if>
+    </select>
+
+    <update id="updateByIds" parameterType="com.usercenter.server.domain.dto.UpdateUserStrategyDTO">
+        update
+        base_user_detail
+        <set>
+            <if test="enable!=null">
+                state = #{enable},
+            </if>
+            <if test="lock!=null">
+                `lock_flag` = #{lock},
+            </if>
+            <if test="delete != null">
+                `deleted_flag` = #{delete},
+            </if>
+            <if test="modifiedBy!=null">
+                #{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                #{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                #{modifiedDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where
+        <if test="detailIds != null">
+            <foreach collection="detailIds" separator="," item="detailId" open="id in(" close=")">
+                #{detailId}
+            </foreach>
+        </if>
+        <if test="groupId != null">
+            group_id = #{groupId}
+        </if>
+    </update>
+    <update id="updateLockAndEnableByUserId" parameterType="com.usercenter.server.entity.BaseUserDetail">
+        update
+        base_user_detail
+        <set>
+            <if test="state!=null">
+                state = #{state},
+            </if>
+            <if test="lockFlag!=null">
+                `lock_flag` = #{lockFlag},
+            </if>
+            <if test="deletedFlag!=null">
+                deleted_flag=#{deletedFlag,jdbcType=TINYINT},
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where user_id=#{userId,jdbcType=BIGINT}
+    </update>
+</mapper>

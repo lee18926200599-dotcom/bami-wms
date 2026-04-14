@@ -1,0 +1,90 @@
+#eureka client配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+spring:
+  #设置热部署
+  devtools:
+    restart:
+      enabled: true #设置开始热部署
+  application:
+    name: zzz-base-data-server
+  #redis配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: zzz123456!@
+    database: 0
+
+  sleuth:
+    enable: false
+    sampler:
+      probability: 1.0
+  rabbitmq:
+    addresses: 127.0.0.1
+    username: admin
+    password: qaz123RFV789
+    virtual-host: /yuncang
+    listener:
+      simple:
+        acknowledge-mode: manual #手动确认消费
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57Dialect  # 根据实际数据库调整
+    hibernate:
+      use-new-id-generator-mappings: false
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/base_data?useSSL=false&serverTimezone=CTT&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: A12345678
+    #使用druid数据源
+    initialSize: 0 #初始化大小
+    minIdle: 5 #最小空閒
+    maxActive: 50 #最大連接數
+    maxWait: 60000 #最大等待時間
+    minEvictableIdleTimeMillis: 25200000 #最小生存時間
+
+apidoc:
+  groups:
+    service:
+      enable: true
+    feign:
+      enable: true
+
+logging:
+  config: classpath:log4j2-yunshan.xml
+
+# 接口平台提供的接口
+integration:
+  api:
+    getPlatformInfo: http://zzz-open-external-server/ec/common/getAuthUrl?platformType=%s&state=%s
+    # appKey可以为空
+    getToken: http://zzz-open-external-server/ec/common/refreshToken
+
+# 平台接口
+platformApi:
+  # 获取网点
+  netside:
+    tbAddressUrl: http://zzz-open-external-server/taobao/netside
+    pddAddressUrl: http://zzz-open-external-server/pdd/address
+    dyAddressUrl: http://zzz-open-external-server/dy/address
+    ksAddressUrl: http://zzz-open-external-server/kuaishou/netside
+    jdAddressUrl: http://zzz-open-external-server/jd/address
+    wphAddressUrl: http://zzz-open-external-server/wph/netside
+    wxsphxdAddressUrl: http://zzz-open-external-server/wxsph/address
+    xhsAddressUrl: http://zzz-open-external-server/xiaohongshu/netside
+  # 获取标准模板
+  stdtemplate:
+    tbStdTemplateUrl: http://zzz-open-external-server/taobao/faceOrder/template
+    dyStdTemplateUrl: http://zzz-open-external-server/dy/faceOrder/template
+    pddStdTemplateUrl: http://zzz-open-external-server/pdd/faceOrder/template
+    ksStdTemplateUrl: http://zzz-open-external-server/kuaishou/faceOrder/template
+    xhsStdTemplateUrl: http://zzz-open-external-server/xiaohongshu/faceOrder/template
+    jdStdTemplateUrl: http://zzz-open-external-server/jd/faceOrder/template
+    wxsphStdTemplateUrl: http://zzz-open-external-server/wxsph/faceOrder/template
+    wphStdTemplateUrl: http://zzz-open-external-server/wph/faceOrder/template
+  # 获取标准模板
+  customtemplate:
+    tbCustomTemplateUrl: http://192.168.1.103:10001/api/4pl/tb/faceOrder/template/custom
+    dyCustomTemplateUrl: http://192.168.1.103:10001/api/4pl/dy/faceOrder/template/custom
