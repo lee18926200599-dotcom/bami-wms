@@ -1,0 +1,175 @@
+﻿eureka.client.serviceUrl.defaultZone: http://127.0.0.1:8761/eureka/
+
+spring:
+  application:
+    name: 4pl-gateway
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: admin
+    password: qaz123RFV789
+    virtual-host: /yuncang
+  #redis配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: zzz123456!@
+    database: 0
+  #链路跟踪
+  zipkin:
+    sender.type: rabbit
+    rabbitmq.queue: trace #默认配置
+  sleuth:
+    enable: true
+    sampler:
+      probability: 1.0
+  cloud:
+    gateway:
+      ###路由策略
+      routes:
+        - id: zzz-wms-outbound-server
+          uri: lb://zzz-wms-outbound-server
+          predicates:
+            - Path=/api/zzz-wms-outbound-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        ##路由策略id
+        - id: zzz-usercenter-server
+          #### 基于lb负载均衡形式转发（通过注册中心服务名称，获取真实访问地址）
+          uri: lb://zzz-usercenter-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-usercenter-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-wms-base-server
+          #### 基于lb负载均衡形式转发（通过注册中心服务名称，获取真实访问地址）
+          uri: lb://zzz-wms-base-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-wms-base-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-wms-inbound-server
+          #### 基于lb负载均衡形式转发（通过注册中心服务名称，获取真实访问地址）
+          uri: lb://zzz-wms-inbound-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-wms-inbound-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-wms-inventory-server
+          #### 基于lb负载均衡形式转发（通过注册中心服务名称，获取真实访问地址）
+          uri: lb://zzz-wms-inventory-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-wms-inventory-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-wms-report-server
+          #### 基于lb负载均衡形式转发（通过注册中心服务名称，获取真实访问地址）
+          uri: lb://zzz-wms-report-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-wms-report-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-org-server
+          #### 基于lb负载均衡形式转发（通过注册中心服务名称，获取真实访问地址）
+          uri: lb://zzz-org-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-org-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-wms-pub-server
+          uri: lb://zzz-wms-pub-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-wms-pub-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-crm-customer-server
+          uri: lb://zzz-crm-customer-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-crm-customer-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-base-data-server
+          uri: lb://zzz-base-data-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-base-data-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-bms-base-server
+          uri: lb://zzz-bms-base-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-bms-base-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-bms-bill-server
+          uri: lb://zzz-bms-bill-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-bms-bill-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-bms-data-server
+          uri: lb://zzz-bms-data-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-bms-data-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-bms-base-server
+          uri: lb://zzz-bms-base-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-bms-base-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-bms-bill-server
+          uri: lb://zzz-bms-bill-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-bms-bill-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-bms-data-server
+          uri: lb://zzz-bms-data-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-bms-data-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+        - id: zzz-open-external-server
+          uri: lb://zzz-open-external-server
+          ###匹配规则
+          predicates:
+            - Path=/api/zzz-open-external-server/**
+          filters:
+            # 去除的路径前缀的个数(strip)
+            - StripPrefix=2
+nologin:
+  interface: /api/zzz-open-external-server/**,/zzz-open-external-server/**/social,/zzz-usercenter-server/user/slide/login,/zzz-usercenter-server/user/getImageCode,/zzz-usercenter-server/user/login,/auth/loginType,/login,/login/image,/login/key,/auth/islogined,/user/info,/login/captcha/slider,/auth/logout,/zzz-bms-base-server/bms_price_table_detail/downloadTemplate/**,/zzz-usercenter-server/sso/social
+logging:
+  config: classpath:log4j2-yunshan.xml
