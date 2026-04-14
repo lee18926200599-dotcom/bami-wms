@@ -1,0 +1,56 @@
+#eureka client配置
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+spring:
+  #设置热部署
+  devtools:
+    restart:
+      enabled: true #设置开始热部署
+  application:
+    name: zzz-org-server
+  #redis配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: zzz123456!@
+    database: 0
+
+  sleuth:
+    enable: false
+    sampler:
+      probability: 1.0
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: admin
+    password: qaz123RFV789
+    virtual-host: /yuncang
+    listener:
+      simple:
+        acknowledge-mode: manual #手动确认消费
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.0.96:3306/zzz_org_permission?useSSL=false&serverTimezone=CTT&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+    username: qcycrm_uat
+    password: qcycrm_uat@2024!
+    #使用druid数据源
+    initialSize: 0 #初始化大小
+    minIdle: 5 #最小空閒
+    maxActive: 50 #最大連接數
+    maxWait: 60000 #最大等待時間
+    minEvictableIdleTimeMillis: 25200000 #最小生存時間
+  pagehelper:
+    helperDialect: mysql
+    reasonable: true
+    supportMethodsArguments: true
+    params: count=countSql
+logging:
+  config: classpath:log4j2-yunshan.xml
+  level:
+    root: debug
+    com.org.permission.server.org.mapper: debug
+    com.baomidou.mybatisplus: debug
+    org.mybatis: debug
+

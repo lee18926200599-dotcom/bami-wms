@@ -1,0 +1,81 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+
+<!--<mapper namespace="com.org.permission.server.org.mapper.BaseCustLogisticsSubMapper">-->
+
+<!--    <update id="updateById" parameterType= "com.org.permission.server.org.entity.BaseCustLogisticsSub">-->
+<!--        update base_cust_logistics_sub-->
+<!--        <set>-->
+<!--            <if test="custSubId!=null">-->
+<!--                cust_sub_id=#{custSubId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="orgId!=null">-->
+<!--                org_id=#{orgId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="deliveryType!=null">-->
+<!--                delivery_type=#{deliveryType,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="deliveryDepartment!=null">-->
+<!--                delivery_department=#{deliveryDepartment,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="consignType!=null">-->
+<!--                consign_type=#{consignType,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="creditAmount!=null">-->
+<!--                credit_amount=#{creditAmount,jdbcType=DECIMAL},-->
+<!--            </if>-->
+<!--            <if test="blackFlag!=null">-->
+<!--                black_flag=#{blackFlag,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="monthlyFlag!=null">-->
+<!--                monthly_flag=#{monthlyFlag,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="carrierType!=null">-->
+<!--                carrier_type=#{carrierType,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="laborType!=null">-->
+<!--                labor_type=#{laborType,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="invoiceFlag!=null">-->
+<!--                invoice_flag=#{invoiceFlag,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="payAgreement!=null">-->
+<!--                pay_agreement=#{payAgreement,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="refundType!=null">-->
+<!--                refund_type=#{refundType,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="department!=null">-->
+<!--                department=#{department,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="worker!=null">-->
+<!--                worker=#{worker,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="remark!=null">-->
+<!--                remark=#{remark,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="state!=null">-->
+<!--                state=#{state,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="createdBy!=null">-->
+<!--                created_by=#{createdBy,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="createdName!=null">-->
+<!--                created_name=#{createdName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="createdDate!=null">-->
+<!--                created_date=#{createdDate,jdbcType=TIMESTAMP},-->
+<!--            </if>-->
+<!--            <if test="modifiedBy!=null">-->
+<!--                modified_by=#{modifiedBy,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="modifiedName!=null">-->
+<!--                modified_name=#{modifiedName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="modifiedDate!=null">-->
+<!--                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        where id = #{id,jdbcType=BIGINT}-->
+<!--    </update>-->
+<!--</mapper>-->

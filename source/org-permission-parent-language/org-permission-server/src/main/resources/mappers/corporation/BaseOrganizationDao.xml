@@ -1,0 +1,212 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+
+<!--<mapper namespace="com.org.permission.server.org.mapper.BaseOrganizationMapper">-->
+
+
+<!--    <update id="updateById" parameterType= "com.org.permission.server.org.entity.BaseOrganization">-->
+<!--        update base_organization-->
+<!--        <set>-->
+<!--            <if test="orgType!=null">-->
+<!--                org_type=#{orgType,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="orgCode!=null">-->
+<!--                org_code=#{orgCode,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="orgName!=null">-->
+<!--                org_name=#{orgName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="mainOrgFlag!=null">-->
+<!--                main_org_flag=#{mainOrgFlag,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="groupId!=null">-->
+<!--                group_id=#{groupId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="parentId!=null">-->
+<!--                parent_id=#{parentId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="parentBuId!=null">-->
+<!--                parent_bu_id=#{parentBuId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="orgShortName!=null">-->
+<!--                org_short_name=#{orgShortName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="entityCode!=null">-->
+<!--                entity_code=#{entityCode,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="entityName!=null">-->
+<!--                entity_name=#{entityName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="industryCode!=null">-->
+<!--                industry_code=#{industryCode,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="industryName!=null">-->
+<!--                industry_name=#{industryName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="regionCode!=null">-->
+<!--                region_code=#{regionCode,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="regionName!=null">-->
+<!--                region_name=#{regionName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="provinceCode!=null">-->
+<!--                province_code=#{provinceCode,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="provinceName!=null">-->
+<!--                province_name=#{provinceName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="cityCode!=null">-->
+<!--                city_code=#{cityCode,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="cityName!=null">-->
+<!--                city_name=#{cityName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="districtCode!=null">-->
+<!--                district_code=#{districtCode,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="districtName!=null">-->
+<!--                district_name=#{districtName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="streetCode!=null">-->
+<!--                street_code=#{streetCode,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="streetName!=null">-->
+<!--                street_name=#{streetName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="address!=null">-->
+<!--                address=#{address,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="phone!=null">-->
+<!--                phone=#{phone,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="email!=null">-->
+<!--                email=#{email,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="netAddress!=null">-->
+<!--                net_address=#{netAddress,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="creditCode!=null">-->
+<!--                credit_code=#{creditCode,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="companyId!=null">-->
+<!--                company_id=#{companyId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="establishTime!=null">-->
+<!--                establish_time=#{establishTime,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="currency!=null">-->
+<!--                currency=#{currency,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="custId!=null">-->
+<!--                cust_id=#{custId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="depDutyStaff!=null">-->
+<!--                dep_duty_staff=#{depDutyStaff,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="innerCustId!=null">-->
+<!--                inner_cust_id=#{innerCustId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="businessType!=null">-->
+<!--                business_type=#{businessType,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="state!=null">-->
+<!--                state=#{state,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="startTime!=null">-->
+<!--                start_time=#{startTime,jdbcType=TIMESTAMP},-->
+<!--            </if>-->
+<!--            <if test="stopTime!=null">-->
+<!--                stop_time=#{stopTime,jdbcType=TIMESTAMP},-->
+<!--            </if>-->
+<!--            <if test="initFlag!=null">-->
+<!--                init_flag=#{initFlag,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="quotedFlag!=null">-->
+<!--                quoted_flag=#{quotedFlag,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="remark!=null">-->
+<!--                remark=#{remark,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="mainBusiness!=null">-->
+<!--                main_business=#{mainBusiness,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="version!=null">-->
+<!--                version=#{version,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="logoUrl!=null">-->
+<!--                logo_url=#{logoUrl,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="registSource!=null">-->
+<!--                regist_source=#{registSource,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="registSourceId!=null">-->
+<!--                regist_source_id=#{registSourceId,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="deletedFlag!=null">-->
+<!--                deleted_flag=#{deletedFlag,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="createdBy!=null">-->
+<!--                created_by=#{createdBy,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="createdName!=null">-->
+<!--                created_name=#{createdName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="createdDate!=null">-->
+<!--                created_date=#{createdDate,jdbcType=TIMESTAMP},-->
+<!--            </if>-->
+<!--            <if test="modifiedBy!=null">-->
+<!--                modified_by=#{modifiedBy,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="modifiedName!=null">-->
+<!--                modified_name=#{modifiedName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="modifiedDate!=null">-->
+<!--                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        where id = #{id,jdbcType=BIGINT}-->
+<!--    </update>-->
+
+<!--    <update id="updateByGroupId" parameterType= "com.org.permission.server.org.entity.BaseOrganization">-->
+<!--        update base_organization-->
+<!--        <set>-->
+<!--            <if test="state!=null">-->
+<!--                state=#{state,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="stopTime!=null">-->
+<!--                stop_time=#{stopTime,jdbcType=TIMESTAMP},-->
+<!--            </if>-->
+<!--            <if test="modifiedBy!=null">-->
+<!--                modified_by=#{modifiedBy,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="modifiedName!=null">-->
+<!--                modified_name=#{modifiedName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="modifiedDate!=null">-->
+<!--                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        where group_id = #{groupId,jdbcType=BIGINT}-->
+<!--    </update>-->
+
+
+
+
+<!--    <select id="findByOrgName" resultType="com.org.permission.server.org.entity.BaseOrganization" parameterType="String"  >-->
+<!--        select-->
+<!--            *-->
+<!--        from-->
+<!--            base_organization-->
+<!--        where-->
+<!--            `state` = 1-->
+<!--            and `org_type` = 3-->
+<!--        <if test="orgName!=null and orgName !=''">-->
+<!--            and `org_name` LIKE CONCAT('%',#{orgName},'%')-->
+<!--        </if>-->
+
+
+<!--    </select>-->
+
+
+
+<!--</mapper>-->

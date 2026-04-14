@@ -1,0 +1,523 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.mapper.CommonOrgReadMapper">
+
+<!--    &lt;!&ndash; 根据组织ID,查询组织类型信息 &ndash;&gt;-->
+<!--    <select id="queryEnableOrgTypeByOrgId" parameterType="java.lang.Long" resultType="com.org.permission.bean.OrgTypeBean">-->
+<!--        SELECT-->
+<!--            id ,-->
+<!--            org_type AS orgType ,-->
+<!--            state AS state-->
+<!--        FROM-->
+<!--            base_organization-->
+<!--        WHERE-->
+<!--            id = #{orgId} and state = 2-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 根据组织ID,查询组织类型信息 &ndash;&gt;-->
+<!--    <select id="queryOrgListByCustId" parameterType="java.lang.Long" resultType="com.org.permission.bean.OrgListBean">-->
+<!--        SELECT-->
+<!--        id as id,-->
+<!--        org_code as orgCode,-->
+<!--        group_id as groupId,-->
+<!--        org_type as orgType,-->
+<!--        org_name as orgName,-->
+<!--        state as state,-->
+<!--        is_main_org as rootOrg-->
+<!--        FROM base_organization-->
+<!--        WHERE cust_id = #{custId} and org_type = 3 and state = 2-->
+<!--    </select>-->
+<!--    &lt;!&ndash; 根据组织ID,查询该组织所属集团下的所有组织结构信息 &ndash;&gt;-->
+<!--    <select id="queryGroupEnableOrgTreeByOrgId" parameterType="java.lang.Long" resultType="com.org.permission.bean.OrgTreeBean">-->
+<!--        SELECT-->
+<!--            id ,-->
+<!--            group_id AS groupId ,-->
+<!--            org_type AS orgType,-->
+<!--            parent_id AS parentId ,-->
+<!--            org_code AS orgCode,-->
+<!--            parent_bu_id AS parentBUId,-->
+<!--            org_name AS orgName ,-->
+<!--            state AS state,-->
+<!--            is_main_org AS mainOrg-->
+<!--        FROM-->
+<!--            base_organization-->
+<!--        WHERE-->
+<!--            group_id =(-->
+<!--                SELECT-->
+<!--                    group_id-->
+<!--                FROM-->
+<!--                    base_organization-->
+<!--                WHERE-->
+<!--                    id = #{orgId}-->
+<!--            )-->
+<!--        AND state = 2-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 根据组织ID,查询未删除的组织结构信息 &ndash;&gt;-->
+<!--    <select id="queryGroupNotStopOrgTreeByOrgId" parameterType="java.lang.Long" resultType="com.org.permission.bean.OrgTreeBean">-->
+<!--        select-->
+<!--        id ,-->
+<!--        group_id AS groupId ,-->
+<!--        org_type AS orgType,-->
+<!--        parent_id AS parentId ,-->
+<!--        org_code AS orgCode,-->
+<!--        parent_bu_id AS parentBUId,-->
+<!--        org_name AS orgName ,-->
+<!--        state AS state,-->
+<!--        is_main_org AS mainOrg-->
+<!--        FROM-->
+<!--        base_organization-->
+<!--        WHERE-->
+<!--        group_id =(-->
+<!--        SELECT-->
+<!--        group_id-->
+<!--        FROM-->
+<!--        base_organization-->
+<!--        WHERE-->
+<!--        id = #{orgId}-->
+<!--        )-->
+<!--        AND state !=4-->
+<!--    </select>-->
+
+
+
+<!--    &lt;!&ndash;根据组织ID,查询该组织所属集团下的组织结构信息（不含部门）&ndash;&gt;-->
+<!--    <select id="queryGroupOrgTreeNotContainDepByOrgId" parameterType="java.lang.Long" resultType="com.org.permission.bean.OrgTreeBean">-->
+<!--        SELECT-->
+<!--        id ,-->
+<!--        group_id AS groupId ,-->
+<!--        org_type AS orgType,-->
+<!--        parent_id AS parentId ,-->
+<!--        org_code AS orgCode,-->
+<!--        parent_bu_id AS parentBUId ,-->
+<!--        org_name AS orgName ,-->
+<!--        state AS state,-->
+<!--        is_main_org AS mainOrg,-->
+<!--        cust_id as custId,-->
+<!--        business_type as bizType-->
+<!--        FROM-->
+<!--        base_organization-->
+<!--        WHERE-->
+<!--        group_id =(-->
+<!--        SELECT-->
+<!--        group_id-->
+<!--        FROM-->
+<!--        base_organization-->
+<!--        WHERE-->
+<!--        id = #{orgId}-->
+<!--        )-->
+<!--        AND state = 2 and org_type in(2,3)-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;根据组织ID,查询组织名称&ndash;&gt;-->
+<!--    <select id="queryOrgNameByOrgId" resultType="string" parameterType="java.lang.Long">-->
+<!--        SELECT org_name  FROM base_organization WHERE id = #{orgId}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;根据组织ID,查询组织编码&ndash;&gt;-->
+<!--    <select id="queryOrgCodeByOrgId" resultType="string" parameterType="java.lang.Long">-->
+<!--        SELECT org_code  FROM base_organization WHERE id = #{orgId}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 根据组织ID,查询该组织结构信息 &ndash;&gt;-->
+<!--    <select id="queryOrgHierarchyInfoByOrgId" parameterType="java.lang.Long" resultType="com.org.permission.bean.OrgTreeBean">-->
+<!--        SELECT id,-->
+<!--               group_id     AS groupId,-->
+<!--               org_type     AS orgType,-->
+<!--               parent_id    AS parentId,-->
+<!--               org_code     AS orgCode,-->
+<!--               parent_bu_id AS parentBUId,-->
+<!--               org_name     AS orgName,-->
+<!--               state        AS state,-->
+<!--               is_main_org  AS mainOrg-->
+<!--        FROM base_organization-->
+<!--        WHERE id = #{orgId}-->
+<!--          AND state != 4-->
+<!--    </select>-->
+<!--    <resultMap id="org_and_func_info" type="com.org.permission.bean.SimpleBizUnitWithFuncBean">-->
+<!--        <result column="id" property="id"/>-->
+<!--        <result column="is_main_org" property="mainOrg"/>-->
+<!--        <result column="group_id" property="groupId"/>-->
+<!--        <result column="cust_id" property="custId"/>-->
+<!--        <result column="parent_id" property="parentId"/>-->
+<!--        <result column="parent_bu_id" property="parentBuId"/>-->
+<!--        <result column="status" property="status"/>-->
+<!--        <result column="org_type" property="orgType"/>-->
+<!--        <result column="org_code" property="orgCode"/>-->
+<!--        <result column="org_name" property="orgName"/>-->
+<!--        <result column="org_short_name" property="orgShortName"/>-->
+<!--        <result column="company_id" property="companyId"/>-->
+<!--        <result property="industryCode" column="industry_code"/>-->
+<!--        <result property="industryName" column="industry_name"/>-->
+<!--        <result property="businessType" column="business_type"/>-->
+<!--        <result property="phone" column="phone"/>-->
+<!--        <result property="email" column="email"/>-->
+<!--        <result property="depDutyStaff" column="dep_duty_staff"/>-->
+<!--    </resultMap>-->
+<!--    &lt;!&ndash; 根据组织ID，查询组织信息及组织功能信息 &ndash;&gt;-->
+<!--    <select id="queryOrgAndFuncInfo" parameterType="java.lang.Long"-->
+<!--            resultType="com.org.permission.common.dto.BaseOrganizationDto">-->
+<!--        select-->
+<!--        org.id,-->
+<!--        org.is_main_org,-->
+<!--        org.state,-->
+<!--        org.org_name,-->
+<!--        org.group_id,-->
+<!--        org.parent_id,-->
+<!--        org.cust_id,-->
+<!--        org.org_type,-->
+<!--        org.org_code,-->
+<!--        org.parent_bu_id,-->
+<!--        org.org_short_name,-->
+<!--        org.industry_code,-->
+<!--        org.industry_name,-->
+<!--        org.business_type,-->
+<!--        org.company_id,-->
+<!--        org.region_code,-->
+<!--        org.region_name,-->
+<!--        org.province_id,-->
+<!--        org.province_name,-->
+<!--        org.city_id,-->
+<!--        org.city_name,-->
+<!--        org.district_id,-->
+<!--        org.district_name,-->
+<!--        org.street_id,-->
+<!--        org.street_name,-->
+<!--        org.address,-->
+<!--        org.phone,-->
+<!--        org.email,-->
+<!--        org.dep_duty_staff,-->
+<!--        func.function_type,-->
+<!--        func.state-->
+<!--        from base_organization org LEFT JOIN base_organization_function func on org.id = func.org_id-->
+<!--        where org.id = #{orgId}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;根据组织名称查询启用的组织信息&ndash;&gt;-->
+<!--    <select id="queryEnableOrgByName" parameterType="string" resultType="com.org.permission.bean.OrgTreeBean">-->
+<!--        SELECT-->
+<!--        id ,-->
+<!--        group_id AS groupId,-->
+<!--        org_type AS orgType,-->
+<!--        parent_id AS parentId,-->
+<!--        org_code AS orgCode,-->
+<!--        parent_bu_id AS parentBUId,-->
+<!--        org_name AS orgName,-->
+<!--        state AS state,-->
+<!--        is_main_org AS mainOrg-->
+<!--        FROM-->
+<!--        base_organization-->
+<!--        WHERE  state = 2 and org_type in (2,3) and org_name LIKE '%${orgName}%'-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;查询集团所有启用的业务单元以上的组织信息&ndash;&gt;-->
+<!--    <select id="queryGroupAllEnableOrg" resultType="com.org.permission.bean.OrgTreeBean">-->
+<!--        SELECT-->
+<!--        id ,-->
+<!--        group_id AS groupId ,-->
+<!--        org_type AS orgType,-->
+<!--        parent_id AS parentId ,-->
+<!--        org_code AS orgCode,-->
+<!--        parent_bu_id AS parentBUId ,-->
+<!--        org_name AS orgName ,-->
+<!--        state AS state,-->
+<!--        is_main_org AS mainOrg-->
+<!--        FROM-->
+<!--        base_organization-->
+<!--        WHERE state = 2 and group_id in-->
+<!--        <foreach collection="groupIds" open="(" separator="," close=")" item="groupId">-->
+<!--            #{groupId}-->
+<!--        </foreach>-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;批量查询组织组织信息&ndash;&gt;-->
+<!--    <select id="queryAllEnableOrgWithSepicalFunc" resultType="com.org.permission.bean.OrgTreeBean">-->
+<!--        SELECT DISTINCT-->
+<!--        org.id ,-->
+<!--        org.group_id AS groupId ,-->
+<!--        org.org_type AS orgType,-->
+<!--        org.parent_id AS parentId ,-->
+<!--        org.org_code AS orgCode,-->
+<!--        org.parent_bu_id AS parentBUId ,-->
+<!--        org.org_name AS orgName ,-->
+<!--        org.state AS state,-->
+<!--        org.is_main_org AS mainOrg-->
+<!--        FROM base_organization org LEFT JOIN base_organization_function fun ON org.id = fun.org_id-->
+<!--        WHERE org.state = 2 and org.org_type in (2,3) and org.group_id = #{groupId} and org.id in-->
+<!--        <foreach collection="orgIds" open="(" separator="," close=")" item="orgId">-->
+<!--            #{orgId}-->
+<!--        </foreach>-->
+<!--        <if test="funcs != null and funcs.size > 0">-->
+<!--            AND fun.function_type in (-->
+<!--            <foreach collection="funcs" separator="," item="func">-->
+<!--                #{func}-->
+<!--            </foreach>-->
+<!--            )-->
+<!--        </if>-->
+<!--    </select>-->
+
+
+<!--    &lt;!&ndash;批量查询组织信息 &ndash;&gt;-->
+<!--    <select id="batchQueryOrgInfo" parameterType="com.org.permission.common.query.BatchQueryParam"-->
+<!--            resultMap="batch_query_org_with_funcs_map">-->
+<!--        select-->
+<!--        id,-->
+<!--        group_id,-->
+<!--        parent_id,-->
+<!--        org_type,-->
+<!--        org_code,-->
+<!--        org_name,-->
+<!--        cust_id,-->
+<!--        state,-->
+<!--        parent_bu_id,-->
+<!--        business_type,-->
+<!--        create_time-->
+<!--        FROM-->
+<!--        base_organization-->
+<!--        where state != 4-->
+<!--        <if test="queryParam.ids !=null and queryParam.ids.size>0">-->
+<!--            and id in (-->
+<!--            <foreach collection="queryParam.ids" separator="," item="id">-->
+<!--                #{id}-->
+<!--            </foreach>-->
+<!--            )-->
+<!--        </if>-->
+<!--        <if test="queryParam.orgTypes != null and queryParam.orgTypes.size > 0 ">-->
+<!--            and org_type in (-->
+<!--            <foreach collection="queryParam.orgTypes" separator="," item="orgType">-->
+<!--                #{orgType}-->
+<!--            </foreach>-->
+<!--            )-->
+<!--        </if>-->
+<!--        <if test="queryParam.codes != null and queryParam.codes.size > 0">-->
+<!--            and org_code in-->
+<!--            <foreach collection="queryParam.codes" open="(" separator="," close=")" item="orgCode">-->
+<!--                #{orgCode}-->
+<!--            </foreach>-->
+<!--        </if>-->
+<!--        <if test="queryParam.names != null and queryParam.names.size > 0">-->
+<!--            and org_name in-->
+<!--            <foreach collection="queryParam.names" open="(" separator="," close=")" item="orgName">-->
+<!--                #{orgName}-->
+<!--            </foreach>-->
+<!--        </if>-->
+<!--        <if test="queryParam.orgName !=null and queryParam.orgName !='' ">-->
+<!--            and org_name like '%${queryParam.orgName}%'-->
+<!--        </if>-->
+<!--        <if test="queryParam.state !=null and queryParam.state !=0">-->
+<!--            and state=#{queryParam.state}-->
+<!--        </if>-->
+<!--        <if test="queryParam.parentBuId !=null and queryParam.parentBuId != 0">-->
+<!--            and parent_bu_id =#{queryParam.parentBuId}-->
+<!--        </if>-->
+<!--        <if test="queryParam.parentId !=null and queryParam.parentId != 0">-->
+<!--            and parent_id =#{queryParam.parentId}-->
+<!--        </if>-->
+<!--        <if test="queryParam.groupId !=null and queryParam.groupId !=0">-->
+<!--            and group_id=#{queryParam.groupId}-->
+<!--        </if>-->
+<!--    </select>-->
+
+<!--    <select id="batchQueryOrganizations" parameterType="com.org.permission.common.query.BatchQueryParam"-->
+<!--            resultMap="basic_org_info_resultMap">-->
+<!--        select-->
+<!--        id,-->
+<!--        group_id,-->
+<!--        parent_id,-->
+<!--        org_type,-->
+<!--        org_code,-->
+<!--        org_name,-->
+<!--        cust_id,-->
+<!--        state,-->
+<!--        parent_bu_id,-->
+<!--        business_type,-->
+<!--        phone,-->
+<!--        is_main_org,-->
+<!--        create_time-->
+<!--        FROM-->
+<!--        base_organization-->
+<!--        where state != 4-->
+<!--        <if test="queryParam.ids !=null and queryParam.ids.size>0">-->
+<!--            and id in (-->
+<!--            <foreach collection="queryParam.ids" separator="," item="id">-->
+<!--                #{id}-->
+<!--            </foreach>-->
+<!--            )-->
+<!--        </if>-->
+<!--        <if test="queryParam.orgTypes != null and queryParam.orgTypes.size > 0 ">-->
+<!--            and org_type in (-->
+<!--            <foreach collection="queryParam.orgTypes" separator="," item="orgType">-->
+<!--                #{orgType}-->
+<!--            </foreach>-->
+<!--            )-->
+<!--        </if>-->
+<!--        <if test="queryParam.orgName !=null and queryParam.orgName !='' ">-->
+<!--            and org_name like '%${queryParam.orgName}%'-->
+<!--        </if>-->
+
+<!--        <if test="queryParam.creditCode !=null and queryParam.creditCode !='' ">-->
+<!--            and credit_code like '%${queryParam.creditCode}%'-->
+<!--        </if>-->
+
+<!--        <if test="queryParam.state !=null and queryParam.state !=0">-->
+<!--            and state=#{queryParam.state}-->
+<!--        </if>-->
+<!--        <if test="queryParam.parentBuId !=null and queryParam.parentBuId != 0">-->
+<!--            and parent_bu_id =#{queryParam.parentBuId}-->
+<!--        </if>-->
+<!--        <if test="queryParam.parentId !=null and queryParam.parentId != 0">-->
+<!--            and parent_id =#{queryParam.parentId}-->
+<!--        </if>-->
+<!--        <if test="queryParam.groupId !=null and queryParam.groupId !=0">-->
+<!--            and group_id=#{queryParam.groupId}-->
+<!--        </if>-->
+<!--        <if test="queryParam.orgNameRightLike !=null and queryParam.orgNameRightLike !='' ">-->
+<!--            and org_name like '${queryParam.orgNameRightLike}%'-->
+<!--        </if>-->
+<!--    </select>-->
+
+
+<!--    <select id="findOrgList" resultMap="basic_org_info_resultMap">-->
+<!--        select a.*,-->
+<!--        b.org_name as parentBuName,-->
+<!--        c.org_name as parentName-->
+<!--        from base_organization a-->
+<!--        left join base_organization b-->
+<!--        on a.`parent_bu_id` = b.`id`-->
+<!--        left join base_organization c-->
+<!--        on a.parent_id =c.id-->
+<!--        where a. state != 4-->
+<!--        <if test="queryParam.parentId !=null and queryParam.parentId != 0">-->
+<!--            and a. parent_id =#{queryParam.parentId}-->
+<!--        </if>-->
+<!--        <if test="queryParam.parentBuIds !=null and queryParam.parentBuIds.size > 0">-->
+<!--            and a.parent_bu_id in (-->
+<!--            <foreach collection="queryParam.parentBuIds" separator="," item="item">-->
+<!--                #{item}-->
+<!--            </foreach>-->
+<!--            )-->
+<!--        </if>-->
+<!--        <if test="queryParam.orgCode !=null and queryParam.orgCode != ''">-->
+<!--            and a.org_code  LIKE '%${queryParam.orgCode}%'-->
+<!--        </if>-->
+<!--        <if test="queryParam.orgName !=null and queryParam.orgName != ''">-->
+<!--            and a.org_name like '%${queryParam.orgName}%'-->
+<!--        </if>-->
+<!--        <if test="queryParam.state != null and queryParam.state != 0">-->
+<!--            and a.state =#{queryParam.state}-->
+<!--        </if>-->
+<!--        <if test="queryParam.orgType != null and queryParam.orgType != 0">-->
+<!--            and a.org_type =#{queryParam.orgType}-->
+<!--        </if>-->
+<!--    </select>-->
+
+<!--    <select id="getOrgInfoById" parameterType="java.lang.Long"-->
+<!--            resultType="com.org.permission.common.org.dto.OrgInfoDto">-->
+<!--        select-->
+<!--        id,-->
+<!--        group_id,-->
+<!--        parent_id,-->
+<!--        org_type,-->
+<!--        org_code,-->
+<!--        org_name,-->
+<!--        cust_id,-->
+<!--        state,-->
+<!--        parent_bu_id,-->
+<!--        business_type,-->
+<!--        create_time-->
+<!--        FROM-->
+<!--        base_organization-->
+<!--        where state =2-->
+<!--        <if test="id !=null and id != 0">-->
+<!--            and id =#{id}-->
+<!--        </if>-->
+<!--    </select>-->
+
+<!--    <select id="batchQueryOrgInfoByCondition" parameterType="com.org.permission.common.query.BatchQueryParam"-->
+<!--            resultType="com.org.permission.common.org.dto.OrgInfoDto">-->
+<!--        select-->
+<!--        id,-->
+<!--        group_id as groupId,-->
+<!--        parent_id as parentId,-->
+<!--        org_type as orgType,-->
+<!--        org_code as orgCode,-->
+<!--        org_name as orgName,-->
+<!--        cust_id as custId,-->
+<!--        state,-->
+<!--        create_time as createTime-->
+<!--        FROM-->
+<!--        base_organization-->
+<!--        where state=2-->
+<!--        <if test="queryParam.ids !=null and queryParam.ids.size>0">-->
+<!--            and id in (-->
+<!--            <foreach collection="queryParam.ids" separator="," item="id">-->
+<!--                #{id}-->
+<!--            </foreach>-->
+<!--            )-->
+<!--        </if>-->
+<!--    </select>-->
+
+
+<!--    <select id="queryDepInfoByUserIdAndOrgId"-->
+<!--           >-->
+<!--        select-->
+<!--        id,-->
+<!--        org_name,-->
+<!--        cust_id,-->
+<!--        group_id,-->
+<!--        province_name,-->
+<!--        province_id,-->
+<!--        city_id,-->
+<!--        city_name,-->
+<!--        district_id,-->
+<!--        district_name,-->
+<!--        street_id,-->
+<!--        address,-->
+<!--        street_name-->
+<!--        from base_organization-->
+<!--        where id=#{reqParam.orgId}-->
+<!--    </select>-->
+
+<!--    <select id="queryOrgIdByName" resultType="integer">-->
+<!--        select id from base_organization where org_name =#{orgName} and org_type=#{orgType} and state=2-->
+<!--        <if test="groupId !=null and groupId !=0">-->
+<!--            and group_id=#{groupId}-->
+<!--        </if>-->
+<!--        <if test="buId !=null and buId !=0">-->
+<!--            and parent_bu_id=#{buId}-->
+<!--        </if>-->
+<!--    </select>-->
+<!--    <select id="batchQueryOrgInfoNofuc" resultType="com.org.permission.common.org.dto.OrgInfoDto">-->
+<!--        select *  from base_organization where state != 4-->
+<!--        <if test="queryParam.ids !=null and queryParam.ids.size>0">-->
+<!--            and id in (-->
+<!--            <foreach collection="queryParam.ids" separator="," item="id">-->
+<!--                #{id}-->
+<!--            </foreach>-->
+<!--            )-->
+<!--        </if>-->
+<!--        <if test="queryParam.state !=null and queryParam.state != 0">-->
+<!--            and state=#{queryParam.state}-->
+<!--        </if>-->
+<!--        <if test="queryParam.parentId !=null and queryParam.parentId != 0">-->
+<!--            and parent_id=#{queryParam.parentId}-->
+<!--        </if>-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;批量查询组织信息及其组织职能&ndash;&gt;-->
+<!--    <resultMap id="batch_query_org_with_funcs_map" type="com.org.permission.common.org.dto.OrgInfoDto">-->
+<!--        <id property="id" column="id"/>-->
+<!--        <result property="orgName" column="org_name"/>-->
+<!--        <result property="parentId" column="parent_Id"/>-->
+<!--        <result property="orgType" column="org_type"/>-->
+<!--        <result property="orgCode" column="org_code"/>-->
+<!--        <result property="orgName" column="org_name"/>-->
+<!--        <result property="state" column="state"/>-->
+<!--        <result property="parentBuId" column="parent_bu_id"/>-->
+<!--        <result property="businessType" column="business_type"/>-->
+<!--        <result property="custId" column="cust_id"></result>-->
+<!--        <result property="createdDate" column="created_date"></result>-->
+<!--    </resultMap>-->
+
+
+</mapper>

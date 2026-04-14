@@ -1,0 +1,131 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionTypeResourceMapper">
+
+    <resultMap type="com.org.permission.server.permission.entity.BasePermissionTypeResource" id="base_permission_type_resources">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="domian_id" jdbcType="INTEGER" property="domianId" />
+        <result column="business_type_id" jdbcType="INTEGER" property="businessTypeId" />
+        <result column="permission_id" jdbcType="INTEGER" property="permissionId" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+    </resultMap>
+
+    <insert id="addBasePermissionTypeResource" parameterType="com.org.permission.server.permission.entity.BasePermissionTypeResource" useGeneratedKeys="true" keyProperty="id" >
+        insert into base_permission_type_resource(id, domian_id, business_type_id, permission_id, state, created_by,
+                                                  created_name, created_date, modified_by, modified_name, modified_date)
+        values (#{id,jdbcType=INTEGER}, #{domianId,jdbcType=INTEGER}, #{businessTypeId,jdbcType=INTEGER},
+                #{permissionId,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT},
+                #{createdName,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{modifiedBy,jdbcType=BIGINT},
+                #{modifiedName,jdbcType=VARCHAR}, #{modifiedDate,jdbcType=TIMESTAMP})
+    </insert>
+    <update id="delBasePermissionTypeResource" parameterType="java.lang.Long">
+        update  base_permission_type_resource set state='0' where id=#{id}
+    </update>
+    <delete id="delBasePermissionTypeResourceTrue"  parameterType="java.lang.Long">
+        delete from base_permission_type_resource where id=#{id}
+    </delete>
+    <update id="updateBasePermissionTypeResource" parameterType="com.org.permission.server.permission.entity.BasePermissionTypeResource">
+        update base_permission_type_resource
+        <set>
+            <if test="domianId!=null">
+                domian_id=#{domianId,jdbcType=INTEGER},
+            </if>
+            <if test="businessTypeId!=null">
+                business_type_id=#{businessTypeId,jdbcType=INTEGER},
+            </if>
+            <if test="permissionId!=null">
+                permission_id=#{permissionId,jdbcType=INTEGER},
+            </if>
+            <if test="state!=null">
+                state=#{state,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy!=null">
+                created_by=#{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdName!=null">
+                created_name=#{createdName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdDate!=null">
+                created_date=#{createdDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="getBasePermissionTypeResourceByID" parameterType="java.lang.Long" resultMap="base_permission_type_resources">
+        select * from base_permission_type_resource where   id=#{id}
+    </select>
+    <select id="getBasePermissionTypeResourceCount" resultType="integer">
+        select count('1') from base_permission_type_resource where state='1'
+    </select>
+    <select id="getBasePermissionTypeResourceCountAll" parameterType="java.lang.Long" resultMap="base_permission_type_resources">
+        select count('1') from base_permission_type_resource
+    </select>
+    <select id="getListBasePermissionTypeResourcesByPage" parameterType="com.org.permission.server.permission.vo.BasePermissionTypeResourceVo" resultMap="base_permission_type_resources">
+        select * from base_permission_type_resource
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionTypeResourcesByPOJO" parameterType="com.org.permission.server.permission.entity.BasePermissionTypeResource" resultMap="base_permission_type_resources">
+        select * from base_permission_type_resource
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionTypeResourcesByPojoPage" parameterType="java.util.Map"  resultMap="base_permission_type_resources">
+        select * from base_permission_type_resource where 1=1
+        <if test="pojo.id != null and pojo.id != ''"> and id = #{pojo.id}</if>
+        <if test="pojo.domianId != null and pojo.domianId != ''"> and domian_id = #{pojo.domianId}</if>
+        <if test="pojo.businessTypeId != null and pojo.businessTypeId != ''"> and business_type_id = #{pojo.businessTypeId}</if>
+        <if test="pojo.permissionId != null and pojo.permissionId != ''"> and permission_id = #{pojo.permissionId}</if>
+        <if test="pojo.state != null and pojo.state != ''"> and state = #{pojo.state}</if>
+    </select>
+    <sql id="Where_Conditions">
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="id != null and id != ''"> and id = #{id}</if>
+            <if test="domianId!=null">
+                and domian_id=#{domianId,jdbcType=INTEGER}
+            </if>
+            <if test="businessTypeId!=null">
+                and business_type_id=#{businessTypeId,jdbcType=INTEGER}
+            </if>
+            <if test="permissionId!=null">
+                and permission_id=#{permissionId,jdbcType=INTEGER}
+            </if>
+            <if test="state!=null">
+                and state=#{state,jdbcType=INTEGER}
+            </if>
+            <if test="createdBy!=null">
+                and created_by=#{createdBy,jdbcType=BIGINT}
+            </if>
+            <if test="createdName!=null">
+                and created_name=#{createdName,jdbcType=VARCHAR}
+            </if>
+            <if test="createdDate!=null">
+                and created_date=#{createdDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedBy!=null">
+                and modified_by=#{modifiedBy,jdbcType=BIGINT}
+            </if>
+            <if test="modifiedName!=null">
+                and modified_name=#{modifiedName,jdbcType=VARCHAR}
+            </if>
+            <if test="modifiedDate!=null">
+                and modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+</mapper>
+

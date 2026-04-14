@@ -1,0 +1,304 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionResourceMapper">
+
+    <resultMap id="BaseResultMap" type="com.org.permission.server.permission.entity.BasePermissionResource">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+        <result column="resource_desc" jdbcType="VARCHAR" property="resourceDesc"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="type" jdbcType="VARCHAR" property="type"/>
+        <result column="resource_type" jdbcType="INTEGER" property="resourceType"/>
+        <result column="belong" jdbcType="BIGINT" property="belong"/>
+        <result column="bussiness_system" jdbcType="VARCHAR" property="bussinessSystem"/>
+        <result column="permission_group" jdbcType="VARCHAR" property="permissionGroup"/>
+        <result column="control_display" jdbcType="TINYINT" property="controlDisplay"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="leaf_flag" jdbcType="INTEGER" property="leafFlag"/>
+        <result column="icon" jdbcType="VARCHAR" property="icon"/>
+        <result column="number" jdbcType="VARCHAR" property="number"/>
+        <result column="hidden" jdbcType="INTEGER" property="hidden"/>
+        <result column="target" jdbcType="VARCHAR" property="target"/>
+        <result column="component" jdbcType="VARCHAR" property="component"/>
+        <result column="keep_alive" jdbcType="INTEGER" property="keepAlive"/>
+        <result column="redirect" jdbcType="VARCHAR" property="redirect"/>
+        <result column="menu_order" jdbcType="INTEGER" property="menuOrder"/>
+        <result column="iframe_path" jdbcType="VARCHAR" property="iframePath"/>
+        <result column="source" jdbcType="INTEGER" property="source"/>
+        <result column="operations" jdbcType="VARCHAR" property="operations"/>
+        <result column="token" jdbcType="INTEGER" property="token"/>
+        <result column="platform_id" jdbcType="VARCHAR" property="platformId" />
+        <result column="deleted_flag" jdbcType="INTEGER" property="deletedFlag"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+    </resultMap>
+
+    <insert id="addBasePermissionResource" parameterType="com.org.permission.server.permission.entity.BasePermissionResource"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into base_permission_resource(id, name, parent_id, resource_desc, url, type, resource_type, belong,
+                                             bussiness_system, permission_group, control_display, state, leaf_flag,
+                                             icon, number, hidden, target, component, keep_alive, redirect, menu_order,
+                                             iframe_path, source, operations, token, deleted_flag, created_by,
+                                             created_name, created_date, modified_by, modified_name, modified_date, platform_id)
+        values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT},
+                #{resourceDesc,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
+                #{resourceType,jdbcType=INTEGER}, #{belong,jdbcType=BIGINT}, #{bussinessSystem,jdbcType=VARCHAR},
+                #{permissionGroup,jdbcType=VARCHAR}, #{controlDisplay,jdbcType=TINYINT}, #{state,jdbcType=INTEGER},
+                #{leafFlag,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR}, #{number,jdbcType=VARCHAR},
+                #{hidden,jdbcType=INTEGER}, #{target,jdbcType=VARCHAR}, #{component,jdbcType=VARCHAR},
+                #{keepAlive,jdbcType=INTEGER}, #{redirect,jdbcType=VARCHAR}, #{menuOrder,jdbcType=INTEGER},
+                #{iframePath,jdbcType=VARCHAR}, #{source,jdbcType=INTEGER}, #{operations,jdbcType=VARCHAR},
+                #{token,jdbcType=INTEGER}, #{deletedFlag,jdbcType=INTEGER}, #{createdBy,jdbcType=BIGINT},
+                #{createdName,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{modifiedBy,jdbcType=BIGINT},
+                #{modifiedName,jdbcType=VARCHAR}, #{modifiedDate,jdbcType=TIMESTAMP}, #{platformId})
+    </insert>
+
+    <update id="delBasePermissionResource" parameterType="java.lang.Long">
+        update base_permission_resource
+        set state='0'
+        where id = #{id}
+    </update>
+    <delete id="delBasePermissionResourceTrue" parameterType="java.lang.Long">
+        delete
+        from base_permission_resource
+        where id = #{id}
+    </delete>
+    <update id="updateBasePermissionResource"
+            parameterType="com.org.permission.server.permission.entity.BasePermissionResource">
+        update base_permission_resource
+        <set>
+            <if test="name!=null">
+                name=#{name,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId!=null">
+                parent_id=#{parentId,jdbcType=BIGINT},
+            </if>
+            <if test="resourceDesc!=null">
+                resource_desc=#{resourceDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="url!=null">
+                url=#{url,jdbcType=VARCHAR},
+            </if>
+
+            <if test="type!=null">
+                type=#{type,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceType!=null">
+                resource_type=#{resourceType,jdbcType=INTEGER},
+            </if>
+            <if test="belong!=null">
+                belong=#{belong,jdbcType=BIGINT},
+            </if>
+            <if test="bussinessSystem!=null">
+                bussiness_system=#{bussinessSystem,jdbcType=VARCHAR},
+            </if>
+            <if test="permissionGroup!=null">
+                permission_group=#{permissionGroup,jdbcType=VARCHAR},
+            </if>
+            <if test="controlDisplay!=null">
+                control_display=#{controlDisplay,jdbcType=TINYINT},
+            </if>
+            <if test="state!=null">
+                state=#{state,jdbcType=INTEGER},
+            </if>
+            <if test="leafFlag!=null">
+                leaf_flag=#{leafFlag,jdbcType=INTEGER},
+            </if>
+            <if test="icon!=null">
+                icon=#{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="number!=null">
+                number=#{number,jdbcType=VARCHAR},
+            </if>
+            <if test="hidden!=null">
+                hidden=#{hidden,jdbcType=INTEGER},
+            </if>
+            <if test="target!=null">
+                target=#{target,jdbcType=VARCHAR},
+            </if>
+            <if test="component!=null">
+                component=#{component,jdbcType=VARCHAR},
+            </if>
+            <if test="keepAlive!=null">
+                keep_alive=#{keepAlive,jdbcType=INTEGER},
+            </if>
+            <if test="redirect!=null">
+                redirect=#{redirect,jdbcType=VARCHAR},
+            </if>
+            <if test="menuOrder!=null">
+                menu_order=#{menuOrder,jdbcType=INTEGER},
+            </if>
+            <if test="iframePath!=null">
+                iframe_path=#{iframePath,jdbcType=VARCHAR},
+            </if>
+            <if test="source!=null">
+                source=#{source,jdbcType=INTEGER},
+            </if>
+            <if test="operations!=null">
+                operations=#{operations,jdbcType=VARCHAR},
+            </if>
+            <if test="token!=null">
+                token=#{token,jdbcType=INTEGER},
+            </if>
+            <if test="platformId!=null">
+                platform_id=#{platformId,jdbcType=VARCHAR},
+            </if>
+            <if test="deletedFlag!=null">
+                deleted_flag=#{deletedFlag,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy!=null">
+                created_by=#{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdName!=null">
+                created_name=#{createdName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdDate!=null">
+                created_date=#{createdDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="batchUpdatePlatformId" parameterType="java.util.Map">
+        <foreach collection="platformIdMap.entrySet()" item="value" index="key"  separator=";">
+            UPDATE base_permission_resource
+            SET platform_id = #{value}
+            WHERE id = #{key}
+        </foreach>
+    </update>
+
+    <select id="getBasePermissionResourceByID" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select *
+        from base_permission_resource
+        where id = #{id}
+    </select>
+    <select id="getBasePermissionResourceCount" resultType="Integer">
+        select count('1')
+        from base_permission_resource
+        where state = '1'
+    </select>
+    <select id="getBasePermissionResourceCountAll" parameterType="String" resultMap="BaseResultMap">
+        select count('1')
+        from base_permission_resource
+    </select>
+    <select id="getListBasePermissionResourcesByPage"
+            parameterType="com.org.permission.server.permission.vo.BasePermissionResourceVo" resultMap="BaseResultMap">
+        select * from base_permission_resource
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionResourcesByPOJO"
+            parameterType="com.org.permission.server.permission.entity.BasePermissionResource" resultMap="BaseResultMap">
+        select * from base_permission_resource
+        <include refid="Where_Conditions"/>
+        order by menu_order asc
+    </select>
+
+    <select id="getListByPid" resultMap="BaseResultMap">
+        select * from base_permission_resource
+        where parent_id in
+        <foreach collection="parentIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+    <sql id="Where_Conditions">
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="name!=null">
+                and name=#{name,jdbcType=VARCHAR}
+            </if>
+            <if test="parentId!=null">
+                and parent_id=#{parentId,jdbcType=BIGINT}
+            </if>
+            <if test="resourceDesc!=null">
+                and resource_desc=#{resourceDesc,jdbcType=VARCHAR}
+            </if>
+            <if test="url!=null">
+                and url=#{url,jdbcType=VARCHAR}
+            </if>
+
+            <if test="type!=null">
+                and type=#{type,jdbcType=VARCHAR}
+            </if>
+            <if test="resourceType!=null">
+                and resource_type=#{resourceType,jdbcType=INTEGER}
+            </if>
+            <if test="belong!=null">
+                and belong=#{belong,jdbcType=BIGINT}
+            </if>
+            <if test="bussinessSystem!=null">
+                and bussiness_system=#{bussinessSystem,jdbcType=VARCHAR}
+            </if>
+            <if test="permissionGroup!=null">
+                and permission_group=#{permissionGroup,jdbcType=VARCHAR}
+            </if>
+            <if test="controlDisplay!=null">
+                and control_display=#{controlDisplay,jdbcType=TINYINT}
+            </if>
+            <if test="state!=null">
+                and state=#{state,jdbcType=INTEGER}
+            </if>
+            <if test="leafFlag!=null">
+                and leaf_flag=#{leafFlag,jdbcType=INTEGER}
+            </if>
+            <if test="icon!=null">
+                and icon=#{icon,jdbcType=VARCHAR}
+            </if>
+            <if test="number!=null">
+                and number=#{number,jdbcType=VARCHAR}
+            </if>
+            <if test="hidden!=null">
+                and hidden=#{hidden,jdbcType=INTEGER}
+            </if>
+            <if test="target!=null">
+                and target=#{target,jdbcType=VARCHAR}
+            </if>
+            <if test="component!=null">
+                and component=#{component,jdbcType=VARCHAR}
+            </if>
+            <if test="keepAlive!=null">
+                and keep_alive=#{keepAlive,jdbcType=INTEGER}
+            </if>
+            <if test="redirect!=null">
+                and redirect=#{redirect,jdbcType=VARCHAR}
+            </if>
+            <if test="menuOrder!=null">
+                and menu_order=#{menuOrder,jdbcType=INTEGER}
+            </if>
+            <if test="iframePath!=null">
+                and iframe_path=#{iframePath,jdbcType=VARCHAR}
+            </if>
+            <if test="source!=null">
+                and source=#{source,jdbcType=INTEGER}
+            </if>
+            <if test="operations!=null">
+                and operations=#{operations,jdbcType=VARCHAR}
+            </if>
+            <if test="token!=null">
+                and token=#{token,jdbcType=INTEGER}
+            </if>
+            <if test="platformId!=null">
+                and platform_id=#{platformId,jdbcType=VARCHAR}
+            </if>
+            <if test="deletedFlag!=null">
+                and deleted_flag=#{deletedFlag,jdbcType=INTEGER}
+            </if>
+
+        </where>
+    </sql>
+
+</mapper>
+

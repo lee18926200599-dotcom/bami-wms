@@ -1,0 +1,80 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.CorporateOrgFuncMapper">
+    <sql id="insert_base_list">
+          function_type,state,
+          org_id,
+          parent_org_id,
+          enterprise_code,
+          enterprise_name,
+          taxpayer_code,
+          taxpayer_name,
+          org_institution_code,
+          biz_regist_number,
+          registered_capital,
+          establish_time,
+          business_start_time,
+          business_end_time,
+          net_address,
+          remark,
+          linker,phone,email,
+          created_by,
+          created_name,
+          created_date
+    </sql>
+    <!--新增法人组织职能-->
+    <insert id="addCorporateFunc" parameterType="com.org.permission.common.org.dto.func.CorporateOrgFuncBean">
+        insert into base_organization_function(<include refid="insert_base_list"/>)
+        values(
+        1,
+        #{bean.state},
+        #{bean.orgId},
+        #{bean.parentOrgId},
+        #{bean.enterpriseCode},
+        #{bean.enterpriseName},
+        #{bean.taxpayerCode},
+        #{bean.taxpayerName},
+        #{bean.orgInstitutionCode},
+        #{bean.bizRegistNumber},
+        #{bean.registeredCapital},
+        #{bean.establishTime},
+        #{bean.bizStartTime},
+        #{bean.bizEndTime},
+        #{bean.netAddress},
+        #{bean.remark},
+        #{bean.linker},
+        #{bean.phone},
+        #{bean.email},
+        #{bean.createdBy},
+        #{bean.createdName},
+        #{bean.createdDate}
+        )
+    </insert>
+
+    <update id="updateCorporateFunc" parameterType="com.org.permission.common.org.dto.func.CorporateOrgFuncBean">
+        update base_organization_function
+        set
+        parent_org_id = #{bean.parentOrgId},
+        enterprise_code = #{bean.enterpriseCode},
+        enterprise_name = #{bean.enterpriseName},
+        taxpayer_code = #{bean.taxpayerCode},
+        taxpayer_name =  #{bean.taxpayerName},
+        org_institution_code =  #{bean.orgInstitutionCode},
+        biz_regist_number =  #{bean.bizRegistNumber},
+        state = #{bean.state},
+        registered_capital = #{bean.registeredCapital},
+        establish_time = #{bean.establishTime},
+        business_start_time = #{bean.bizStartTime},
+        business_end_time = #{bean.bizEndTime},
+        net_address = #{bean.netAddress},
+        remark = #{bean.remark},
+        linker = #{bean.linker},
+        phone = #{bean.phone},
+        email = #{bean.email},
+        modified_by = #{bean.modifiedBy},
+        modified_name=#{bean.modifiedName},
+        modified_date=#{bean.modifiedDate}
+        where org_id = #{bean.orgId} and function_type=#{bean.funcType}
+    </update>
+</mapper>
+

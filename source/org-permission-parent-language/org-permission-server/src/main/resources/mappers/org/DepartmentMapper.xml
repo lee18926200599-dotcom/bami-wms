@@ -1,0 +1,318 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.DepartmentMapper">
+
+    <!-- 新增部门 -->
+    <insert id="addDepartment" parameterType="com.org.permission.server.org.bean.DepartmentBean" keyProperty="bean.id" useGeneratedKeys="true">
+        insert into base_organization(
+        <include refid="insert_base_list"/>
+        )
+        values(
+        #{bean.orgType},
+        #{bean.depCode},
+        #{bean.depName},
+        #{bean.groupId},
+        #{bean.parentId},
+        #{bean.parentBUId},
+        #{bean.establishTime},
+        #{bean.addressDetail.invoiceProvCode},
+        #{bean.addressDetail.invoiceProvName},
+        #{bean.addressDetail.invoiceCityCode},
+        #{bean.addressDetail.invoiceCityName},
+        #{bean.addressDetail.invoiceDistrictCode},
+        #{bean.addressDetail.invoiceDistrictName},
+        #{bean.addressDetail.invoiceStreetCode},
+        #{bean.addressDetail.invoiceStreetName},
+        #{bean.addressDetail.address},
+        #{bean.state},
+        #{bean.remark},
+        #{bean.phone},
+        #{bean.createdBy},
+        #{bean.createdDate},
+        #{bean.mainOrgFlag},
+        #{bean.depDutyStaff},
+        #{bean.registSource},
+        #{bean.registSourceId}
+        )
+    </insert>
+
+    <!--更新部门-->
+    <update id="updateDepartment" parameterType="com.org.permission.common.org.param.DepartmentReqParam">
+        update base_organization set
+        org_name = #{bean.depName},
+        parent_id = #{bean.parentId},
+        parent_bu_id = #{bean.parentBUId},
+        establish_time= #{bean.establishTime},
+        province_code =#{bean.addressDetail.invoiceProvCode},
+        province_name=#{bean.addressDetail.invoiceProvName},
+        city_code=#{bean.addressDetail.invoiceCityCode},
+        city_name=#{bean.addressDetail.invoiceCityName},
+        district_code=#{bean.addressDetail.invoiceDistrictCode},
+        district_name=#{bean.addressDetail.invoiceDistrictName},
+        street_code=#{bean.addressDetail.invoiceStreetCode},
+        street_name=#{bean.addressDetail.invoiceStreetName},
+        address=#{bean.addressDetail.address},
+        remark=#{bean.remark},
+        phone=#{bean.phone},
+        state=#{bean.state},
+        modified_by = #{bean.modifiedBy},
+        modified_date = #{bean.modifiedDate},
+        dep_duty_staff=#{bean.depDutyStaff}
+        where id = #{bean.id}
+    </update>
+
+    <!--根据BU ID 查询，部门的所有名字-->
+    <select id="queryDepNamesByBUIdLock" parameterType="java.lang.Long" resultType="string">
+        select org_name from base_organization where parent_bu_id =#{buId} and org_type = 4 and deleted_flag=0
+    </select>
+
+    <!-- 根据集团ID，查询当前集团下的最大部门编码 -->
+    <select id="queryDepCodeByGroupIdLock" parameterType="java.lang.Long" resultType="string">
+        select org_code from base_organization where group_id =#{groupId} and org_type = 4 order by id desc limit 1
+    </select>
+
+    <!-- 根据部门ID，查询当前部门相关状态信息 -->
+    <select id="queryDepStateByIdLock" parameterType="java.lang.Long" resultType="com.org.permission.server.org.bean.DepartmentStateBean">
+        select
+        id as id,
+        state as state,
+        quoted_flag as quotedFlag,
+        deleted_flag as deletedFlag
+        from base_organization WHERE id = #{depId} and org_type = 4
+    </select>
+
+    <!-- 根据部门ID，查询当前部门相关状态信息 -->
+    <select id="queryDepStateByBuIdLock" parameterType="java.lang.Long" resultType="com.org.permission.server.org.bean.DepartmentStateBean">
+        select
+        id as id,
+        state as state,
+        quoted_flag as quotedFlag,
+        deleted_flag as deletedFlag
+        from base_organization WHERE org_type = 4 and parent_bu_id = #{buId}
+    </select>
+
+    <!-- 查询业务单元下启用的部门集合 -->
+    <select id="queryEnableDepByBuIdLock" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select id from base_organization WHERE org_type = 4 and state = 1 and parent_bu_id = #{buId}
+    </select>
+
+
+
+    <!-- 伪删除部门 -->
+    <update id="deleteDepByBuId" parameterType="java.lang.Long">
+        update base_organization set deleted_flag= 1 ,modified_by=#{userId} ,modified_date=now() where parent_bu_id=#{buId} and org_type=4
+    </update>
+
+    <sql id="insert_base_list">
+        org_type,
+        org_code,
+        org_name,
+        group_id,
+        parent_id,
+        parent_bu_id,
+        establish_time,
+        province_code,
+        province_name,
+        city_code,
+        city_name,
+        district_code,
+        district_name,
+        street_code,
+        street_name,
+        address,
+        state,
+        remark,
+        phone,
+        created_by,
+        created_date,
+        main_org_flag,
+        dep_duty_staff,
+        regist_source,
+        regist_source_id
+    </sql>
+    <!--根据主键查询部门及其人员信息-->
+    <select id="queryDepWithStaffInfoById" parameterType="java.lang.Long" resultMap="dep_with_staff_result_map">
+        select
+        <include refid="dep_info_list"/>
+        from base_organization where id = #{depId}
+    </select>
+
+    <!--根据BUID 查询，部门的所有名字-->
+    <select id="queryOrgContainDepsByBUId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select id
+        from base_organization
+        where org_type = 4
+          and deleted_flag = 0
+          and parent_bu_id = #{buId}
+    </select>
+
+    <!--根据BUID 查询，部门的所有ID-->
+    <select id="queryDirectOrgContainDepsByBUIds" resultType="java.lang.Long">
+        select id from base_organization
+        where
+        org_type= 4
+        and deleted_flag=0
+        and parent_id = 0
+        and parent_bu_id IN (
+        <foreach collection="buIds" item="buId" separator=",">
+            #{buId}
+        </foreach>
+        )
+    </select>
+
+    <select id="queryIdByDepCode"  resultType="java.lang.Long">
+        select id from base_organization where group_id=#{groupId} and org_code=#{depCode}
+    </select>
+
+    <!--根据集团ID，查询根业务单元下的部门-->
+    <select id="queryDirectOrgContainDepsByGroupId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select id from base_organization
+        where
+            org_type= 4
+          and deleted_flag=0
+        and parent_id = 0
+        and parent_bu_id =
+          (select id from base_organization where org_type= 3 and id = #{groupId} and main_org_flag = 1)
+    </select>
+
+    <!--根据业务单元ID,查询该业务单元下所有部门-->
+    <select id="queryDepTreeByBUId" parameterType="com.org.permission.common.org.param.QueryByIdReqParam" resultType="com.org.permission.server.org.bean.OrgTreeBean">
+        SELECT
+            id ,
+            group_id AS groupId ,
+            org_type AS orgType,
+            parent_id AS parentId ,
+            org_code AS orgCode,
+            parent_bu_id AS parentBUId ,
+            org_name AS orgName ,
+            state AS state,
+            main_org_flag AS mainOrgFlag
+        FROM base_organization
+        WHERE parent_bu_id = #{reqParam.id} AND state =1  and org_type=4
+    </select>
+
+    <!--根据当前部门id查询所有子部门Id-->
+    <select id="queryChildDepByDepId" parameterType="java.lang.Long" resultType="integer">
+        SELECT
+            id
+        FROM base_organization
+        WHERE parent_id = #{depId} AND state = 1 and org_type=4
+    </select>
+
+    <!--部门基础信息列表-->
+    <sql id="dep_info_list">
+        id,
+        org_type,
+        org_code,
+        org_name,
+        group_id,
+        parent_id,
+        parent_bu_id,
+        establish_time,
+        province_code,
+        province_name,
+        city_code,
+        city_name,
+        district_code,
+        district_name,
+        street_code,
+        street_name,
+        address,
+        remark
+    </sql>
+
+    <!--部门及人员映射关系-->
+    <resultMap id="dep_with_staff_result_map" type="com.org.permission.common.org.vo.DepWithStaffDetailVo">
+        <result property="id" column="id"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="depName" column="org_name"/>
+        <result property="groupId" column="group_id"/>
+        <result property="parentDepId" column="parent_id"/>
+        <result property="parentBUId" column="parent_bu_id"/>
+        <result property="phone" column="phone"/>
+        <result property="establishTime" column="establish_time"/>
+        <result property="remark" column="remark"/>
+        <association property="groupName" column="group_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="parentDepName" column="parent_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="parentBUName" column="parent_bu_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="addressDetail" resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+        <collection property="staffs" column="id" select="com.org.permission.server.org.mapper.StaffMapper.queryDepStaffs"/>
+    </resultMap>
+
+    <!--根据部门ID查询部门信息-ouxiujuan-->
+    <select id="queryDepInfoById" parameterType="com.org.permission.common.org.param.QueryByIdReqParam" resultMap="dep_info_result_map">
+        select
+            org.group_id  ,
+            org.org_name ,
+            org.id ,
+            org.parent_id,
+            org.parent_bu_id,
+            org.created_by ,
+            org.created_date ,
+            org.modified_by ,
+            org.org_type ,
+            org.org_code ,
+            org.parent_id ,
+            org.parent_bu_id ,
+            org.establish_time ,
+            org.phone,
+            org.remark,
+            org.province_code,
+            org.city_code,
+            org.district_code,
+            org.street_code,
+            org.province_name,
+            org.city_name,
+            org.district_name,
+            org.street_name,
+            org.address,
+            org.dep_duty_staff,
+            org.state
+        from base_organization org
+        where org.id = #{param.id} and org.org_type= 4 and deleted_flag=0
+    </select>
+
+    <!--根据业务单元Id和部门名称查询部门信息-->
+    <select id="queryDepNameByBuid" resultMap="dep_info_result_map">
+        select * from base_organization org where parent_bu_id=#{buId} and org_type=4 and org_name=#{orgName}
+    </select>
+
+    <!--根据业务单元Id查询部门信息-->
+    <select id="queryDepInfoByBuId" resultMap="dep_info_result_map">
+        select * from base_organization org where parent_bu_id=#{buId} and org_type=4
+    </select>
+
+    <!--部门映射关系-->
+    <resultMap id="dep_info_result_map" type="com.org.permission.common.org.vo.DepWithStaffDetailVo">
+        <result property="id" column="id"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="groupId" column="group_id"/>
+        <result property="parentDepId" column="parent_id"/>
+        <result property="parentBUId" column="parent_bu_id"/>
+        <result property="phone" column="phone"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="modifiedBy" column="modified_by"/>
+        <result property="modifiedDate" column="modified_date"/>
+        <result property="groupName" column="org_name"/>
+        <result property="establishTime" column="establish_time"/>
+        <result property="remark" column="remark"/>
+        <result property="state" column="state"/>
+        <result property="depDutyStaff" column="dep_duty_staff"/>
+        <result property="registSource" column="regist_source"/>
+        <result property="registSourceId" column="regist_source_id"/>
+        <association property="groupName" column="parent_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="depName" column="id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="parentDepName" column="parent_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="parentBUName" column="parent_bu_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="addressDetail" resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+    </resultMap>
+</mapper>
+

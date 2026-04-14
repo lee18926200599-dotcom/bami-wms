@@ -1,0 +1,260 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.CommonEntrustRelationMapper">
+    <!--删除业务委托关系-->
+    <update id="deleteEntrustRelation" parameterType="java.lang.Long">
+        UPDATE base_entrust_relationship
+        set deleted_flag = 1
+        WHERE id = #{entrustRelationshipId}
+    </update>
+
+    <update id="enableEntrustRelation" parameterType="com.org.permission.common.org.param.EnableOperateParam">
+        update base_entrust_relationship set
+        state = #{bean.state},
+        <if test="bean.state == 1">
+            start_time = #{modifiedDate},
+        </if>
+        <if test="bean.state == 2">
+            stop_time = #{modifiedDate},
+        </if>
+        modified_by = #{bean.userId},
+        modified_name = #{bean.userName},
+        modified_date = #{modifiedDate}
+        where id = #{bean.id}
+    </update>
+
+    <update id="modifyEntrustRelationByOrgId">
+        update base_entrust_relationship set
+        state = #{modifyStatus},
+        modified_by = #{userId},
+        modified_date = #{modifiedDate}
+        where purchase_sale_org_id = #{buId}
+        <if test="sourceStatus != null">
+            and state = #{sourceStatus}
+        </if>
+        or stock_org_id=#{buId}
+        or logistics_org_id=#{buId}
+        or pay_receive_org_id =#{buId}
+        or settment_org_id = #{buId}
+        or account_org_id = #{buId}
+        or business_org_id = #{buId}
+        or relevance_logistics_org_id = #{buId}
+    </update>
+    <update id="delEntrustRelationByOrgId">
+        update base_entrust_relationship set
+        deleted_flag = #{deletedFlag},
+        modified_by = #{userId},
+        modified_date = #{modifiedDate}
+        where purchase_sale_org_id = #{buId}
+        <if test="sourceStatus != null">
+            and state = #{sourceStatus}
+        </if>
+        or stock_org_id=#{buId}
+        or logistics_org_id=#{buId}
+        or pay_receive_org_id =#{buId}
+        or settment_org_id = #{buId}
+        or account_org_id = #{buId}
+        or business_org_id = #{buId}
+        or relevance_logistics_org_id = #{buId}
+    </update>
+    <update id="disdefaultEntrustRelationById">
+        update base_entrust_relationship
+        set default_flag  = 0,
+            modified_by   = #{userId},
+            modified_date = #{modifiedDate}
+        where id = #{entrustId}
+    </update>
+
+    <select id="queryBUProductEntrustRelationId" resultType="java.lang.Long"
+            parameterType="com.org.permission.server.org.bean.BaseEntrustRelationBean">
+        select id
+        from base_entrust_relationship
+        where entrust_source = #{bean.entrustSource}
+          and entrust_source_id = #{bean.entrustSourceId}
+          and entrust_type = #{bean.entrustType}
+          and entrust_range = 2
+          and deleted_flag = 0
+    </select>
+
+    <select id="queryEntrustRelationStateByIdLock" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.StateBean">
+        select id, state, entrust_source as source, default_flag as defaultFlag, deleted_flag as deletedFlag
+        from base_entrust_relationship
+        where id = #{entrustId}
+    </select>
+    <sql id="base_query_list">
+        id
+        as id,
+        entrust_range as entrustRange,
+        entrust_type as entrustType,
+        entrust_source as entrustSource,
+        default_flag as defaultFlag,
+        state as state,
+        group_id as groupId,
+        owner_id as ownerId,
+        purchase_sale_org_id as purchaseSaleOrg,
+        warehouse_provider_id as warehouseProvider,
+        stock_org_id as stockOrg,
+        warehouse_id as warehouse_id,
+        logistics_provider_id as logisticsProvider,
+        logistics_org_id as logisticsOrg,
+        pay_receive_org_id as payReceiveOrg,
+        settment_org_id as settmentOrg,
+        account_org_id as accountOrg,
+        business_org_id as businessOrg,
+        ori_acc_code as oriAccCode,
+        relevance_logistics_provider_id as relevanceLogisticsProvider,
+        relevance_logistics_org_id as relevanceLogisticsOrg,
+        created_by as createdBy,
+        created_date as createdDate,
+        modified_by as modifiedBy,
+        modified_date as modifiedDate
+    </sql>
+
+    <!--根据ID查询业务委托关系 -->
+    <select id="queryEntrustRelationshipById" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.EntrustRelationshipInfoBean">
+        select
+        <include refid="base_query_list"/>
+        from base_entrust_relationship where id =#{entrustRelationshipId}
+    </select>
+
+    <!--根据参数统计业务委托关系数量 -->
+    <select id="countEntrustRelationship" resultType="integer"
+            parameterType="com.org.permission.server.org.dto.param.QueryEntrustRelationshipListReqParam">
+        select COUNT (id) from base_entrust_relationship
+        <include refid="where_query_condition"/>
+    </select>
+
+    <!--根据参数查询业务委托关系列表 -->
+    <select id="queryEntrustRelationshipList"
+            parameterType="com.org.permission.server.org.dto.param.QueryEntrustRelationshipListReqParam"
+            resultType="com.org.permission.server.org.bean.EntrustRelationshipInfoBean">
+        select
+        <include refid="base_query_list"/>
+        from base_entrust_relationship
+        <include refid="where_query_condition"/>
+        LIMIT #{queryParam.pageSize} OFFSET #{queryParam.start}
+    </select>
+
+    <select id="queryOwnerEnableWarehouse" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.dto.StorageInfoDto">
+        SELECT id                    as relationId,
+               warehouse_provider_id as storageProviderId,
+               stock_org_id          as stockOrgId,
+               warehouse_id          as warehouseId,
+               default_flag          as defaultFlag
+        FROM base_entrust_relationship
+        WHERE purchase_sale_org_id = #{orgId}
+          and entrust_type = 1
+          and state = 1
+    </select>
+
+    <select id="queryFinanceEntrustRelation"
+            parameterType="com.org.permission.common.org.param.QueryFinanceEntrustRelationParam"
+            resultMap="finance_entrust_relation_result_mappe">
+        SELECT id as id,
+               business_org_id,
+               settment_org_id,
+               account_org_id,
+               default_flag
+        FROM base_entrust_relationship
+        WHERE entrust_type = 6
+          and state = 1
+          and business_org_id = #{queryParam.bizOrgId}
+    </select>
+
+    <select id="countMarketEntrustRelation"
+            parameterType="com.org.permission.server.org.dto.param.MarketEntrustRelationReqParam"
+            resultType="integer">
+        select count(id) from base_entrust_relationship
+        <include refid="market_page_where_query_condition"/>
+    </select>
+
+    <select id="queryEntrustRelationWithCondition" resultType="java.lang.Long">
+        select id from base_entrust_relationship
+        <trim prefix="WHERE" prefixOverrides="AND |OR ">
+            <if test="entrustRange !=null and entrustRange !=0">
+                and entrust_range=#{entrustRange}
+            </if>
+            <if test="entrustType !=null and entrustType !=0">
+                and entrust_type=#{entrustType}
+            </if>
+            <if test="warehourseId !=null and warehourseId !=0">
+                and warehouse_id=#{warehourseId}
+            </if>
+            <if test="purchaseSaleOrg !=null and purchaseSaleOrg !=0">
+                and purchase_sale_org_id=#{purchaseSaleOrg}
+            </if>
+            <if test="stockOrg !=null and stockOrg !=0">
+                and stock_org_id=#{stockOrg}
+            </if>
+            <if test="logisticsOrg !=null and logisticsOrg !=0">
+                and logistics_org_id=#{logisticsOrg}
+            </if>
+            <if test="settmentOrg !=null and settmentOrg !=0">
+                and settment_org_id=#{settmentOrg}
+            </if>
+            <if test="accountOrg !=null and accountOrg !=0">
+                and account_org_id=#{accountOrg}
+            </if>
+            <if test="accountOrg !=null and accountOrg !=0">
+                and pay_receive_org_id=#{accountOrg}
+            </if>
+            <if test="businessOrg !=null and businessOrg !=0">
+                and business_org_id=#{businessOrg}
+            </if>
+            and deleted_flag=0 limit 1
+        </trim>
+    </select>
+
+    <sql id="market_page_where_query_condition">
+        <where>
+            entrust_range = 1 and entrust_type = 1 and deleted_flag=0
+        </where>
+    </sql>
+
+
+    <sql id="where_query_condition">
+        <where>
+            <trim prefixOverrides="and">
+                <if test="queryParam.groupId != null  ">and group_id = #{queryParam.groupId}</if>
+                <if test="queryParam.entrustRange != null  ">and entrust_range = #{queryParam.entrustRange}</if>
+                <if test="queryParam.entrustType != null  ">and entrust_type = #{queryParam.entrustType}</if>
+                <if test="queryParam.entrustSource != null  ">and entrust_source = #{queryParam.entrustSource}</if>
+                <if test="queryParam.state != null  ">and state = #{queryParam.state}</if>
+            </trim>
+        </where>
+    </sql>
+
+    <resultMap id="finance_entrust_relation_result_mappe"
+               type="com.org.permission.server.org.bean.FinanceEntrustRelationInfoBean">
+        <id property="id" column="id"/>
+        <result property="bizOrgId" column="business_org_id"/>
+        <result property="accountOrgId" column="account_org_id"/>
+        <result property="settleOrgId" column="settment_org_id"/>
+        <result property="defaultFlag" column="default_flag"/>
+        <association property="bizOrgName" column="business_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="settleOrgName" column="settment_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="accountOrgName" column="account_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+
+    <select id="queryPurchaseEntrustRelation" parameterType="java.lang.Long"
+            resultType="com.org.permission.common.org.dto.EntrustRelationOrgInfoDto">
+        SELECT DISTINCT org.id                    AS orgId,
+                        org.org_type              AS orgType,
+                        org.org_code              AS orgCode,
+                        org.org_name              AS orgName,
+                        org.group_id              AS groupId,
+                        rel.warehouse_provider_id AS warehouseProviderId
+        FROM base_entrust_relationship rel
+                 LEFT JOIN base_organization org ON rel.purchase_sale_org_id = org.id
+        WHERE rel.state = 1
+          AND rel.entrust_type = 1
+          AND rel.purchase_sale_org_id = #{purchaseSaleOrgId}
+    </select>
+</mapper>
+

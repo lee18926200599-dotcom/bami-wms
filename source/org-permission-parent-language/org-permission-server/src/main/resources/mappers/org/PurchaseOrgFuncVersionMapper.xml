@@ -1,0 +1,44 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.PurchaseOrgFuncVersionMapper">
+    <!--新版本采购组织职能-->
+    <insert id="addPurchaseFunc">
+        insert into base_organization_function_version(<include refid="insert_base_list"/>)
+        values(
+        #{bean.id},
+        3,
+        #{bean.state},
+        #{bean.orgId},
+        #{reqParam.version},
+        #{bean.payOrgId},
+        #{bean.settleOrgId},
+        #{bean.stockOrgId},
+        #{bean.createdBy},
+        #{bean.createdDate},
+        #{bean.modifiedBy},
+        #{bean.modifiedDate},
+        #{reqParam.versionFlag},
+        #{reqParam.versionStartTime},
+        #{reqParam.versionEndTime}
+        )
+    </insert>
+
+    <sql id="insert_base_list">
+        func_id,
+        function_type,
+        state,
+        org_id,
+        version,
+        default_pay_org_id,
+        default_settlement_org_id,
+        default_stock_org_id,
+        created_by,
+        created_date,
+        modified_by,
+        modified_date,
+        version_flag,
+        version_start_time,
+        version_end_time
+    </sql>
+</mapper>
+

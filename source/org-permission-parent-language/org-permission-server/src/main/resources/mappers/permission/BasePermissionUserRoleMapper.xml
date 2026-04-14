@@ -1,0 +1,168 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionUserRoleMapper">
+
+    <resultMap type="com.org.permission.server.permission.entity.BasePermissionUserRole" id="base_permission_user_roles">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="user_id" jdbcType="BIGINT" property="userId" />
+        <result column="role_id" jdbcType="BIGINT" property="roleId" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="org_id" jdbcType="BIGINT" property="orgId" />
+        <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
+        <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime" />
+        <result column="author_user" jdbcType="BIGINT" property="authorUser" />
+        <result column="author_time" jdbcType="BIGINT" property="authorTime" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+    </resultMap>
+
+    <insert id="addBasePermissionUserRole" parameterType="com.org.permission.server.permission.entity.BasePermissionUserRole" useGeneratedKeys="true" keyProperty="id" >
+        insert into
+            base_permission_user_role(id,user_id,role_id,group_id,org_id,effective_time,expire_time,author_user,author_time,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+        values( #{id,jdbcType=INTEGER},#{userId,jdbcType=BIGINT},#{roleId,jdbcType=INTEGER},#{groupId,jdbcType=BIGINT},#{orgId,jdbcType=BIGINT},#{effectiveTime,jdbcType=BIGINT},#{expireTime,jdbcType=BIGINT},#{authorUser,jdbcType=BIGINT},#{authorTime,jdbcType=BIGINT},#{state,jdbcType=INTEGER},#{createdBy,jdbcType=BIGINT},#{createdName,jdbcType=VARCHAR},#{createdDate,jdbcType=TIMESTAMP},#{modifiedBy,jdbcType=BIGINT},#{modifiedName,jdbcType=VARCHAR},#{modifiedDate,jdbcType=TIMESTAMP})
+    </insert>
+    <update id="delBasePermissionUserRole" parameterType="java.lang.Long">
+        update  base_permission_user_role set state='0' where id=#{id}
+    </update>
+    <delete id="delBasePermissionUserRoleTrue"  parameterType="java.lang.Long">
+        delete from base_permission_user_role where id=#{id}
+    </delete>
+    <update id="updateBasePermissionUserRole" parameterType="com.org.permission.server.permission.entity.BasePermissionUserRole">
+        update base_permission_user_role
+        <set>
+            <if test="userId!=null">
+                user_id=#{userId,jdbcType=BIGINT},
+            </if>
+            <if test="roleId!=null">
+                role_id=#{roleId,jdbcType=INTEGER},
+            </if>
+            <if test="groupId!=null">
+                group_id=#{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId!=null">
+                org_id=#{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="effectiveTime!=null">
+                effective_time=#{effectiveTime,jdbcType=BIGINT},
+            </if>
+            <if test="expireTime!=null">
+                expire_time=#{expireTime,jdbcType=BIGINT},
+            </if>
+            <if test="authorUser!=null">
+                author_user=#{authorUser,jdbcType=BIGINT},
+            </if>
+            <if test="authorTime!=null">
+                author_time=#{authorTime,jdbcType=BIGINT},
+            </if>
+            <if test="state!=null">
+                state=#{state,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy!=null">
+                created_by=#{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdName!=null">
+                created_name=#{createdName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdDate!=null">
+                created_date=#{createdDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="getBasePermissionUserRoleByID" parameterType="java.lang.Long" resultMap="base_permission_user_roles">
+        select * from base_permission_user_role where   id=#{id}
+    </select>
+    <select id="getBasePermissionUserRoleCount" resultType="Integer">
+        select count('1') from base_permission_user_role where state='1'
+    </select>
+    <select id="getBasePermissionUserRoleCountAll" parameterType="String" resultMap="base_permission_user_roles">
+        select count('1') from base_permission_user_role
+    </select>
+    <select id="getListBasePermissionUserRolesByPage" parameterType="com.org.permission.server.permission.vo.BasePermissionUserRoleVo" resultMap="base_permission_user_roles">
+        select * from base_permission_user_role
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionUserRolesByPOJO" parameterType="com.org.permission.server.permission.entity.BasePermissionUserRole" resultMap="base_permission_user_roles">
+        select * from base_permission_user_role
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionUserRolesByPojoPage" parameterType="java.util.Map"  resultMap="base_permission_user_roles">
+        select * from base_permission_user_role where 1=1
+        <if test="pojo.id != null and pojo.id != ''"> and id = #{pojo.id}</if>
+        <if test="pojo.userId != null and pojo.userId != ''"> and user_id = #{pojo.userId}</if>
+        <if test="pojo.roleId != null and pojo.roleId != ''"> and role_id = #{pojo.roleId}</if>
+        <if test="pojo.groupId != null and pojo.groupId != ''"> and group_id = #{pojo.groupId}</if>
+        <if test="pojo.orgId != null and pojo.orgId != ''"> and org_id = #{pojo.orgId}</if>
+        <if test="pojo.effectiveTime != null and pojo.effectiveTime != ''"> and effective_time = #{pojo.effectiveTime}</if>
+        <if test="pojo.expireTime != null and pojo.expireTime != ''"> and expire_time = #{pojo.expireTime}</if>
+        <if test="pojo.authorUser != null and pojo.authorUser != ''"> and author_user = #{pojo.authorUser}</if>
+        <if test="pojo.authorTime != null and pojo.authorTime != ''"> and author_time = #{pojo.authorTime}</if>
+        <if test="pojo.state != null and pojo.state != ''"> and state = #{pojo.state}</if>
+    </select>
+    <sql id="Where_Conditions">
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="id != null  "> and id = #{id}</if>
+            <if test="userId!=null">
+                and user_id=#{userId,jdbcType=BIGINT}
+            </if>
+            <if test="roleId!=null">
+                and role_id=#{roleId,jdbcType=INTEGER}
+            </if>
+            <if test="groupId!=null">
+                and group_id=#{groupId,jdbcType=BIGINT}
+            </if>
+            <if test="orgId!=null">
+                and org_id=#{orgId,jdbcType=BIGINT}
+            </if>
+            <if test="effectiveTime!=null">
+                and effective_time=#{effectiveTime,jdbcType=BIGINT}
+            </if>
+            <if test="expireTime!=null">
+                and expire_time=#{expireTime,jdbcType=BIGINT}
+            </if>
+            <if test="authorUser!=null">
+                and author_user=#{authorUser,jdbcType=BIGINT}
+            </if>
+            <if test="authorTime!=null">
+                and author_time=#{authorTime,jdbcType=BIGINT}
+            </if>
+            <if test="state!=null">
+                and state=#{state,jdbcType=INTEGER}
+            </if>
+            <if test="createdBy!=null">
+                and created_by=#{createdBy,jdbcType=BIGINT}
+            </if>
+            <if test="createdName!=null">
+                and created_name=#{createdName,jdbcType=VARCHAR}
+            </if>
+            <if test="createdDate!=null">
+                and created_date=#{createdDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedBy!=null">
+                and modified_by=#{modifiedBy,jdbcType=BIGINT}
+            </if>
+            <if test="modifiedName!=null">
+                and modified_name=#{modifiedName,jdbcType=VARCHAR}
+            </if>
+            <if test="modifiedDate!=null">
+                and modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+</mapper>
+

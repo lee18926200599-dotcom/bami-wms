@@ -1,0 +1,338 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.FinanceEntrustRelationMapper">
+
+    <!-- 新增财务业务委托关 -->
+    <insert id="addFinanceEntrustRelation" parameterType="com.org.permission.server.org.bean.FinanceEntrustRelationBean">
+        insert into base_entrust_relationship(
+        <include refid="finance_insert_base_list"/>
+        )
+        values(
+        #{bean.groupId},
+        #{bean.entrustRange},
+        #{bean.entrustType},
+        #{bean.entrustSource},
+        #{bean.entrustSourceId},
+        #{bean.defaultFlag},
+        #{bean.state},
+        #{bean.bizOrgId},
+        #{bean.accountOrgId},
+        #{bean.settleOrgId},
+        #{bean.remark},
+        #{bean.createdBy},
+        #{bean.createdName},
+        #{bean.createdDate}
+        )
+    </insert>
+
+    <insert id="batchAddFinanceEntrustRelation">
+        insert into base_entrust_relationship(
+        <include refid="finance_insert_base_list"/>
+        )
+        values
+        <foreach collection="beans" item="bean" separator=",">
+            (
+            #{bean.groupId},
+            #{bean.entrustRange},
+            #{bean.entrustType},
+            #{bean.entrustSource},
+            #{bean.entrustSourceId},
+            #{bean.defaultFlag},
+            #{bean.state},
+            #{bean.bizOrgId},
+            #{bean.accountOrgId},
+            #{bean.settleOrgId},
+            #{bean.remark},
+            #{bean.createdBy},
+            #{bean.createdName},
+            #{bean.createdDate}
+            )
+        </foreach>
+    </insert>
+
+    <!--更新财务业务委托关 -->
+    <update id="updateFinanceEntrustRelation" parameterType="com.org.permission.server.org.bean.FinanceEntrustRelationBean">
+        update base_entrust_relationship set
+        default_flag= #{bean.defaultFlag},
+        business_org_id=#{bean.bizOrgId},
+        account_org_id=#{bean.accountOrgId},
+        settment_org_id = #{bean.settleOrgId},
+        remark = #{bean.remark},
+        modified_by = #{bean.modifiedBy},
+        state=#{bean.state},
+        modified_name=#{bean.modifiedName},
+        modified_date = #{bean.modifiedDate}
+        where id = #{bean.id}
+    </update>
+
+    <!--更新默认财务业务委托关 -->
+    <update id="updateBUProductFinanceEntrustRelation" parameterType="com.org.permission.server.org.bean.FinanceEntrustRelationBean">
+        update base_entrust_relationship set
+        account_org_id=#{bean.accountOrgId},
+        settment_org_id = #{bean.settleOrgId},
+        modified_by = #{bean.modifiedBy},
+        modified_name=#{bean.modifiedName},
+        modified_date = #{bean.modifiedDate}
+        where business_org_id = #{bean.bizOrgId}
+        and entrust_source = 4
+        and entrust_range = 2
+        and entrust_type = 6
+    </update>
+
+    <!--更新级联的财务业务委托关 -->
+    <update id="cascadeUpdateFinanceEntrustRelation" parameterType="com.org.permission.server.org.bean.FinanceEntrustRelationBean">
+        update base_entrust_relationship set
+        account_org_id=#{bean.accountOrgId},
+        settment_org_id = #{bean.settleOrgId},
+        modified_by = #{bean.modifiedBy},
+        modified_name=#{bean.modifiedName},
+        modified_date = #{bean.modifiedDate}
+        where entrust_source = 0 and entrust_source_id = #{bean.entrustSourceId} and entrust_range = 2 and entrust_type = 6
+    </update>
+
+    <!-- 根据业务组织，查询集团内财务委托关系 -->
+    <select id="queryFinanceEntrustRelationByOrgIdLock" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.FinanceEntrustRelationBean">
+        select
+        id as id,
+        default_flag as defaultFlag,
+        state as state,
+        business_org_id as bizOrgId,
+        settment_org_id as settleOrgId,
+        account_org_id as accountOrgId
+        FROM base_entrust_relationship
+        WHERE business_org_id = #{businuessOrgId} and entrust_type = 6 and entrust_range= 2 and deleted_flag=0
+    </select>
+
+    <!-- 根据委托关系 ID，查询集团内某业务组织的所有财务委托关系 -->
+    <select id="queryBizOrgFinanceEntrustRelByEntrustIdLock" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.FinanceEntrustRelationBean">
+        select
+        id as id,
+        default_flag as defaultFlag,
+        state as state,
+        business_org_id as bizOrgId,
+        settment_org_id as settleOrgId,
+        account_org_id as accountOrgId
+        FROM base_entrust_relationship
+        WHERE business_org_id =
+        (select business_org_id from base_entrust_relationship where id = #{entrustId})
+        and entrust_type = 6 and entrust_range= 2 and deleted_flag=0
+    </select>
+
+    <!--级联启停用委托关系-->
+    <update id="cascadeEnableEntrustRelation" parameterType="com.org.permission.common.org.param.EnableOperateParam">
+        update base_entrust_relationship set
+        state = #{bean.state},
+        <if test="bean.state == 1">
+            start_time = #{modifiedDate},
+        </if>
+        <if test="bean.state == 2">
+            stop_time = #{modifiedDate},
+        </if>
+        modified_by = #{bean.userId},
+        modified_name = #{bean.userName},
+        modified_date = #{modifiedDate}
+        where entrust_source = 0 and entrust_source_id = #{bean.id}
+    </update>
+
+    <select id="queryFinanceEntrustRelByBean" parameterType="com.org.permission.server.org.bean.FinanceEntrustRelationBean"
+            resultType="java.lang.Long">
+        select id from base_entrust_relationship
+        where entrust_type = 6
+        and deleted_flag=0
+        and business_org_id = #{newBean.bizOrgId}
+        and account_org_id = #{newBean.accountOrgId}
+        and settment_org_id = #{newBean.settleOrgId}
+        limit 1
+    </select>
+
+    <update id="cleanFinanceEntrustRelationByFinanceOrgId" parameterType="java.lang.Long">
+        update base_entrust_relationship set
+        account_org_id = 0,
+        settment_org_id=0,
+        pay_receive_org_id=0
+        where account_org_id = #{financeOrgId}
+        or settment_org_id=#{financeOrgId}
+        or pay_receive_org_id=#{financeOrgId}
+    </update>
+
+    <sql id="finance_insert_base_list">
+        group_id,
+        entrust_range,
+        entrust_type,
+        entrust_source,
+        entrust_source_id,
+        default_flag,
+        state,
+        business_org_id,
+        account_org_id,
+        settment_org_id,
+        remark,
+        created_by,
+        created_name,
+        created_date
+    </sql>
+
+    <!--统计财务委托关系-->
+    <select id="countFinanceEntrustRelation" parameterType="com.org.permission.server.org.dto.param.FinanceEntrustRelationReqParam"
+            resultType="integer">
+        select count(id) from base_entrust_relationship
+        <include refid="finance_page_where_query_condition"/>
+    </select>
+
+
+
+    <!--查询财务委托关系列表-->
+    <select id="queryFinanceEntrustRelationList" parameterType="com.org.permission.server.org.dto.param.FinanceEntrustRelationReqParam"
+            resultMap="finance_entrust_relation_result_map">
+        select
+        id,
+        business_org_id,
+        settment_org_id,
+        account_org_id,
+        state,
+        created_by,
+        created_date,
+        remark,
+        modified_by,modified_name,
+        modified_date
+        from base_entrust_relationship
+        <include refid="finance_page_where_query_condition"/>
+    </select>
+
+    <!--查询财务委托关系-->
+    <select id="queryFinanceEntrustRelation" parameterType="com.org.permission.common.org.param.QueryFinanceEntrustRelationParam"
+            resultMap="finance_entrust_relation_result_map">
+        SELECT
+        id,
+        business_org_id,
+        settment_org_id,
+        account_org_id,
+        default_flag
+        FROM base_entrust_relationship
+        WHERE
+        entrust_type = 6 and state = 1
+        <if test="queryParam.bizOrgId != null and  queryParam.bizOrgId > 0">
+            and business_org_id = #{queryParam.bizOrgId}
+        </if>
+        <if test="queryParam.settleOrgId != null and  queryParam.settleOrgId > 0">
+            and settment_org_id = #{queryParam.settleOrgId}
+        </if>
+        <if test="queryParam.accountOrgId != null and  queryParam.accountOrgId > 0">
+            and account_org_id = #{queryParam.accountOrgId}
+        </if>
+    </select>
+
+    <select id="queryFinanceEntrustByOrgIdAndSettleOrgAndAccountOrg" parameterType="com.org.permission.common.org.param.QueryFinanceEntrustRelationParam" resultType="integer">
+        select id from  base_entrust_relationship
+        WHERE
+        entrust_type = 6 and deleted_flag=0
+        <if test="queryParam.bizOrgId != null and  queryParam.bizOrgId > 0">
+            and business_org_id = #{queryParam.bizOrgId}
+        </if>
+        <if test="queryParam.settleOrgId != null and  queryParam.settleOrgId > 0">
+            and settment_org_id = #{queryParam.settleOrgId}
+        </if>
+        <if test="queryParam.accountOrgId != null and  queryParam.accountOrgId > 0">
+            and account_org_id = #{queryParam.accountOrgId}
+        </if>
+    </select>
+
+    <!--根据组织角色查询采销委托关系-->
+    <select id="queryFinanceEntrustRelationByOrgRole" resultMap="finance_entrust_relation_result_map">
+        SELECT
+        id,
+        business_org_id,
+        settment_org_id,
+        account_org_id
+        FROM base_entrust_relationship
+        WHERE
+        entrust_type = 6 and state = 1
+        <if test="orgRole == 1">
+            and business_org_id in (
+            <foreach collection="orgIds" item="orgId" separator=",">
+                #{orgId}
+            </foreach>
+            )
+        </if>
+        <if test="orgRole == 2">
+            and account_org_id in (
+            <foreach collection="orgIds" item="orgId" separator=",">
+                #{orgId}
+            </foreach>
+            )
+        </if>
+        <if test="orgRole == 3">
+            and settment_org_id in (
+            <foreach collection="orgIds" item="orgId" separator=",">
+                #{orgId}
+            </foreach>
+            )
+        </if>
+    </select>
+
+    <sql id="finance_page_where_query_condition">
+        <where>
+            group_id = #{queryParam.groupId} and entrust_range = 2 and entrust_type = 6 and deleted_flag=0
+            <if test="queryParam.state !=null">
+                and state=#{queryParam.state}
+            </if>
+            <if test="queryParam.defaultFlag !=null">
+                and default_flag=#{queryParam.defaultFlag}
+            </if>
+            <if test="queryParam.conditionId !=null and queryParam.conditionId !=0">
+                and
+                (
+                business_org_id =#{queryParam.conditionId}
+                or
+                account_org_id = #{queryParam.conditionId}
+                or
+                settment_org_id =#{queryParam.conditionId}
+                )
+            </if>
+        </where>
+    </sql>
+
+    <resultMap id="finance_entrust_relation_result_map" type="com.org.permission.server.org.bean.FinanceEntrustRelationInfoBean">
+        <result property="id" column="id"/>
+        <result property="bizOrgId" column="business_org_id"/>
+        <result property="accountOrgId" column="account_org_id"/>
+        <result property="settleOrgId" column="settment_org_id"/>
+        <result property="remark" column="remark"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="modifiedBy" column="modified_by"/>
+        <result property="modifiedName" column="modified_name"/>
+        <result property="modifiedDate" column="modified_date"/>
+        <result property="defaultFlag" column="default_flag"></result>
+        <association property="bizOrgName" column="business_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="accountOrgName" column="account_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="settleOrgName" column="settment_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+
+    <!--查询财务委托关系-->
+    <select id="queryFinanceEntrustRelationBatch"
+            resultMap="finance_entrust_relation_result_map">
+        SELECT
+        id,
+        business_org_id,
+        settment_org_id,
+        account_org_id,
+        default_flag
+        FROM base_entrust_relationship
+        WHERE
+        entrust_type = 6 and state = 1
+        <if test="orgIds != null and orgIds.size > 0 ">
+            and business_org_id in
+            <foreach collection="orgIds" index="index" item="orgId" open="(" separator="," close=")">
+                #{orgId}
+            </foreach>
+        </if>
+        group by business_org_id
+    </select>
+</mapper>
+

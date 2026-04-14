@@ -1,0 +1,145 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.OrgBankMapper">
+    <sql id="base_insert_list">
+      id,
+      group_id,
+      bu_id,
+      account_id,
+      added_value_tax,
+      user_id,
+      state,
+      created_by,
+      created_date
+	</sql>
+
+    <!--绑定-->
+    <insert id="binding" parameterType="com.org.permission.server.org.bean.OrgBankAccountBean">
+        insert into base_org_bank_account_rel(
+        <include refid="base_insert_list"/>
+        )
+        values
+        (
+        #{bean.id},
+        #{bean.groupId},
+        #{bean.buId},
+        #{bean.accountId},
+        #{bean.addedValueTax},
+        #{bean.userId},
+        #{bean.state},
+        #{bean.createdBy},
+        #{bean.createdDate}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.org.permission.server.org.bean.OrgBankAccountBean">
+        update  base_org_bank_account_rel
+        <trim prefix="set" suffixOverrides=",">
+            <if test="bean.addedValueTax !=null">
+                added_value_tax=#{bean.addedValueTax},
+            </if>
+            <if test="bean.userId !=null and bean.userId != 0">
+                user_id=#{bean.userId},
+            </if>
+            <if test="bean.state !=null and bean.state != 0">
+                state=#{bean.state},
+            </if>
+            <if test="bean.modifiedBy !=null and bean.modifiedBy != 0">
+                modified_by=#{bean.modifiedBy},
+            </if>
+            <if test="bean.modifiedDate !=null and bean.modifiedDate != 0">
+                modified_date=#{bean.modifiedDate},
+            </if>
+        </trim>
+        where id = #{bean.id}
+    </update>
+
+    <!--解绑-->
+    <update id="unbinding" parameterType="com.org.permission.common.org.param.KeyOperateParam">
+        update base_org_bank_account_rel set state = 4 where id =  #{bean.id}
+    </update>
+
+    <!--启停用-->
+    <update id="enable" parameterType="com.org.permission.common.org.param.EnableOperateParam">
+    update base_org_bank_account_rel set
+    state = #{bean.state},
+    modified_by = #{bean.userId},
+    modified_date = now()
+    where id = #{bean.id}
+    </update>
+
+    <select id="getByIdLock" parameterType="java.lang.Long" resultType="com.org.permission.server.org.bean.OrgBankAccountBean">
+        select
+        id as id,
+        group_id as groupId,
+        bu_id as buId,
+        account_id as accountId,
+        added_value_tax as addedValueTax,
+        state as state
+        from base_org_bank_account_rel where id= #{id}
+    </select>
+
+
+    <select id="countOrgBankAccout" parameterType="com.org.permission.common.org.param.BankAccountQueryParam" resultType="integer">
+        select count(id) from base_org_bank_account_rel
+        <include refid="page_query_condition"/>
+    </select>
+
+    <select id="queryOrgBankAccout" parameterType="com.org.permission.common.org.param.BankAccountQueryParam" resultMap="base_info_result_map">
+        select id,group_id,bu_id,account_id,added_value_tax,state,user_id
+        from base_org_bank_account_rel
+        <include refid="page_query_condition"/>
+
+    </select>
+
+    <select id="queryAccountIdById" resultType="integer">
+        select account_id as accountId from base_org_bank_account_rel where id =#{id}
+    </select>
+
+    <!--分页查询条件-->
+    <sql id="page_query_condition">
+        <trim prefixOverrides="and">
+            <where>
+                <if test="queryParam.groupId != null and queryParam.groupId > 0">
+                    and group_id = #{queryParam.groupId}
+                </if>
+                <if test="queryParam.buId != null and queryParam.buId > 0 and queryParam.groupId != queryParam.buId">
+                    and bu_id = #{queryParam.buId}
+                </if>
+                <if test="queryParam.buIds !=null and queryParam.buIds.size>0">
+                    and bu_id in
+                    <foreach collection="queryParam.buIds" separator="," item="item" open="(" close=")">
+                        #{item}
+                    </foreach>
+                </if>
+
+                <if test="queryParam.state != null">
+                    and state = #{queryParam.state}
+                </if>
+
+            </where>
+        </trim>
+    </sql>
+    <!--基础信息查询列表-->
+    <sql id="base_into_query_list">
+        id,
+        group_id,
+        bu_id,
+        account_id,
+        added_value_tax
+    </sql>
+    <!--基础信息封装结果-->
+    <resultMap id="base_info_result_map" type="com.org.permission.server.org.bean.OrgBankAccountInfoBean">
+        <id property="id" column="id"/>
+        <result property="groupId" column="group_id"/>
+        <result property="buId" column="bu_id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="addedValueTax" column="added_value_tax"/>
+        <result property="state" column="state"/>
+        <result property="userId" column="user_id"></result>
+        <association property="groupName" column="group_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="buName" column="bu_id" select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+</mapper>
+

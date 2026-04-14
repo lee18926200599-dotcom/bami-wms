@@ -1,0 +1,633 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.CommonOrgMapper">
+
+    <!--统计客商绑定的（未删除态）组织数量-->
+    <select id="countOrgByCustId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        SELECT COUNT(id) from base_organization where cust_id = #{custId} and deleted_flag = 0
+    </select>
+
+    <!-- 启用组织 -->
+    <update id="enableOrg">
+        update base_organization set
+        state = 1,
+        init_flag = 1,
+        start_time = #{modifiedDate},
+        modified_by = #{userId},
+        modified_date = #{modifiedDate}
+        where id = #{orgId}
+    </update>
+
+    <!--停用组织-->
+    <update id="disableOrg">
+        update base_organization set
+        state = 2,
+        stop_time = #{modifiedDate},
+        modified_by = #{userId},
+        modified_date = #{modifiedDate}
+        where id = #{orgId}
+    </update>
+
+    <!--批量停用组织-->
+    <update id="batchDisableOrg">
+        update base_organization set
+        state = #{state},
+        start_time = now(),
+        modified_by = #{userId},
+        modified_date = now()
+        where id in(
+        <foreach collection="orgIds" separator="," item="orgId">
+            #{orgId}
+        </foreach>
+        )
+        and org_type= #{orgType}
+    </update>
+
+
+    <!-- 级联停用组织及子组织 -->
+    <update id="cascadeDisableGroupOrg">
+        update base_organization set
+        state = 2,
+        stop_time =#{bean.enableTime},
+        modified_by = #{bean.userId},
+        modified_date =#{bean.enableTime}
+        where group_id = #{bean.id} and deleted_flag=0
+    </update>
+
+    <!-- 伪删除组织 -->
+    <update id="deleteOrgById">
+        update  base_organization set deleted_flag= 1 ,modified_by=#{userId} ,modified_date=now() where id=#{orgId}
+    </update>
+
+    <!--根据集团ID查询集团客商信息（锁）-->
+    <select id="queryOrgCustInfoLock" parameterType="com.org.permission.common.org.param.SyncCustBizTypeParam"
+            resultType="com.org.permission.server.org.bean.OrgCustInfoBean">
+        select
+        id as orgId,
+        org_type as orgType,
+        group_id as groupId,
+        cust_id as custId,
+        business_type as businessType,
+        state as state,
+        init_flag as initFlag
+        from base_organization
+        where id=#{queryParam.groupId}
+    </select>
+
+    <!--修改集团业务类型-->
+    <update id="modifyOrgBizType">
+        update base_organization set
+        business_type = #{newBizType},
+        modified_by = #{operatorId},
+        modified_date = now()
+        where id = #{id}
+    </update>
+
+    <!-- 根据组织ID,查询组织类型信息 -->
+    <select id="queryEnableOrgTypeByOrgId" parameterType="java.lang.Long" resultType="com.org.permission.server.org.bean.OrgTypeBean">
+        SELECT id,
+               org_type AS orgType,
+               state    AS state
+        FROM base_organization
+        WHERE id = #{orgId}
+          and state = 1
+    </select>
+
+    <!-- 根据组织ID,查询组织类型信息 -->
+    <select id="queryOrgListByCustId" parameterType="java.lang.Long" resultType="com.org.permission.server.org.bean.OrgListBean">
+        SELECT id            as id,
+               org_code      as orgCode,
+               group_id      as groupId,
+               org_type      as orgType,
+               org_name      as orgName,
+               state         as state,
+               main_org_flag as rootOrg
+        FROM base_organization
+        WHERE cust_id = #{custId}
+          and org_type = 3
+          and state = 1
+    </select>
+    <!-- 根据组织ID,查询该组织所属集团下的所有组织结构信息 -->
+    <select id="queryGroupEnableOrgTreeByOrgId" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.OrgTreeBean">
+        SELECT id,
+               group_id      AS groupId,
+               org_type      AS orgType,
+               parent_id     AS parentId,
+               org_code      AS orgCode,
+               parent_bu_id  AS parentBUId,
+               org_name      AS orgName,
+               state         AS state,
+               main_org_flag AS mainOrgFlag
+        FROM base_organization
+        WHERE group_id = (SELECT group_id
+                          FROM base_organization
+                          WHERE id = #{orgId})
+          AND state = 1
+    </select>
+
+    <!-- 根据组织ID,查询未删除的组织结构信息 -->
+    <select id="queryGroupNotStopOrgTreeByOrgId" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.OrgTreeBean">
+        select id,
+               group_id      AS groupId,
+               org_type      AS orgType,
+               parent_id     AS parentId,
+               org_code      AS orgCode,
+               parent_bu_id  AS parentBUId,
+               org_name      AS orgName,
+               state         AS state,
+               main_org_flag AS mainOrgFlag
+        FROM base_organization
+        WHERE group_id = (SELECT group_id
+                          FROM base_organization
+                          WHERE id = #{orgId})
+          AND deleted_flag=0
+    </select>
+
+
+    <!--根据组织ID,查询该组织所属集团下的组织结构信息（不含部门）-->
+    <select id="queryGroupOrgTreeNotContainDepByOrgId" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.OrgTreeBean">
+        SELECT id,
+               group_id      AS groupId,
+               org_type      AS orgType,
+               parent_id     AS parentId,
+               org_code      AS orgCode,
+               parent_bu_id  AS parentBUId,
+               org_name      AS orgName,
+               state         AS state,
+               main_org_flag AS mainOrgFlag,
+               cust_id       as custId,
+               business_type as bizType
+        FROM base_organization
+        WHERE group_id = (SELECT group_id
+                          FROM base_organization
+                          WHERE id = #{orgId})
+          AND state = 1
+          and org_type in (2, 3)
+    </select>
+
+    <!--根据组织ID,查询组织名称-->
+    <select id="queryOrgNameByOrgId" resultType="string" parameterType="java.lang.Long">
+        SELECT org_name
+        FROM base_organization
+        WHERE id = #{orgId}
+    </select>
+
+    <!--根据组织ID,查询组织编码-->
+    <select id="queryOrgCodeByOrgId" resultType="string" parameterType="java.lang.Long">
+        SELECT org_code
+        FROM base_organization
+        WHERE id = #{orgId}
+    </select>
+
+    <!-- 根据组织ID,查询该组织结构信息 -->
+    <select id="queryOrgHierarchyInfoByOrgId" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.OrgTreeBean">
+        SELECT id,
+               group_id      AS groupId,
+               org_type      AS orgType,
+               parent_id     AS parentId,
+               org_code      AS orgCode,
+               parent_bu_id  AS parentBUId,
+               org_name      AS orgName,
+               state         AS state,
+               main_org_flag AS mainOrgFlag
+        FROM base_organization
+        WHERE id = #{orgId}
+          AND deleted_flag=0
+    </select>
+
+    <!-- 根据组织ID，查询组织信息及组织功能信息 -->
+    <select id="queryOrgAndFuncInfo" parameterType="java.lang.Long"
+            resultMap="com.org.permission.server.org.mapper.BizUnitMapper.org_and_func_info">
+        select org.id,
+               org.main_org_flag,
+               org.state,
+               org.org_name,
+               org.group_id,
+               org.parent_id,
+               org.cust_id,
+               org.org_type,
+               org.org_code,
+               org.parent_bu_id,
+               org.org_short_name,
+               org.industry_code,
+               org.industry_name,
+               org.business_type,
+               org.company_id,
+               org.region_code,
+               org.region_name,
+               org.province_code,
+               org.province_name,
+               org.city_code,
+               org.city_name,
+               org.district_code,
+               org.district_name,
+               org.street_code,
+               org.street_name,
+               org.address,
+               org.phone,
+               org.email,
+               org.dep_duty_staff,
+               func.function_type,
+               func.state
+        from base_organization org
+                 LEFT JOIN base_organization_function func on org.id = func.org_id
+        where org.id = #{orgId}
+    </select>
+
+    <!--根据组织名称查询启用的组织信息-->
+    <select id="queryEnableOrgByName" parameterType="string" resultType="com.org.permission.server.org.bean.OrgTreeBean">
+        SELECT id,
+               group_id      AS groupId,
+               org_type      AS orgType,
+               parent_id     AS parentId,
+               org_code      AS orgCode,
+               parent_bu_id  AS parentBUId,
+               org_name      AS orgName,
+               state         AS state,
+               main_org_flag AS mainOrgFlag
+        FROM base_organization
+        WHERE state = 1
+          and org_type in (2, 3)
+          and org_name LIKE CONCAT('%',#{orgName},'%')
+    </select>
+
+    <!--查询集团所有启用的业务单元以上的组织信息-->
+    <select id="queryGroupAllEnableOrg" resultType="com.org.permission.server.org.bean.OrgTreeBean">
+        SELECT
+        id ,
+        group_id AS groupId ,
+        org_type AS orgType,
+        parent_id AS parentId ,
+        org_code AS orgCode,
+        parent_bu_id AS parentBUId ,
+        org_name AS orgName ,
+        state AS state,
+        main_org_flag AS mainOrgFlag
+        FROM
+        base_organization
+        WHERE state = 1 and group_id in
+        <foreach collection="groupIds" open="(" separator="," close=")" item="groupId">
+            #{groupId}
+        </foreach>
+    </select>
+
+    <!--批量查询组织组织信息-->
+    <select id="queryAllEnableOrgWithSepicalFunc" resultType="com.org.permission.server.org.bean.OrgTreeBean">
+        SELECT DISTINCT
+        org.id ,
+        org.group_id AS groupId ,
+        org.org_type AS orgType,
+        org.parent_id AS parentId ,
+        org.org_code AS orgCode,
+        org.parent_bu_id AS parentBUId ,
+        org.org_name AS orgName ,
+        org.state AS state,
+        org.main_org_flag AS mainOrgFlag
+        FROM base_organization org LEFT JOIN base_organization_function fun ON org.id = fun.org_id
+        WHERE org.state = 1 and org.org_type in (2,3) and org.group_id = #{groupId} and org.id in
+        <foreach collection="orgIds" open="(" separator="," close=")" item="orgId">
+            #{orgId}
+        </foreach>
+        <if test="funcs != null and funcs.size > 0">
+            AND fun.function_type in (
+            <foreach collection="funcs" separator="," item="func">
+                #{func}
+            </foreach>
+            )
+        </if>
+    </select>
+
+
+    <!--根据条件查询组织列表-->
+    <select id="queryOrgListByCondition"
+            parameterType="com.org.permission.common.org.param.QueryOrgListConditionParam"
+            resultType="com.org.permission.common.org.dto.OrgInfoDto">
+        SELECT
+        id as id,
+        org_type AS orgType,
+        org_code AS orgCode,
+        org_name AS orgName ,
+        main_org_flag AS mainOrgFlag
+        FROM
+        base_organization
+        WHERE state = 1
+        <if test="queryParam.orgName != null and queryParam.orgName != ''">
+            and org_name like CONCAT('%',#{queryParam.orgName},'%')
+        </if>
+        <if test="queryParam.orgCode != null and queryParam.orgCode != ''">
+            and org_code like CONCAT('%',#{queryParam.orgCode},'%')
+        </if>
+        <if test="queryParam.keyWord != null and queryParam.keyWord != ''">
+            and (org_name like CONCAT('%',#{queryParam.keyWord},'%') or org_code like CONCAT('%',#{queryParam.keyWord},'%'))
+        </if>
+        <if test="queryParam.orgId != null">
+            and parent_bu_id = #{queryParam.orgId}
+        </if>
+    </select>
+
+    <!--批量查询组织信息 -->
+    <select id="batchQueryOrgInfo" parameterType="com.org.permission.common.query.BatchQueryParam"
+            resultMap="batch_query_org_with_funcs_map">
+        select
+        id,
+        group_id,
+        parent_id,
+        org_type,
+        org_code,
+        org_name,
+        cust_id,
+        state,
+        parent_bu_id,
+        business_type,
+        created_date
+        FROM
+        base_organization
+        where deleted_flag=0
+        <if test="queryParam.ids !=null and queryParam.ids.size>0">
+            and id in (
+            <foreach collection="queryParam.ids" separator="," item="id">
+                #{id}
+            </foreach>
+            )
+        </if>
+        <if test="queryParam.orgTypes != null and queryParam.orgTypes.size > 0 ">
+            and org_type in (
+            <foreach collection="queryParam.orgTypes" separator="," item="orgType">
+                #{orgType}
+            </foreach>
+            )
+        </if>
+        <if test="queryParam.codes != null and queryParam.codes.size > 0">
+            and org_code in
+            <foreach collection="queryParam.codes" open="(" separator="," close=")" item="orgCode">
+                #{orgCode}
+            </foreach>
+        </if>
+        <if test="queryParam.names != null and queryParam.names.size > 0">
+            and org_name in
+            <foreach collection="queryParam.names" open="(" separator="," close=")" item="orgName">
+                #{orgName}
+            </foreach>
+        </if>
+        <if test="queryParam.orgName !=null and queryParam.orgName !='' ">
+            and org_name like CONCAT('%',#{queryParam.orgName},'%')
+        </if>
+        <if test="queryParam.state !=null and queryParam.state !=0">
+            and state=#{queryParam.state}
+        </if>
+        <if test="queryParam.parentBuId !=null and queryParam.parentBuId != 0">
+            and parent_bu_id =#{queryParam.parentBuId}
+        </if>
+        <if test="queryParam.parentId !=null and queryParam.parentId != 0">
+            and parent_id =#{queryParam.parentId}
+        </if>
+        <if test="queryParam.groupId !=null and queryParam.groupId !=0">
+            and group_id=#{queryParam.groupId}
+        </if>
+    </select>
+
+    <select id="batchQueryOrganizations" parameterType="com.org.permission.common.query.BatchQueryParam"
+            resultMap="basic_org_info_resultMap">
+        select
+        id,
+        group_id,
+        parent_id,
+        org_type,
+        org_code,
+        org_name,
+        cust_id,
+        state,
+        parent_bu_id,
+        business_type,
+        phone,
+        main_org_flag,
+        created_date
+        FROM
+        base_organization
+        where deleted_flag=0
+        <if test="queryParam.ids !=null and queryParam.ids.size>0">
+            and id in (
+            <foreach collection="queryParam.ids" separator="," item="id">
+                #{id}
+            </foreach>
+            )
+        </if>
+        <if test="queryParam.orgTypes != null and queryParam.orgTypes.size > 0 ">
+            and org_type in (
+            <foreach collection="queryParam.orgTypes" separator="," item="orgType">
+                #{orgType}
+            </foreach>
+            )
+        </if>
+        <if test="queryParam.orgName !=null and queryParam.orgName !='' ">
+            and org_name like  CONCAT('%',#{queryParam.orgName},'%')
+        </if>
+
+        <if test="queryParam.creditCode !=null and queryParam.creditCode !='' ">
+            and credit_code like  CONCAT('%',#{queryParam.creditCode},'%')
+        </if>
+
+        <if test="queryParam.state !=null and queryParam.state !=0">
+            and state=#{queryParam.state}
+        </if>
+        <if test="queryParam.parentBuId !=null and queryParam.parentBuId != 0">
+            and parent_bu_id =#{queryParam.parentBuId}
+        </if>
+        <if test="queryParam.parentId !=null and queryParam.parentId != 0">
+            and parent_id =#{queryParam.parentId}
+        </if>
+        <if test="queryParam.groupId !=null and queryParam.groupId !=0">
+            and group_id=#{queryParam.groupId}
+        </if>
+        <if test="queryParam.orgNameRightLike !=null and queryParam.orgNameRightLike !='' ">
+            and org_name like CONCAT(#{queryParam.orgNameRightLike},'%')
+        </if>
+    </select>
+
+
+    <select id="findOrgList" resultMap="basic_org_info_resultMap">
+        select a.*,
+        b.org_name as parentBuName,
+        c.org_name as parentName
+        from base_organization a
+        left join base_organization b
+        on a.`parent_bu_id` = b.`id`
+        left join base_organization c
+        on a.parent_id =c.id
+        where a.deleted_flag=0
+        <if test="queryParam.parentId !=null and queryParam.parentId != 0">
+            and a. parent_id =#{queryParam.parentId}
+        </if>
+        <if test="queryParam.parentBuIds !=null and queryParam.parentBuIds.size > 0">
+            and a.parent_bu_id in (
+            <foreach collection="queryParam.parentBuIds" separator="," item="item">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="queryParam.orgCode !=null and queryParam.orgCode != ''">
+            and a.org_code LIKE  CONCAT('%',#{queryParam.orgCode},'%')
+        </if>
+        <if test="queryParam.orgName !=null and queryParam.orgName != ''">
+            and a.org_name like CONCAT('%',#{queryParam.orgName},'%')
+        </if>
+        <if test="queryParam.state != null">
+            and a.state =#{queryParam.state}
+        </if>
+        <if test="queryParam.orgType != null and queryParam.orgType != 0">
+            and a.org_type =#{queryParam.orgType}
+        </if>
+    </select>
+
+    <select id="getOrgInfoById" parameterType="java.lang.Long"
+            resultType="com.org.permission.common.org.dto.OrgInfoDto">
+        select
+        id,
+        group_id,
+        parent_id,
+        org_type,
+        org_code,
+        org_name,
+        cust_id,
+        state,
+        parent_bu_id,
+        business_type,
+        created_date
+        FROM
+        base_organization
+        where state =1
+        <if test="id !=null and id != 0">
+            and id =#{id}
+        </if>
+    </select>
+
+    <select id="batchQueryOrgInfoByCondition" parameterType="com.org.permission.common.query.BatchQueryParam"
+            resultType="com.org.permission.common.org.dto.OrgInfoDto">
+        select
+        id,
+        group_id as groupId,
+        parent_id as parentId,
+        org_type as orgType,
+        org_code as orgCode,
+        org_name as orgName,
+        cust_id as custId,
+        state,
+        created_date as createdDate
+        FROM
+        base_organization
+        where state=1
+        <if test="queryParam.ids !=null and queryParam.ids.size>0">
+            and id in (
+            <foreach collection="queryParam.ids" separator="," item="id">
+                #{id}
+            </foreach>
+            )
+        </if>
+    </select>
+
+
+    <select id="queryDepInfoByUserIdAndOrgId"
+            parameterType="com.org.permission.common.org.param.QueryPermissionOrgInfoParam"
+            resultMap="department_Info_resultMap">
+        select id,
+               org_name,
+               cust_id,
+               group_id,
+               province_name,
+               province_code,
+               city_code,
+               city_name,
+               district_code,
+               district_name,
+               street_code,
+               address,
+               street_name
+        from base_organization
+        where id = #{reqParam.orgId}
+    </select>
+
+    <select id="queryOrgIdByName" resultType="java.lang.Long">
+        select id from base_organization where org_name =#{orgName} and org_type=#{orgType} and state=1
+        <if test="groupId !=null and groupId !=0">
+            and group_id=#{groupId}
+        </if>
+        <if test="buId !=null and buId !=0">
+            and parent_bu_id=#{buId}
+        </if>
+    </select>
+    <select id="batchQueryOrgInfoNofuc" resultType="com.org.permission.common.org.dto.OrgInfoDto">
+        select * from base_organization where deleted_flag=0
+        <if test="queryParam.ids !=null and queryParam.ids.size>0">
+            and id in (
+            <foreach collection="queryParam.ids" separator="," item="id">
+                #{id}
+            </foreach>
+            )
+        </if>
+        <if test="queryParam.state !=null ">
+            and state=#{queryParam.state}
+        </if>
+        <if test="queryParam.parentId !=null and queryParam.parentId != 0">
+            and parent_id=#{queryParam.parentId}
+        </if>
+    </select>
+
+    <!--批量查询组织信息及其组织职能-->
+    <resultMap id="batch_query_org_with_funcs_map" type="com.org.permission.common.org.dto.OrgInfoDto">
+        <id property="id" column="id"/>
+        <result property="orgName" column="org_name"/>
+        <result property="parentId" column="parent_Id"/>
+        <result property="orgType" column="org_type"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="orgName" column="org_name"/>
+        <result property="state" column="state"/>
+        <result property="parentBuId" column="parent_bu_id"/>
+        <result property="businessType" column="business_type"/>
+        <result property="custId" column="cust_id"></result>
+        <result property="createdDate" column="created_date"></result>
+        <association property="orgFuncs" column="id"
+                     select="com.org.permission.server.org.mapper.OrgFunctionMapper.queryOrgFunctionsByOrgId"/>
+    </resultMap>
+
+    <resultMap id="department_Info_resultMap" type="com.org.permission.common.org.dto.DepInfoDto">
+        <id property="id" column="id"/>
+        <result property="orgName" column="org_name"/>
+        <result property="custId" column="cust_id"/>
+        <result property="groupId" column="group_id"/>
+        <association property="baseAddressDto"
+                     resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+    </resultMap>
+
+    <resultMap id="basic_org_info_resultMap" type="com.org.permission.common.org.dto.BasicOrganizationDto">
+        <id property="id" column="id"/>
+        <result property="orgName" column="org_name"/>
+        <result property="groupId" column="group_id"/>
+        <result property="parentId" column="parent_Id"/>
+        <result property="orgType" column="org_type"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="orgName" column="org_name"/>
+        <result property="state" column="state"/>
+        <result property="parentBuId" column="parent_bu_id"/>
+        <result property="parentBuName" column="parentBuName"/>
+        <result property="parentName" column="parentName"/>
+        <result property="businessType" column="business_type"/>
+        <result property="state" column="state"></result>
+        <result property="establishTime" column="establish_time"></result>
+        <result property="orgShortName" column="org_short_name"></result>
+        <result column="created_date" property="createdDate"></result>
+        <result column="dep_duty_staff" property="depDutyStaff"></result>
+        <result column="phone" property="phone"></result>
+        <result column="remark" property="remark"></result>
+        <result column="credit_code" property="creditCode"></result>
+        <result column="main_org_flag" property="mainOrgFlag"/>
+        <association property="baseAddressDto"
+                     resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+
+    </resultMap>
+
+</mapper>
+

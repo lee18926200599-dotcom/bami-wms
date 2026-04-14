@@ -1,0 +1,144 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionRoleMapper">
+
+    <resultMap type="com.org.permission.server.permission.entity.BasePermissionRole" id="base_permission_roles">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="role_code" jdbcType="VARCHAR" property="roleCode" />
+        <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="org_id" jdbcType="BIGINT" property="orgId" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+    </resultMap>
+
+    <insert id="addBasePermissionRole" parameterType="com.org.permission.server.permission.entity.BasePermissionRole" useGeneratedKeys="true" keyProperty="id" >
+        insert into
+            base_permission_role(id,role_code,role_name,remark,org_id,group_id,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+        values( #{id,jdbcType=INTEGER},#{roleCode,jdbcType=VARCHAR},#{roleName,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},#{orgId,jdbcType=BIGINT},#{groupId,jdbcType=BIGINT},#{state,jdbcType=INTEGER},#{createdBy,jdbcType=BIGINT},#{createdName,jdbcType=VARCHAR},#{createdDate,jdbcType=TIMESTAMP},#{modifiedBy,jdbcType=BIGINT},#{modifiedName,jdbcType=VARCHAR},#{modifiedDate,jdbcType=TIMESTAMP})
+    </insert>
+    <update id="delBasePermissionRole" parameterType="java.lang.Long">
+        update  base_permission_role set state='0' where id=#{id}
+    </update>
+    <update id="updateBasePermissionRole" parameterType="com.org.permission.server.permission.entity.BasePermissionRole">
+        update base_permission_role
+        <set>
+            <if test="roleCode!=null">
+                role_code=#{roleCode,jdbcType=VARCHAR},
+            </if>
+            <if test="roleName!=null">
+                role_name=#{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="remark!=null">
+                remark=#{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="orgId!=null">
+                org_id=#{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="groupId!=null">
+                group_id=#{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="state!=null">
+                state=#{state,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy!=null">
+                created_by=#{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdName!=null">
+                created_name=#{createdName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdDate!=null">
+                created_date=#{createdDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="getBasePermissionRoleByID" parameterType="java.lang.Long" resultMap="base_permission_roles">
+        select * from base_permission_role where   id=#{id}
+    </select>
+    <select id="getBasePermissionRoleCount" resultType="Integer">
+        select count('1') from base_permission_role where state='1'
+    </select>
+    <select id="getBasePermissionRoleCountAll" parameterType="String" resultMap="base_permission_roles">
+        select count('1') from base_permission_role
+    </select>
+    <select id="getListBasePermissionRolesByPage" parameterType="com.org.permission.server.permission.vo.BasePermissionRoleVo" resultMap="base_permission_roles">
+        select * from base_permission_role
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionRolesByPOJO" parameterType="com.org.permission.server.permission.entity.BasePermissionRole" resultMap="base_permission_roles">
+        select * from base_permission_role
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionRolesByPojoPage" parameterType="java.util.Map"  resultMap="base_permission_roles">
+        select * from base_permission_role where 1=1
+        <if test="pojo.id != null and pojo.id != ''"> and id = #{pojo.id}</if>
+        <if test="pojo.roleCode != null and pojo.roleCode != ''"> and role_code = #{pojo.roleCode}</if>
+        <if test="pojo.roleName != null and pojo.roleName != ''"> and role_name = #{pojo.roleName}</if>
+        <if test="pojo.roleDesc != null and pojo.roleDesc != ''"> and remark = #{pojo.roleDesc}</if>
+        <if test="pojo.orgId != null and pojo.orgId != ''"> and org_id = #{pojo.orgId}</if>
+        <if test="pojo.groupId != null and pojo.groupId != ''"> and group_id = #{pojo.groupId}</if>
+        <if test="pojo.createTime != null and pojo.createTime != ''"> and create_time = #{pojo.createTime}</if>
+        <if test="pojo.createUser != null and pojo.createUser != ''"> and create_user = #{pojo.createUser}</if>
+        <if test="pojo.updateUser != null and pojo.updateUser != ''"> and update_user = #{pojo.updateUser}</if>
+        <if test="pojo.updateTime != null and pojo.updateTime != ''"> and update_time = #{pojo.updateTime}</if>
+        <if test="pojo.state != null and pojo.state != ''"> and state = #{pojo.state}</if>
+    </select>
+    <sql id="Where_Conditions">
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="roleCode!=null">
+                and role_code=#{roleCode,jdbcType=VARCHAR}
+            </if>
+            <if test="roleName!=null">
+                and role_name=#{roleName,jdbcType=VARCHAR}
+            </if>
+            <if test="remark!=null">
+                and remark=#{remark,jdbcType=VARCHAR}
+            </if>
+            <if test="orgId!=null">
+                and org_id=#{orgId,jdbcType=BIGINT}
+            </if>
+            <if test="groupId!=null">
+                and group_id=#{groupId,jdbcType=BIGINT}
+            </if>
+            <if test="state!=null">
+                and state=#{state,jdbcType=INTEGER}
+            </if>
+            <if test="createdBy!=null">
+                and created_by=#{createdBy,jdbcType=BIGINT}
+            </if>
+            <if test="createdName!=null">
+                and created_name=#{createdName,jdbcType=VARCHAR}
+            </if>
+            <if test="createdDate!=null">
+                and created_date=#{createdDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedBy!=null">
+                and modified_by=#{modifiedBy,jdbcType=BIGINT}
+            </if>
+            <if test="modifiedName!=null">
+                and modified_name=#{modifiedName,jdbcType=VARCHAR}
+            </if>
+            <if test="modifiedDate!=null">
+                and modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+</mapper>
+

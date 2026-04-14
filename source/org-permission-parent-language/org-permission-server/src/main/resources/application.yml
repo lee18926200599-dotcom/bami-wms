@@ -1,0 +1,113 @@
+#eureka client配置
+eureka:
+  instance:
+    # 注册时使用ip而不是主机名
+    preferIpAddress: true
+    instanceId: ${spring.cloud.client.ip-address}:${server.port}
+    health-check-url-path: /actuator/health
+    # 状态地址为api地址
+    statusPageUrlPath: /${server.servlet.contextpath:}/doc.html
+    leaseRenewalIntervalInSeconds: 5 #租期更新时间间隔（默认30秒） 客户端发送心跳检测时间间隔
+    leaseExpirationDurationInSeconds: 10 #租期到期时间（默认90秒）
+    registerWithEureka: true
+#    ipAddress: 192.168.0.173
+
+server:
+  servlet:
+    contextpath:
+  port: 9200
+
+spring:
+  application:
+    name: org-server
+  profiles:
+    active: bamidev
+    # application.yml
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+#springboot admin配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+hystrix:
+  threadpool:
+    default:
+      coreSize: 50
+      maxQueueSize: 100
+      queueSizeRejectionThreshold: 500
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 65000
+
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 15000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 0
+
+feign:
+  hystrix:
+    enabled: true
+
+mybatis:
+  mapper-locations: classpath:mappers/**/*Mapper.xml
+  type-aliases-package: com.org.permission.server.org.bean,com.org.permission.server.permission.entity
+  configuration:
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+    map-underscore-to-camel-case: true # 开启驼峰命名转换
+    auto-mapping-behavior: full # 启用全自动映射
+
+#mybatis-plus:
+#  configuration:
+#    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  mapper-locations: classpath*:mappers/**/*Mapper.xml
+#  type-aliases-package: com.org.permission.server.org.bean,com.org.permission.server.org.entity,com.org.permission.server.permission.entity
+
+zzz.services:
+  basedata:
+    name: zzz-base-data-server
+    url: ""
+
+reliable-rabbit:
+  application: ${spring.application.name}
+  producer.rely.enabled: true
+  consumer.idempotent.enabled: true
+
+apidoc:
+  groups:
+    org:
+      groupName: 组织接口文档
+      title: 组织接口文档
+      description: 组织接口文档
+      basePackage: com.org.permission.server.org.controller
+      version: 1.0.0
+    permission:
+      groupName: 权限接口文档
+      title: 权限接口文档
+      description: 权限接口文档
+      basePackage: com.org.permission.server.permission.controller
+      version: 1.0.0
+#集团编号前缀
+base_org_group_code_biz_code: BASE_ORG_GROUP_CODE
+
+#业务单元编码前缀
+base_org_bizunit_code_biz_code: BASE_ORG_BIZ_UNIT_CODE
+
+## 部门编码前缀
+base_org_dep_code_biz_code: BASE_ORG_DEP_CODE
+
+# 人员编码前缀
+base_org_staff_code_biz_code: BASE_ORG_STAFF_CODE
+
+# 人员类别编码前缀
+base_org_staff_type_code_biz_code: BASE_ORG_STAFF_TYPE_CODE

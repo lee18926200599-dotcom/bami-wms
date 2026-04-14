@@ -1,0 +1,97 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.StaffDutyMapper">
+
+    <insert id="batchCreatStaffDutyInfo" parameterType="list">
+          insert into base_staff_duty (
+          staff_id,
+          group_id,
+          org_id,
+          dep_id,
+          start_date,
+          end_date,
+          created_by,
+          created_name,
+          created_date,
+          staff_type_id
+
+          )VALUES
+          <foreach collection="bean" item="item" separator=",">
+              (
+              #{item.staffId},
+              #{item.groupId},
+              #{item.orgId},
+              #{item.depId},
+              #{item.startDate},
+              #{item.endDate},
+              #{item.createdBy},
+              #{item.createdName},
+              #{item.createdDate},
+              #{item.staffTypeId}
+              )
+          </foreach>
+    </insert>
+
+    <delete id="batchDeleteStaffyInfo" parameterType="java.lang.Long">
+          DELETE from base_staff_duty where staff_id =#{staffId}
+    </delete>
+
+    <update id="UpdateStaffDutyInfoEndDate" >
+        update base_staff_duty set end_date =#{endDate} where staff_id=#{staffId}
+    </update>
+    <select id="queryDutyInfoListByStaffId" parameterType="java.lang.Long" resultMap="duty_info_resultMap">
+        select <include refid="staff_duty_info_sql"/>
+        from base_staff_duty duty
+        left join base_staff_type type on duty.staff_type_id = type.id
+        where duty.staff_id = #{staffId}
+    </select>
+
+    <!-- 根据参数参数人员任职信息-->
+    <select id="queryStaffDuty" resultMap="duty_info_resultMap">
+        SELECT
+        <include refid="staff_duty_info_sql"/>
+        from base_staff_duty as duty
+        LEFT join base_staff as staff on duty.staff_id=staff.id
+        LEFT join base_staff_type as type on duty.staff_type_id=type.id
+        where staff.user_id = #{userId}
+        and duty.staff_type_id = #{typeId}
+        and staff.deleted_flag=0
+    </select>
+
+    <sql id="staff_duty_info_sql">
+        duty.id ,
+        duty.staff_id ,
+        duty.group_id ,
+        duty.org_id ,
+        duty.dep_id ,
+        duty.start_date ,
+        duty.end_date ,
+        duty.created_by,
+        duty.created_date,
+        duty.modified_by,
+        duty.modified_date,
+        duty.staff_type_id,
+        type.type_name as staff_type_name
+    </sql>
+
+    <resultMap id="duty_info_resultMap" type="com.org.permission.server.org.bean.StaffDutyInfoBean">
+        <result column="id" property="id"/>
+        <result column="staff_id" property="staffId"/>
+        <result column="group_id" property="groupId"/>
+        <result column="org_id" property="orgId"/>
+        <result column="dep_id" property="depId"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="staff_type_id" property="staffTypeId"/>
+        <result column="staff_type_name" property="staffTypeName"/>
+        <association property="groupName" column="group_id" javaType="string"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="orgName" column="org_id" javaType="string"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="depName" column="dep_id" javaType="string"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="staffTypeName" column="staff_type_id" javaType="string"
+                     select="com.org.permission.server.org.mapper.StaffTypeMapper.queryStaffTypeNameById"/>
+    </resultMap>
+</mapper>
+

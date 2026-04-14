@@ -1,0 +1,157 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionGroupResourceMapper">
+
+    <resultMap type="com.org.permission.server.permission.dto.GroupPermissionDto"
+               id="base-getGroupPermission">
+        <result property="id" column="id"/>
+        <result property="groupId" column="group_id"/>
+        <result property="permissionId" column="permission_id"/>
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+        <result column="resource_desc" jdbcType="VARCHAR" property="resourceDesc" />
+        <result column="url" jdbcType="VARCHAR" property="url" />
+        <result column="type" jdbcType="VARCHAR" property="type" />
+        <result column="resource_type" jdbcType="INTEGER" property="resourceType" />
+        <result column="belong" jdbcType="BIGINT" property="belong" />
+        <result column="bussiness_system" jdbcType="VARCHAR" property="bussinessSystem" />
+        <result column="permission_group" jdbcType="VARCHAR" property="permissionGroup" />
+        <result column="control_display" jdbcType="TINYINT" property="controlDisplay" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="leaf_flag" jdbcType="INTEGER" property="leafFlag" />
+        <result column="icon" jdbcType="VARCHAR" property="icon" />
+        <result column="number" jdbcType="VARCHAR" property="number" />
+        <result column="hidden" jdbcType="INTEGER" property="hidden" />
+        <result column="target" jdbcType="VARCHAR" property="target" />
+        <result column="component" jdbcType="VARCHAR" property="component" />
+        <result column="keep_alive" jdbcType="INTEGER" property="keepAlive" />
+        <result column="redirect" jdbcType="VARCHAR" property="redirect" />
+        <result column="menu_order" jdbcType="INTEGER" property="menuOrder" />
+        <result column="iframe_path" jdbcType="VARCHAR" property="iframePath" />
+        <result column="source" jdbcType="INTEGER" property="source" />
+        <result column="operations" jdbcType="VARCHAR" property="operations" />
+        <result column="token" jdbcType="INTEGER" property="token" />
+        <result column="platform_id" jdbcType="VARCHAR" property="platformId" />
+    </resultMap>
+    <select id="getGroupFuncTree" parameterType="java.util.Map"
+            resultMap="base-getGroupPermission">
+        SELECT
+        bpgr.id,
+        bpgr.group_id,
+        bpgr.permission_id,
+        bpgr.`state`,
+        bpr.name,
+        bpr.parent_id,
+        bpr.resource_desc,
+        bpr.url,
+        bpr.type,
+        bpr.resource_type,
+        bpr.belong,
+        bpr.bussiness_system,
+        bpr.permission_group,
+        bpr.control_display,
+        bpr.state,
+        bpr.leaf_flag,
+        bpr.icon,
+        bpr.number,
+        bpr.hidden,
+        bpr.target,
+        bpr.component,
+        bpr.keep_alive,
+        bpr.redirect,
+        bpr.menu_order,
+        bpr.iframe_path,
+        bpr.source,
+        bpr.operations,
+        bpr.token,
+        bpr.platform_id
+        FROM
+        base_permission_group_resource bpgr
+        INNER JOIN
+        base_permission_resource
+        bpr ON bpr.id =
+        bpgr.permission_id
+        WHERE
+        1 = 1
+        and bpr.`state`=1
+        <if test="groupId != null and groupId != '' ">AND bpgr.group_id = #{groupId}</if>
+        <if test="name != null and name != ''">and bpr.name like
+            CONCAT('%',#{name},'%')
+        </if>
+        <if test="type != null and type != ''">and bpr.type=#{type}</if>
+        <if test="state != null and state != ''">and bpr.state=#{state} and bpgr.state = #{state} </if>
+        <if test="resourceType != null and resourceType != ''">and bpr.resource_type=#{resourceType}</if>
+        <if test="parentId != null and parentId != ''">and bpr.parent_id=#{parentId}</if>
+        group by bpgr.permission_id order by bpr.menu_order asc
+    </select>
+
+
+    <update id="updateGroupResource" parameterType="java.util.Map">
+        <if test="delList!=null and delList.size()>0 ">
+            DELETE from base_permission_group_resource where group_id=#{groupId}
+            and permission_id in
+            <foreach collection="delList" index="index" item="item" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+            ;
+        </if>
+        <if test="addList!=null and addList.size()>0 ">
+            <foreach collection="addList" index="index" item="item"
+                     separator=";">
+                insert into
+                base_permission_group_resource(id,group_id,permission_id,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+                values( #{id,jdbcType=INTEGER},#{groupId,jdbcType=BIGINT},#{item},#{state,jdbcType=INTEGER},#{createdBy,jdbcType=BIGINT},#{createdName,jdbcType=VARCHAR},#{createdDate,jdbcType=TIMESTAMP},#{modifiedBy,jdbcType=BIGINT},#{modifiedName,jdbcType=VARCHAR},#{modifiedDate,jdbcType=TIMESTAMP})
+            </foreach>
+        </if>
+    </update>
+
+    <update id="batchAddDistributionMenus" parameterType="java.util.Map">
+        <if test="list!=null and list.size()>0 ">
+            insert into
+            base_permission_group_resource(id,group_id,permission_id,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+            values
+            <foreach collection="list" item="item" index="index" separator="," >
+                (#{item.id,jdbcType=INTEGER},#{item.groupId,jdbcType=BIGINT},#{item.permissionId,jdbcType=INTEGER},#{item.state,jdbcType=INTEGER},#{item.createdBy,jdbcType=BIGINT},#{item.createdName,jdbcType=VARCHAR},#{item.createdDate,jdbcType=TIMESTAMP},#{item.modifiedBy,jdbcType=BIGINT},#{item.modifiedName,jdbcType=VARCHAR},#{item.modifiedDate,jdbcType=TIMESTAMP})
+            </foreach>
+        </if>
+    </update>
+
+
+    <update id="delDistributionMenus" parameterType="java.util.Map">
+        <if test="list!=null and list.size()>0 ">
+            DELETE from base_permission_group_resource where group_id=#{groupId}
+            and permission_id in
+            <foreach collection="list" index="index" item="item" open="("
+                     separator="," close=")">
+                #{item.permissionId}
+            </foreach>
+        </if>
+    </update>
+
+    <update id="batchAddBasePermissionGroupResource" parameterType="java.util.List">
+        insert into
+        base_permission_group_resource(group_id,permission_id,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+        values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.groupId,jdbcType=BIGINT},#{item.permissionId,jdbcType=INTEGER},#{item.state,jdbcType=INTEGER},#{item.createdBy,jdbcType=BIGINT},#{item.createdName,jdbcType=VARCHAR},#{item.createdDate,jdbcType=TIMESTAMP},#{item.modifiedBy,jdbcType=BIGINT},#{item.modifiedName,jdbcType=VARCHAR},#{item.modifiedDate,jdbcType=TIMESTAMP})
+        </foreach>
+    </update>
+
+
+    <select id="getListBasePermissionGroupResources" parameterType="java.util.Map"
+            resultMap="base_permission_group_resources">
+        select * from base_permission_group_resource bpgr
+        where bpgr.group_id= #{groupId}
+        and bpgr.permission_id IN
+        <foreach collection="list" index="index" item="item" open="("
+                 separator="," close=")">
+            #{item.permissionId}
+        </foreach>
+        AND
+        bpgr.`state` = 1;
+
+    </select>
+
+</mapper>
+

@@ -1,0 +1,223 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.OrgBankAccountRelMapper">
+    <resultMap id="base_map" type="com.org.permission.server.org.bean.OrgBankAccountBean">
+        <id column="id" property="id"></id>
+        <result column="group_id" property="groupId"/>
+        <result column="bu_id" property="buId"/>
+        <result column="account_id" property="accountId"/>
+        <result column="added_value_tax" property="addedValueTax"/>
+        <result column="user_id" property="userId"/>
+        <result column="use_org_id" property="useOrgId"/>
+        <result column="account_sn" property="accountSn"/>
+        <result column="account_type" property="accountType"/>
+        <result column="account_category" property="accountCategory"/>
+        <result column="state" property="state"/>
+    </resultMap>
+    <sql id="base_columns">
+      id,
+      group_id,
+      bu_id,
+      account_id,
+      added_value_tax,
+      user_id,
+      use_org_id,
+      account_sn,
+      account_type,
+      account_category,
+      state,
+      created_by,
+      created_date
+	</sql>
+
+    <sql id="base_conditions">
+        <if test="params.groupId != null">
+          and group_id = #{params.groupId}
+        </if>
+        <if test="params.buId !=null">
+            and bu_id = #{params.buId}
+        </if>
+        <if test="params.useOrgId != null">
+            and use_org_id = #{params.useOrgId}
+        </if>
+        <if test="params.accountCategory != null">
+            and account_category = #{params.accountCategory}
+        </if>
+        <if test="params.accountType != null">
+            and account_type = #{params.accountType}
+        </if>
+        <if test="params.accountSn != null">
+            <choose>
+                <when test="params.queryAccountSnLike = null">
+                    and account_sn = #{params.accountSn}
+                </when>
+                <otherwise>
+                    and account_sn like concat ("%",#{params.accountSn},"%")
+                </otherwise>
+            </choose>
+        </if>
+        <if test="params.userId != null">
+            and user_id = #{params.userId}
+        </if>
+        <if test="params.accountId != null">
+            and account_id = #{params.accountId}
+        </if>
+        <if test="params.state != null">
+            and state = #{params.state}
+        </if>
+    </sql>
+
+
+    <insert id="insert" parameterType="com.org.permission.server.org.bean.OrgBankAccountBean">
+        insert into base_org_bank_account_rel (
+          <include refid="base_columns"/>
+        ) values (
+            #{params.id},
+            #{params.groupId},
+            #{params.buId},
+            #{params.accountId},
+            #{params.addedValueTax},
+            #{params.userId},
+            #{params.useOrgId},
+            #{params.accountSn},
+            #{params.accountType},
+            #{params.accountCategory},
+            #{params.state},
+            #{params.createdBy},
+            #{params.createdDate}
+        )
+    </insert>
+
+
+    <update id="update" parameterType="com.org.permission.server.org.bean.OrgBankAccountBean">
+        update  base_org_bank_account_rel
+        <set>
+            <if test="params.addedValueTax !=null">
+                added_value_tax=#{params.addedValueTax},
+            </if>
+            <if test="params.userId !=null and params.userId != 0">
+                user_id=#{params.userId},
+            </if>
+            <if test="params.state !=null ">
+                state=#{params.state},
+            </if>
+            <if test="params.accountSn != null">
+                account_sn=#{params.accountSn},
+            </if>
+            <if test="params.accountType != null">
+                account_type=#{params.accountType},
+            </if>
+            <if test="params.accountCategory != null">
+                account_category=#{params.accountCategory},
+            </if>
+            <if test="params.modifiedBy !=null and params.modifiedBy != 0">
+                modified_by=#{params.modifiedBy},
+            </if>
+            <if test="params.modifiedDate !=null and params.modifiedDate != 0">
+                modified_date=#{params.modifiedDate},
+            </if>
+        </set>
+        where id = #{params.id}
+    </update>
+
+
+    <select id="selectList" parameterType="com.org.permission.server.org.bean.OrgBankAccountBean" resultMap="base_map">
+        select
+          <include refid="base_columns"/>
+        from base_org_bank_account_rel
+        <where>
+            <include refid="base_conditions"/>
+            <if test="params.accountIds != null">
+                <foreach collection="params.accountIds" item="accountId" open="and account_id in(" separator="," close=")">
+                    #{accountId}
+                </foreach>
+            </if>
+            and deleted_flag=0
+            order by id desc
+        </where>
+    </select>
+
+
+    <select id="select" resultType="com.org.permission.server.org.bean.OrgBankAccountBean" resultMap="base_map">
+        select
+        <include refid="base_columns"/>
+        from base_org_bank_account_rel
+        where id = #{id} and deleted_flag=0
+    </select>
+
+    <select id="selectListByIds" resultMap="base_map">
+        select <include refid="base_columns"/>
+        from base_org_bank_account_rel
+        <where>
+            <foreach collection="ids" item="id" open="id in (" separator="," close=")">
+                #{id}
+            </foreach>
+            and deleted_flag=0
+        </where>
+    </select>
+
+    <select id="selectListByAccountIds" resultMap="base_map">
+        select <include refid="base_columns"/>
+        from base_org_bank_account_rel
+        <where>
+            <foreach collection="accountIds" item="accountId" open="account_id in (" separator="," close=")">
+                #{accountId}
+            </foreach>
+            and deleted_flag=0
+        </where>
+    </select>
+
+    <insert id="insertBatch" parameterType="com.org.permission.server.org.bean.OrgBankAccountBean">
+        insert into base_org_bank_account_rel(
+          <include refid="base_columns"/>
+        )
+        values
+        <foreach collection="params" item="param" separator=",">
+            (#{param.id},
+            #{param.groupId},
+            #{param.buId},
+            #{param.accountId},
+            #{param.addedValueTax},
+            #{param.userId},
+            #{param.useOrgId},
+            #{param.accountSn},
+            #{param.accountType},
+            #{param.accountCategory},
+            #{param.state},
+            #{param.createdBy},
+            #{param.createdDate})
+        </foreach>
+    </insert>
+
+    <update id="updateStateByIds">
+        update base_org_bank_account_rel set state=#{state}
+        <where>
+          <if test="ids != null">
+              <foreach collection="ids" item="id" open="id in (" separator="," close=")">
+                #{id}
+              </foreach>
+          </if>
+        </where>
+    </update>
+    <update id="deleteByIds">
+        update base_org_bank_account_rel set deleted_flag=1
+        <where>
+            <if test="ids != null">
+                <foreach collection="ids" item="id" open="id in (" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+

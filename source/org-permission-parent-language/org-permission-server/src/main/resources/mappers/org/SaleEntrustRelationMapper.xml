@@ -1,0 +1,222 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.SaleEntrustRelationMapper">
+    <!-- 新增集团间销售业务委托关系 -->
+    <insert id="addSaleEntrustRelation" parameterType="com.org.permission.server.org.bean.SaleEntrustRelationBean" keyProperty="bean.id"
+            useGeneratedKeys="true">
+        insert into base_entrust_relationship(
+        <include refid="sale_insert_base_list"/>
+        )
+        values(
+        #{bean.groupId},
+        #{bean.entrustRange},
+        #{bean.entrustType},
+        #{bean.entrustSource},
+        #{bean.entrustSourceId},
+        #{bean.defaultFlag},
+        #{bean.state},
+        #{bean.saleOrgId},
+        #{bean.stockOrgId},
+        #{bean.receiveOrgId},
+        #{bean.receiveOrgId},
+        #{bean.settleOrgId},
+        #{bean.remark},
+        #{bean.createdBy},
+        #{bean.createdName},
+        #{bean.createdDate}
+        )
+    </insert>
+    <!-- 更新销售业务委托关系 -->
+    <update id="updateSaleEntrustRelation" parameterType="com.org.permission.server.org.bean.SaleEntrustRelationBean">
+        update base_entrust_relationship set
+        default_flag= #{bean.defaultFlag},
+        purchase_sale_org_id=#{bean.saleOrgId},
+        stock_org_id=#{bean.stockOrgId},
+        pay_receive_org_id=#{bean.receiveOrgId},
+        account_org_id=#{bean.receiveOrgId},
+        settment_org_id=#{bean.settleOrgId},
+        remark =  #{bean.remark},
+        modified_by = #{bean.modifiedBy},
+        modified_name = #{bean.modifiedName},
+        modified_date = #{bean.modifiedDate}
+        where id = #{bean.id}
+    </update>
+    <!-- 更新默认销售业务委托关系 -->
+    <update id="updateBUProductSaleEntrustRelation" parameterType="com.org.permission.server.org.bean.SaleEntrustRelationBean">
+        update base_entrust_relationship set
+        stock_org_id=#{bean.stockOrgId},
+        pay_receive_org_id=#{bean.receiveOrgId},
+        account_org_id=#{bean.receiveOrgId},
+        settment_org_id=#{bean.settleOrgId},
+        state = #{bean.state},
+        modified_by = #{bean.modifiedBy},
+        modified_date = #{bean.modifiedDate}
+        where  entrust_range = 2
+        and entrust_source = #{bean.entrustSource}
+        and entrust_source_id = #{bean.entrustSourceId}
+        and entrust_type = #{bean.entrustType}
+        and deleted_flag=0
+    </update>
+
+    <!-- 根据销售组织ID,查询集团内销售业务委托关系 -->
+    <select id="querySaleEntrustRelationByIdLock" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.SaleEntrustRelationBean">
+        select
+        id as id,
+        group_id as groupId,
+        entrust_source as entrustSource,
+        entrust_source_id as entrustSourceId,
+        default_flag as defaultFlag,
+        state as state,
+        purchase_sale_org_id as saleOrgId,
+        stock_org_id as stockOrgId,
+        pay_receive_org_id as receiveOrgId,
+        settment_org_id as settleOrgId
+        FROM base_entrust_relationship
+        WHERE id = #{entruestId} and entrust_type = 3 and entrust_range= 2
+    </select>
+
+    <!-- 根据销售组织ID,查询集团内销售业务委托关系 -->
+    <select id="querySaleEntrustRelationBySaleOrgIdLock" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.SaleEntrustRelationBean">
+        select
+        id as id,
+        default_flag as defaultFlag,
+        state as state,
+        purchase_sale_org_id as saleOrgId,
+        stock_org_id as stockOrgId,
+        pay_receive_org_id as receiveOrgId,
+        settment_org_id as settleOrgId
+        FROM base_entrust_relationship
+        WHERE purchase_sale_org_id = #{saleOrgId} and entrust_type = 3 and entrust_range= 2 and deleted_flag=0
+    </select>
+
+    <sql id="sale_insert_base_list">
+        group_id,
+        entrust_range,
+        entrust_type,
+        entrust_source,
+        entrust_source_id,
+        default_flag,
+        state,
+        purchase_sale_org_id,
+        stock_org_id,
+        pay_receive_org_id,
+        account_org_id,
+        settment_org_id,
+        remark,
+        created_by,
+        created_name,
+        created_date
+    </sql>
+
+    <!--统计销售委托关系-->
+    <select id="countSaleEntrustRelation" parameterType="com.org.permission.server.org.dto.param.SaleEntrustRelationReqParam"
+            resultType="integer">
+        select count(id) from base_entrust_relationship
+        <include refid="sale_page_where_query_condition"/>
+    </select>
+
+    <!--查询销售委托关系列表-->
+    <select id="querySaleEntrustRelationList" parameterType="com.org.permission.server.org.dto.param.SaleEntrustRelationReqParam"
+            resultMap="sale_entrust_relation_result_map">
+        select
+        id,
+        purchase_sale_org_id,
+        stock_org_id,
+        pay_receive_org_id,
+        settment_org_id,
+        default_flag,
+        state,
+        ori_acc_code,
+        remark,
+        created_by,
+        created_date,
+        modified_by,
+        modified_date
+        from base_entrust_relationship
+        <include refid="sale_page_where_query_condition"/>
+    </select>
+
+    <select id="querySaleEntrustRelation" parameterType="com.org.permission.common.org.param.SaleEntrustRelationQueryParam"
+            resultMap="sale_entrust_relation_result_map">
+        select
+        id,
+        purchase_sale_org_id,
+        stock_org_id,
+        pay_receive_org_id,
+        settment_org_id,
+        default_flag,
+        state,
+        ori_acc_code,
+        remark,
+        sign_flag
+        from base_entrust_relationship
+        where
+        state = 1 and entrust_type = 3 and entrust_range = 2
+        <if test="queryParam.defaultFlag !=null ">
+            and default_flag = #{queryParam.defaultFlag}
+        </if>
+        <if test="queryParam.saleOrgId != null ">
+            and purchase_sale_org_id = #{queryParam.saleOrgId}
+        </if>
+        <if test="queryParam.stockOrgId != null">
+            and stock_org_id = #{queryParam.stockOrgId}
+        </if>
+        <if test="queryParam.payReceiveOrgId != null">
+            and pay_receive_org_id = #{queryParam.payReceiveOrgId}
+        </if>
+        <if test="queryParam.settmentOrgId != null">
+            and settment_org_id = #{queryParam.settmentOrgId}
+        </if>
+    </select>
+
+    <sql id="sale_page_where_query_condition">
+        <where>
+            group_id = #{queryParam.groupId}  and entrust_range = 2 and entrust_type = 3 and deleted_flag=0
+            <if test="queryParam.state !=null">
+                and state=#{queryParam.state}
+            </if>
+            <if test="queryParam.defaultFlag !=null">
+                and default_flag=#{queryParam.defaultFlag}
+            </if>
+            <if test="queryParam.conditionId !=null and queryParam.conditionId !=0">
+                and
+                (
+                purchase_sale_org_id =#{queryParam.conditionId}
+                or
+                stock_org_id = #{queryParam.conditionId}
+                or
+                pay_receive_org_id =#{queryParam.conditionId}
+                or
+                settment_org_id =#{queryParam.conditionId}
+                )
+            </if>
+        </where>
+    </sql>
+
+    <resultMap id="sale_entrust_relation_result_map" type="com.org.permission.server.org.bean.SaleEntrustRelationInfoBean">
+        <id property="id" column="id"/>
+        <result property="defaultFlag" column="default_flag"/>
+        <result property="state" column="state"/>
+        <result property="saleOrgId" column="purchase_sale_org_id"/>
+        <result property="stockOrgId" column="stock_org_id"/>
+        <result property="receiveOrgId" column="pay_receive_org_id"/>
+        <result property="settleOrgId" column="settment_org_id"/>
+        <result property="remark" column="remark"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="modifiedBy" column="modified_by"/>
+        <result property="modifiedDate" column="modified_date"/>
+        <result property="signFlag" column="sign_flag"/>
+        <association property="saleOrgName" column="purchase_sale_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="stockOrgName" column="stock_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="receiveOrgName" column="pay_receive_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="settleOrgName" column="settment_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+</mapper>
+

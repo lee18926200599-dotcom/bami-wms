@@ -1,0 +1,27 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.PlatformOrgFuncMapper">
+
+    <!--新增平台组织职能-->
+    <insert id="addPlatformFunc" parameterType="com.org.permission.server.org.bean.PlatformOrgFuncBean" keyProperty="bean.id" useGeneratedKeys="true">
+        insert into base_organization_function(<include refid="insert_base_list"/>)
+        values(
+        9,
+        #{bean.state},
+        #{bean.orgId},
+        #{bean.createdBy},
+        #{bean.createdName},
+        #{bean.createdDate}
+        )
+    </insert>
+
+    <sql id="insert_base_list">
+        function_type,
+        state,
+        org_id,
+        created_by,
+        created_name,
+        created_date
+    </sql>
+</mapper>
+

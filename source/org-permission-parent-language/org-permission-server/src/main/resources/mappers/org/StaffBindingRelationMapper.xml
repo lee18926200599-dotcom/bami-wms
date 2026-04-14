@@ -1,0 +1,208 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.StaffBindingRelationMapper">
+
+    <!-- 绑定人员 -->
+    <insert id="bindingStaff" parameterType="com.org.permission.server.org.dto.param.BindingStaffParam">
+        insert into base_staff_binding_relation (
+        rel_id,
+        staff_id,
+        created_by,
+        created_date
+        )
+        values
+        <foreach collection="param.staffIds" item="staffId" separator=",">
+            (
+            #{param.relId},
+            #{staffId},
+            #{param.createdBy},
+            #{param.opTime}
+            )
+        </foreach>
+    </insert>
+
+    <!--绑定关系请求参数-->
+    <select id="qureyBindingRelation" parameterType="com.org.permission.server.org.dto.param.BingdingStaffReqParam" resultType="integer">
+        select staff_id from base_staff_binding_relation
+        where biz_code = #{param.bizCode} and rel_id = #{param.bingdingId} and staff_id in
+        <foreach collection="param.staffIds" open="(" item="staffId" separator="," close=")">
+            #{staffId}
+        </foreach>
+    </select>
+
+    <!--删除绑定关系-->
+    <delete id="unbindingRelation" parameterType="com.org.permission.server.org.dto.param.BatchOpParam">
+        delete from base_staff_binding_relation
+        where staff_id in (
+        <foreach collection="param.ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </delete>
+
+    <!--统计人员总数-->
+    <select id="countBindingStaff" resultType="integer" parameterType="com.org.permission.common.org.param.QueryBindingStaffParam">
+        select count(stf.id)
+        from base_staff_binding_relation rel
+        LEFT JOIN base_staff stf on rel.staff_id = stf.id
+        LEFT JOIN base_staff_duty duty ON stf.id = duty.staff_id
+        LEFT JOIN base_staff_type type ON duty.staff_type_id = type.id
+        LEFT JOIN base_organization org on stf.org_id = org.id
+        <include refid="query_binding_staff_condition"/>
+    </select>
+
+    <!--查询绑定人员基础信息-->
+    <select id="queryBindingStaff" parameterType="com.org.permission.common.org.param.QueryBindingStaffParam"
+            resultMap="warehouse_binding_staff_map">
+        select
+        stf.id as id,
+        stf.org_id as orgId,
+        stf.user_id as userId,
+        stf.staff_code as staffCode,
+        stf.realname as realname,
+        stf.sex as sex,
+        stf.phone as phone,
+        stf.province_code,
+        stf.province_name,
+        stf.city_code,
+        stf.city_name,
+        stf.district_code,
+        stf.district_name,
+        stf.street_code,
+        stf.street_name,
+        stf.address,
+        stf.employment_type,
+        stf.state as state,
+        rel.id as relation_id,
+        rel.rel_id as relId,
+        rel.created_by as created_by,
+        rel.created_date as created_date
+        from base_staff_binding_relation rel
+        LEFT JOIN base_staff stf on rel.staff_id = stf.id
+        LEFT JOIN base_staff_duty duty ON stf.id = duty.staff_id
+        LEFT JOIN base_staff_type type ON duty.staff_type_id = type.id
+        <include refid="query_binding_staff_condition"/>
+        GROUP by stf.id
+    </select>
+    <!--查询绑定人员基础信息-->
+    <select id="queryBindingStaffBriefInfo" parameterType="com.org.permission.common.org.param.QueryBindingStaffParam"
+            resultMap="warehouse_binding_staff_brief_info_map">
+        select
+        stf.id as id,
+        stf.org_id as orgId,
+        stf.user_id as userId,
+        stf.staff_code as staffCode,
+        stf.realname as realname,
+        stf.sex as sex,
+        stf.phone as phone,
+        stf.province_code,
+        stf.province_name,
+        stf.city_code,
+        stf.city_name,
+        stf.district_code,
+        stf.district_name,
+        stf.street_code,
+        stf.street_name,
+        stf.address,
+        stf.employment_type,
+        stf.state as state,
+        rel.id as relation_id,
+        rel.rel_id as relId,
+        rel.created_by as created_by,
+        rel.created_date as created_date
+        from base_staff_binding_relation rel
+        LEFT JOIN base_staff stf on rel.staff_id = stf.id
+        where rel.rel_id = #{queryParam.relId}
+        and stf.staff_code = #{queryParam.staffCode}
+        GROUP by stf.id limit 1
+    </select>
+    <!--查询未绑定人员基础信息-->
+    <select id="queryNotBindingStaff" parameterType="com.org.permission.common.org.param.QueryBindingStaffParam"
+            resultMap="warehouse_binding_staff_map">
+        SELECT
+        stf.id as id,
+        stf.org_id as orgId,
+        stf.user_id as userId,
+        stf.staff_code as staffCode,
+        stf.realname as realname,
+        stf.sex as sex,
+        stf.phone as phone,
+        stf.province_code,
+        stf.province_name,
+        stf.city_code,
+        stf.city_name,
+        stf.district_code,
+        stf.district_name,
+        stf.street_code,
+        stf.street_name,
+        stf.address,
+        stf.employment_type,
+        stf.state as state,
+        duty.staff_type_id,
+        type.type_name as staff_type_name
+        FROM
+        base_staff as stf
+        LEFT JOIN base_staff_duty as duty on stf.id=duty.staff_id
+        left join base_staff_type type on duty.staff_type_id=type.id
+        WHERE stf.id not in
+        (select staff_id from base_staff_binding_relation rel where rel.rel_id=#{queryParam.relId})
+        and stf.org_id = #{queryParam.buId}
+        and stf.state =1
+        GROUP BY stf.id
+    </select>
+
+
+    <resultMap id="warehouse_binding_staff_map" type="com.org.permission.server.org.bean.WarehouseBindingStaffInfoBean">
+        <result property="id" column="id"/>
+        <result property="orgId" column="orgId"/>
+        <result property="userId" column="userId"/>
+        <result property="staffCode" column="staffCode"/>
+        <result property="realname" column="realname"/>
+        <result property="sex" column="sex"/>
+        <result property="phone" column="phone"/>
+        <result property="state" column="state"/>
+        <result property="employmentType" column="employment_type"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="relationId" column="relation_id"/>
+        <result property="relId" column="relId"/>
+        <association property="orgName" column="orgId" select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="addressDetail" resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+        <association property="staffDuties" column="id"
+                     select="com.org.permission.server.org.mapper.StaffDutyMapper.queryDutyInfoListByStaffId"/>
+    </resultMap>
+    <resultMap id="warehouse_binding_staff_brief_info_map" type="com.org.permission.server.org.bean.WarehouseBindingStaffInfoBean">
+        <result property="id" column="id"/>
+        <result property="orgId" column="orgId"/>
+        <result property="userId" column="userId"/>
+        <result property="staffCode" column="staffCode"/>
+        <result property="realname" column="realname"/>
+        <result property="sex" column="sex"/>
+        <result property="phone" column="phone"/>
+        <result property="state" column="state"/>
+        <result property="employmentType" column="employment_type"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="relationId" column="relation_id"/>
+        <result property="relId" column="relId"/>
+    </resultMap>
+    <sql id="query_binding_staff_condition">
+        where rel.rel_id = #{queryParam.relId}
+        <if test="queryParam.bizCodes != null and queryParam.bizCodes.size > 0 ">
+            and type.biz_code in
+            <foreach collection="queryParam.bizCodes" open="(" separator="," item="bizCode" close=")">
+                #{bizCode}
+            </foreach>
+        </if>
+        <if test="queryParam.realname != null">
+            and stf.realname like  CONCAT('%',#{queryParam.realname},'%')
+        </if>
+        <if test="queryParam.staffCode != null">
+            and stf.staff_code = #{queryParam.staffCode}
+        </if>
+        <if test="queryParam.buId != null">
+            and stf.org_id = #{queryParam.buId}
+        </if>
+    </sql>
+</mapper>
+

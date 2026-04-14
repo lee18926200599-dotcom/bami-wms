@@ -1,0 +1,253 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.StoragePlatformEntrustRelationMapper">
+
+    <!-- 新增集团将仓储业务委托关系 -->
+    <insert id="addStorageEntrustRelation" parameterType="com.org.permission.server.org.bean.StoragePlatformEntrustRelationBean">
+        insert into base_entrust_relationship(
+        <include refid="logistic_insert_base_list"/>
+        )
+        values(
+        #{bean.entrustRange},
+        #{bean.entrustType},
+        #{bean.entrustSource},
+        #{bean.defaultFlag},
+        #{bean.state},
+        #{bean.warehouseProviderId},
+        #{bean.stockOrgId},
+        #{bean.warehouseId},
+        #{bean.logisticsProviderId},
+        #{bean.logisticsOrgId},
+        #{bean.oriAccCode},
+        #{bean.remark},
+        #{bean.createdBy},
+        #{bean.createdName},
+        #{bean.createdDate}
+        )
+    </insert>
+
+    <!-- 更新集团将仓储业务委托关系 -->
+    <update id="updateStorageEntrustRelation" parameterType="com.org.permission.server.org.bean.StoragePlatformEntrustRelationBean">
+        update base_entrust_relationship set
+        default_flag= #{bean.defaultFlag},
+        warehouse_provider_id=#{bean.warehouseProviderId},
+        stock_org_id=#{bean.stockOrgId},
+        warehouse_id=#{bean.warehouseId},
+        logistics_provider_id=#{bean.logisticsProviderId},
+        logistics_org_id=#{bean.logisticsOrgId},
+        ori_acc_code = #{bean.oriAccCode},
+        remark = #{bean.remark},
+        modified_by = #{bean.modifiedBy},
+        modified_date = #{bean.modifiedDate}
+        where id = #{bean.id}
+    </update>
+
+    <!-- 根据仓储服务商，查询集团间仓储业务委托关系 -->
+    <select id="queryStorageEntrustRelationByWarehouseProviderLock" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.StoragePlatformEntrustRelationBean">
+        select
+        id as id,
+        default_flag as defaultFlag,
+        state as state,
+        warehouse_provider_id as warehouseProviderId,
+        stock_org_id as stockOrgId,
+        warehouse_id as warehouseId,
+        logistics_provider_id as logisticsProviderId,
+        logistics_org_id as logisticsOrgId
+        FROM base_entrust_relationship
+        WHERE warehouse_provider_id = #{warehouseProviderId} and entrust_type = 4 and entrust_range= 1 and deleted_flag=0
+    </select>
+
+    <!--根据ID,查询集团间仓储业务委托关系-->
+    <select id="queryEntrustRelationByIdLock" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.StoragePlatformEntrustRelationBean">
+        select
+        id as id,
+        default_flag as defaultFlag,
+        state as state,
+        warehouse_provider_id as warehouseProviderId,
+        stock_org_id as stockOrgId,
+        warehouse_id as warehouseId,
+        logistics_provider_id as logisticsProviderId,
+        logistics_org_id as logisticsOrgId
+        FROM base_entrust_relationship
+        WHERE id = #{entrustId} and entrust_type = 4 and entrust_range= 1 and deleted_flag=0
+    </select>
+
+    <sql id="logistic_insert_base_list">
+        entrust_range,
+        entrust_type,
+        entrust_source,
+        default_flag,
+        state,
+        warehouse_provider_id,
+        stock_org_id,
+        warehouse_id,
+        logistics_provider_id,
+        logistics_org_id,
+        ori_acc_code,
+        remark,
+        created_by,
+        created_name,
+        created_date
+    </sql>
+
+
+    <!--统计仓储委托关系-->
+    <select id="countStorageEntrustRelation" parameterType="com.org.permission.server.org.dto.param.PlatformStorageEntrustRelationReqParam"
+            resultType="integer">
+        select count(id) from base_entrust_relationship
+        <include refid="storage_page_where_query_condition"/>
+
+    </select>
+
+    <!--查询仓储委托关系列表-->
+    <select id="queryStorageEntrustRelationList"
+            parameterType="com.org.permission.server.org.dto.param.PlatformStorageEntrustRelationReqParam"
+            resultMap="storage_entrust_relation_result_mappe">
+        select
+        id,
+        warehouse_provider_id,
+        stock_org_id,
+        warehouse_id,
+        logistics_provider_id,
+        logistics_org_id,
+        default_flag,
+        state,
+        ori_acc_code,
+        remark,
+        created_by,
+        created_date,
+        modified_by,
+        modified_date
+        from base_entrust_relationship
+        <include refid="storage_page_where_query_condition"/>
+    </select>
+
+    <select id="queryPlatformStorageEntrustRelation"
+            parameterType="com.org.permission.common.org.param.StoragePlatformEntrustRelationQueryParam"
+            resultMap="storage_entrust_relation_base_info_result_mappe">
+        select
+        id,
+        warehouse_provider_id,
+        stock_org_id,
+        warehouse_id,
+        logistics_provider_id,
+        logistics_org_id,
+        default_flag,
+        ori_acc_code
+        from base_entrust_relationship
+        <trim prefixOverrides="and">
+            <where>
+                state = 1 and entrust_type = 4 and entrust_range = 1
+                <if test="queryParam.defaultFlag !=null ">
+                    and default_flag = #{queryParam.defaultFlag}
+                </if>
+                <if test="queryParam.warehouseProviderId != null and queryParam.warehouseProviderId != 0">
+                    and warehouse_provider_id = #{queryParam.warehouseProviderId}
+                </if>
+                <if test="queryParam.stockOrgId != null and queryParam.stockOrgId != 0">
+                    and stock_org_id = #{queryParam.stockOrgId}
+                </if>
+                <if test="queryParam.warehouseId != null and queryParam.warehouseId != 0">
+                    and warehouse_id = #{queryParam.warehouseId}
+                </if>
+                <if test="queryParam.logisticsProviderId != null and queryParam.logisticsProviderId != 0">
+                    and logistics_provider_id = #{queryParam.logisticsProviderId}
+                </if>
+                <if test="queryParam.logisticsOrgId != null and queryParam.logisticsOrgId != 0">
+                    and logistics_org_id = #{queryParam.logisticsOrgId}
+                </if>
+                <if test="queryParam.oriAccCode != null and queryParam.oriAccCode != ''">
+                    and ori_acc_code like  CONCAT('%',#{queryParam.oriAccCode},'%')
+                </if>
+            </where>
+        </trim>
+    </select>
+
+    <!--查询集团间具有委托关系的物流组织-->
+    <select id="queryOutGroupLogisticOrg" parameterType="com.org.permission.common.org.param.QueryStorageEntrustRelationLogisticsOrgParam"
+            resultType="java.lang.Long">
+        select DISTINCT logistics_org_id
+        from base_entrust_relationship
+        where
+            entrust_range = 1
+          and entrust_type = 4
+          and state = 1
+          and stock_org_id =#{queryParam.stockOrg}
+          and warehouse_id = #{queryParam.warehouseId}
+    </select>
+
+    <sql id="storage_page_where_query_condition">
+        <where>
+            entrust_range = 1 and entrust_type = 4 and deleted_flag=0
+            <if test="queryParam.ids !=null">
+                and(warehouse_provider_id in (
+                <foreach collection="queryParam.ids" item="item" separator=",">
+                    #{item}
+                </foreach>
+                )
+                or logistics_provider_id in(
+                <foreach collection="queryParam.ids" item="itemLog" separator=",">
+                    #{itemLog}
+                </foreach>
+                )
+                or warehouse_id in(
+                <foreach collection="queryParam.ids" item="itemWare" separator=",">
+                    #{itemWare}
+                </foreach>
+                ))
+            </if>
+            <if test="queryParam.state !=null">
+                and state=#{queryParam.state}
+            </if>
+            <if test="queryParam.defaultFlag !=null">
+                and default_flag=#{queryParam.defaultFlag}
+            </if>
+        </where>
+    </sql>
+
+    <resultMap id="storage_entrust_relation_result_mappe" type="com.org.permission.server.org.bean.StoragePlatformEntrustRelationInfoBean">
+        <id property="id" column="id"/>
+        <result property="defaultFlag" column="default_flag"/>
+        <result property="state" column="state"/>
+        <result property="warehouseProviderId" column="warehouse_provider_id"/>
+        <result property="stockOrgId" column="stock_org_id"/>
+        <result property="warehouseId" column="warehouse_id"/>
+        <result property="logisticsProviderId" column="logistics_provider_id"/>
+        <result property="logisticsOrgId" column="logistics_org_id"/>
+        <result property="oriAccCode" column="ori_acc_code"/>
+        <result property="remark" column="remark"/>
+        <result property="entrustRange" column="entrust_range"></result>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="modifiedBy" column="modified_by"/>
+        <result property="modifiedDate" column="modified_date"/>
+
+        <association property="stockOrgName" column="stock_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="logisticsOrgName" column="logistics_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+
+
+    <resultMap id="storage_entrust_relation_base_info_result_mappe"
+               type="com.org.permission.common.org.dto.StoragePlatformEntrustRelationDto">
+        <id property="id" column="id"/>
+        <result property="defaultFlag" column="default_flag"/>
+        <result property="state" column="state"/>
+        <result property="warehouseProviderId" column="warehouse_provider_id"/>
+        <result property="stockOrgId" column="stock_org_id"/>
+        <result property="warehouseId" column="warehouse_id"/>
+        <result property="logisticsProviderId" column="logistics_provider_id"/>
+        <result property="logisticsOrgId" column="logistics_org_id"/>
+        <result property="oriAccCode" column="ori_acc_code"/>
+        <result property="remark" column="remark"/>
+
+        <association property="stockOrgName" column="stock_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="logisticsOrgName" column="logistics_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+</mapper>
+

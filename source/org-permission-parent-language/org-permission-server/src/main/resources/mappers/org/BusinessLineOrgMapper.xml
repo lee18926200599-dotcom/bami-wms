@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.org.permission.server.org.mapper.BusinessLineOrgMapper">
+    <resultMap id="BaseResultMap" type="com.org.permission.server.org.bean.BaseBusinessLineOrg">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="line_id" jdbcType="BIGINT" property="lineId" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="org_id" jdbcType="BIGINT" property="orgId" />
+        <result column="deleted_flag" jdbcType="INTEGER" property="deletedFlag" />
+        <result column="deleted_time" jdbcType="TIMESTAMP" property="deletedTime" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+    </resultMap>
+
+    <resultMap id="dtoResultMap" type="com.org.permission.server.org.dto.BusinessLineOrgDto">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="line_id" jdbcType="BIGINT" property="lineId" />
+        <result column="line_name" jdbcType="BIGINT" property="lineName" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="org_id" jdbcType="BIGINT" property="orgId" />
+        <result column="deleted_flag" jdbcType="INTEGER" property="deletedFlag" />
+        <result column="deleted_time" jdbcType="TIMESTAMP" property="deletedTime" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+    </resultMap>
+
+    <resultMap id="usable_line_id_map" type="java.lang.Long">
+        <result column="line_id" jdbcType="BIGINT"  />
+    </resultMap>
+    <!-- 全部字段列表，供查询单个实体使用-->
+    <sql id="Base_Column_List">
+        id,line_id,group_id,org_id,deleted_flag,deleted_time,created_by,created_name,created_date,modified_by,modified_name,modified_date
+    </sql>
+
+    <update id="update" parameterType= "com.org.permission.server.org.bean.BaseBusinessLineOrg">
+        update base_business_line_org
+        <set>
+            <if test="lineId!=null">
+                line_id=#{lineId,jdbcType=BIGINT},
+            </if>
+            <if test="groupId!=null">
+                group_id=#{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="orgId!=null">
+                org_id=#{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="deletedFlag!=null">
+                deleted_flag=#{deletedFlag,jdbcType=INTEGER},
+            </if>
+            <if test="deletedTime!=null">
+                deleted_time=#{deletedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateList" parameterType= "List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update base_business_line_org
+            <set>
+                <if test="item.lineId!=null">
+                    line_id=#{item.lineId,jdbcType=BIGINT},
+                </if>
+                <if test="item.groupId!=null">
+                    group_id=#{item.groupId,jdbcType=BIGINT},
+                </if>
+                <if test="item.orgId!=null">
+                    org_id=#{item.orgId,jdbcType=BIGINT},
+                </if>
+                <if test="item.deletedFlag!=null">
+                    deleted_flag=#{item.deletedFlag,jdbcType=INTEGER},
+                </if>
+                <if test="item.deletedTime!=null">
+                    deleted_time=#{item.deletedTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.modifiedBy!=null">
+                    modified_by=#{item.modifiedBy,jdbcType=BIGINT},
+                </if>
+                <if test="item.modifiedName!=null">
+                    modified_name=#{item.modifiedName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.modifiedDate!=null">
+                    modified_date=#{item.modifiedDate,jdbcType=TIMESTAMP}
+                </if>
+            </set>
+            where id = #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+
+    <insert id="insert" parameterType= "com.org.permission.server.org.bean.BaseBusinessLineOrg" useGeneratedKeys="true" keyProperty="id">
+        insert into
+            base_business_line_org(id,line_id,group_id,org_id,deleted_flag,deleted_time,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+        values( #{id,jdbcType=BIGINT},#{lineId,jdbcType=BIGINT},#{groupId,jdbcType=BIGINT},#{orgId,jdbcType=BIGINT},#{deletedFlag,jdbcType=INTEGER},#{deletedTime,jdbcType=TIMESTAMP},#{createdBy,jdbcType=BIGINT},#{createdName,jdbcType=VARCHAR},#{createdDate,jdbcType=TIMESTAMP},#{modifiedBy,jdbcType=BIGINT},#{modifiedName,jdbcType=VARCHAR},#{modifiedDate,jdbcType=TIMESTAMP})
+    </insert>
+
+    <insert id="insertList" parameterType= "List">
+        insert into
+        base_business_line_org(id,line_id,group_id,org_id,deleted_flag,deleted_time,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+        values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.id,jdbcType=BIGINT},#{item.lineId,jdbcType=BIGINT},#{item.groupId,jdbcType=BIGINT},#{item.orgId,jdbcType=BIGINT},#{item.deletedFlag,jdbcType=INTEGER},#{item.deletedTime,jdbcType=TIMESTAMP},#{item.createdBy,jdbcType=BIGINT},#{item.createdName,jdbcType=VARCHAR},#{item.createdDate,jdbcType=TIMESTAMP},#{item.modifiedBy,jdbcType=BIGINT},#{item.modifiedName,jdbcType=VARCHAR},#{item.modifiedDate,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+
+    <delete id="delete" parameterType= "java.lang.Long">
+        delete from base_business_line_org where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByParam" parameterType= "java.util.Map">
+        delete from base_business_line_org
+        <include refid="Where_Conditions"/>
+    </delete>
+
+    <select id="load" resultType="com.org.permission.server.org.bean.BaseBusinessLineOrg" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from base_business_line_org where id=#{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="loadByParam" resultType="com.org.permission.server.org.bean.BaseBusinessLineOrg" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from base_business_line_org
+        <include refid="Where_Conditions"/>
+    </select>
+
+    <select id="listByParam" resultType="com.org.permission.server.org.bean.BaseBusinessLineOrg" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from base_business_line_org
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getDtoList" resultType="com.org.permission.server.org.bean.BaseBusinessLineOrg" resultMap="dtoResultMap" >
+        SELECT blo.*,bl.business_line_name line_name from base_business_line_org blo LEFT JOIN base_business_line bl on blo.line_id = bl.id
+        where   blo.deleted_flag=0 and bl.state = 1
+        <if test="orgId!=null">
+           and blo.org_id = #{orgId,jdbcType=BIGINT}
+        </if>
+        <if test="groupId!=null">
+          and  blo.group_id = #{groupId,jdbcType=BIGINT}
+        </if>
+        ;
+    </select>
+    <select id="getLineIdList" resultType="java.lang.Long"   >
+        select line_id
+        from base_business_line_org where  org_id = #{orgId}
+    </select>
+    <select id="getUsableLineIdList" resultType="java.lang.Long"   >
+        select line_id
+        from base_business_line_org where  org_id = #{orgId} and deleted_flag = 0
+    </select>
+    <select id="findCount" resultType="int" parameterType="java.util.Map" >
+        select count(*) from base_business_line_org
+        <include refid="Where_Conditions"/>
+    </select>
+
+    <sql id="Where_Conditions">
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="lineId!=null">
+                and line_id=#{lineId,jdbcType=BIGINT}
+            </if>
+            <if test="groupId!=null">
+                and group_id=#{groupId,jdbcType=BIGINT}
+            </if>
+            <if test="orgId!=null">
+                and org_id=#{orgId,jdbcType=BIGINT}
+            </if>
+            <if test="deletedFlag!=null">
+                and deleted_flag=#{deletedFlag,jdbcType=INTEGER}
+            </if>
+            <if test="deletedTime!=null">
+                and deleted_time=#{deletedTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createdBy!=null">
+                and created_by=#{createdBy,jdbcType=BIGINT}
+            </if>
+            <if test="createdName!=null">
+                and created_name=#{createdName,jdbcType=VARCHAR}
+            </if>
+            <if test="createdDate!=null">
+                and created_date=#{createdDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedBy!=null">
+                and modified_by=#{modifiedBy,jdbcType=BIGINT}
+            </if>
+            <if test="modifiedName!=null">
+                and modified_name=#{modifiedName,jdbcType=VARCHAR}
+            </if>
+            <if test="modifiedDate!=null">
+                and modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+
+</mapper>

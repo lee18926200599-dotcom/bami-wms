@@ -1,0 +1,770 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionUserFuncMapper">
+    <resultMap type="com.org.permission.common.permission.dto.UserPermission"
+               id="baseUserFuncPermission">
+        <result property="userId" column="user_id"/>
+        <result property="author" column="author"/>
+        <result property="authorUser" column="author_user"/>
+        <result property="authorTime" column="author_time"/>
+        <result property="groupId" column="group_id"/>
+        <result property="permissionType" column="permission_type"/>
+        <result property="permissionId" column="permission_id"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="orgName" column="org_name"/>
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+        <result column="resource_desc" jdbcType="VARCHAR" property="resourceDesc" />
+        <result column="url" jdbcType="VARCHAR" property="url" />
+        <result column="type" jdbcType="VARCHAR" property="type" />
+        <result column="resource_type" jdbcType="INTEGER" property="resourceType" />
+        <result column="belong" jdbcType="BIGINT" property="belong" />
+        <result column="bussiness_system" jdbcType="VARCHAR" property="bussinessSystem" />
+        <result column="permission_group" jdbcType="VARCHAR" property="permissionGroup" />
+        <result column="control_display" jdbcType="TINYINT" property="controlDisplay" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="leaf_flag" jdbcType="INTEGER" property="leafFlag" />
+        <result column="icon" jdbcType="VARCHAR" property="icon" />
+        <result column="number" jdbcType="VARCHAR" property="number" />
+        <result column="hidden" jdbcType="INTEGER" property="hidden" />
+        <result column="target" jdbcType="VARCHAR" property="target" />
+        <result column="component" jdbcType="VARCHAR" property="component" />
+        <result column="keep_alive" jdbcType="INTEGER" property="keepAlive" />
+        <result column="redirect" jdbcType="VARCHAR" property="redirect" />
+        <result column="menu_order" jdbcType="INTEGER" property="menuOrder" />
+        <result column="iframe_path" jdbcType="VARCHAR" property="iframePath" />
+        <result column="source" jdbcType="INTEGER" property="source" />
+        <result column="operations" jdbcType="VARCHAR" property="operations" />
+        <result column="token" jdbcType="INTEGER" property="token" />
+        <result column="platform_id" jdbcType="INTEGER" property="platformId" />
+    </resultMap>
+    <resultMap type="com.org.permission.common.permission.dto.UserOrgPermissionDto"
+               id="baseUserOrgPermission">
+        <result property="userId" column="user_id"/>
+        <result property="author" column="author"/>
+        <result property="authorUser" column="author_user"/>
+        <result property="authorTime" column="author_time"/>
+        <result property="permissionType" column="permission_type"/>
+        <result property="permissionId" column="permission_id"/>
+        <result property="state" column="state"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="orgName" column="org_name"/>
+        <result property="orgType" column="org_type"/>
+        <result property="groupId" column="group_id"/>
+        <result property="parentId" column="parent_id"/>
+    </resultMap>
+    <resultMap type="com.org.permission.common.permission.dto.UserDataPermissionDto"
+               id="baseUserDataPermission">
+        <result property="userId" column="user_id"/>
+        <result property="author" column="author"/>
+        <result property="authorUser" column="author_user"/>
+        <result property="authorTime" column="author_time"/>
+        <result property="permissionType" column="permission_type"/>
+        <result property="dataId" column="data_id"/>
+        <result property="permissionId" column="permission_id"/>
+        <result property="gbCode" column="gb_code"/>
+        <result property="state" column="state"/>
+        <result property="name" column="name"/>
+        <result property="orgId" column="org_id"/>
+        <result property="groupId" column="group_id"/>
+        <result property="managementId" column="management_id"/>
+        <result property="distributionType" column="distribution_type"/>
+        <result property="based" column="based"/>
+        <result property="dataResource" column="data_resource"/>
+        <result property="dataResourceCode" column="data_resource_code"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="optionPermission" column="option_permission"/>
+        <result property="flag" column="flag"/>
+    </resultMap>
+    <resultMap type="com.org.permission.server.permission.dto.EnableUserDataPermission"
+               id="basegetEnableUserDataPermission">
+        <result property="permissionId" column="permission_id"/>
+        <result property="dataId" column="data_id"/>
+        <result property="state" column="state"/>
+        <result property="name" column="name"/>
+        <result property="orgId" column="org_id"/>
+        <result property="groupId" column="group_id"/>
+        <result property="managementId" column="management_id"/>
+        <result property="distributionType" column="distribution_type"/>
+        <result property="based" column="based"/>
+        <result property="dataResource" column="data_resource"/>
+        <result property="dataResourceCode" column="data_resource_code"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="gbCode" column="gb_code"/>
+        <result property="optionPermission" column="option_permission"/>
+    </resultMap>
+
+    <resultMap type="com.org.permission.server.permission.dto.UserAndRolePermissionDto"
+               id="baseGetUserAndRolePermissions">
+        <result property="permissionType" column="permission_type"/>
+        <result property="permissionId" column="permission_id"/>
+        <result property="groupId" column="group_id"/>
+    </resultMap>
+    <resultMap type="com.org.permission.server.permission.dto.UserAndRoleOrgDto"
+               id="baseGetUserAndRoleOrgs">
+        <result property="orgId" column="org_id"/>
+        <result property="groupId" column="group_id"/>
+    </resultMap>
+
+
+    <select id="getUserPermission" parameterType="com.org.permission.common.permission.dto.UserPermission"
+            resultMap="baseUserFuncPermission">
+        SELECT
+        bpuf.user_id,
+        bpuf.author_time,
+        bpuf.author_user author,
+        bpgr.group_id,
+        bpuf.permission_type,
+        bpuf.permission_id,
+        bo.org_code,
+        bo.org_name,
+        bpr.name,
+        bpr.parent_id,
+        bpr.resource_desc,
+        bpr.url,
+        bpr.type,
+        bpr.resource_type,
+        bpr.belong,
+        bpr.bussiness_system,
+        bpr.permission_group,
+        bpr.control_display,
+        bpr.state,
+        bpr.leaf_flag,
+        bpr.icon,
+        bpr.number,
+        bpr.hidden,
+        bpr.target,
+        bpr.component,
+        bpr.keep_alive,
+        bpr.redirect,
+        bpr.menu_order,
+        bpr.iframe_path,
+        bpr.source,
+        bpr.operations,
+        bpr.token,
+        bpr.platform_id
+        FROM
+        base_permission_user_func bpuf
+        INNER
+        JOIN
+        base_permission_group_resource bpgr ON bpuf.permission_id =
+        bpgr.permission_id AND bpuf.group_id = bpgr.group_id
+        INNER JOIN
+        base_permission_resource bpr ON bpr.id =
+        bpgr.permission_id
+        INNER JOIN
+        base_organization bo ON bo.id =
+        bpgr.group_id
+        WHERE
+        1 = 1
+        <if test="permissionType != null and permissionType != '' ">AND bpuf.permission_type = #{permissionType}</if>
+        <if test="state != null and state != '' ">AND bpuf.`state` = #{state}</if>
+        <if test="userId != null and userId != '' ">AND bpuf.user_id = #{userId}</if>
+        <if test="groupId != null and groupId != '' ">AND bpgr.group_id = #{groupId}</if>
+        <if test="state != null and state != '' ">AND bpr.`state` = #{state}</if>
+        <if test="controlDisplay != null and controlDisplay != '' ">AND bpr.`control_display` = #{controlDisplay}</if>
+        <if test="resourceName != null and resourceName != ''">and bpr.name like
+            CONCAT('%',#{resourceName},'%')
+        </if>
+        <if test="resourceType != null and resourceType != ''">and bpr.resource_type=#{resourceType}</if>
+        <if test="belong != null and belong != ''">and bpr.belong=#{belong}</if>
+        <if test="type != null and type != ''">and bpr.type=#{type}</if>
+        <if test="parentId != null and parentId != ''">and bpr.parent_id=#{parentId}</if>
+        and bpgr.`state`=1
+        and bpr.`state`=1
+        group by bpuf.permission_id
+        order by bpr.menu_order asc
+    </select>
+
+    <select id="getUserOrgPermission" parameterType="com.org.permission.common.permission.dto.UserOrgPermissionDto"
+            resultMap="baseUserOrgPermission">
+        SELECT
+        bpuf.user_id,
+        bpuf.author_time,
+        bpuf.author_user author,
+        bpuf.permission_type,
+        bpuf.permission_id,
+        bpuf.`state`,
+        bpuf.group_id,
+        bo.org_code,
+        bo.org_name,
+        (
+        CASE
+        WHEN bo.org_type = 1 THEN
+        '全局'
+        WHEN
+        bo.org_type = 2 THEN
+        '集团'
+        WHEN bo.org_type = 3 THEN
+        '业务单元'
+        WHEN
+        bo.org_type = 4 THEN
+        '部门'
+        ELSE
+        ''
+        END
+        ) org_type,
+        (
+        CASE
+        WHEN bo.org_type = 4 THEN
+        bo.parent_bu_id
+        ELSE
+        bo.parent_id
+        END
+        ) parent_id
+        FROM
+        base_permission_user_func
+        bpuf
+        INNER JOIN
+        base_organization bo ON bo.id
+        =
+        bpuf.permission_id
+        WHERE
+        1 = 1 AND bo.org_type!=2
+        <if test="permissionType != null and permissionType != '' ">AND bpuf.permission_type = #{permissionType}</if>
+        <if test="state != null and state != '' ">AND bpuf.`state` = #{state}</if>
+        <if test="userId != null and userId != '' ">AND bpuf.user_id = #{userId}</if>
+        <if test="groupId != null and groupId != '' and groupId > 0 ">AND bpuf.group_id = #{groupId}</if>
+        <if test="orgName != null and orgName != ''">and bo.org_name like CONCAT('%',#{orgName},'%')</if>
+        group by bpuf.permission_id
+    </select>
+
+    <select id="getUserDataPermission" parameterType="com.org.permission.common.permission.dto.UserDataPermissionDto"
+            resultMap="baseUserDataPermission">
+        SELECT
+        bpuf.user_id,
+        bpuf.author_time,
+        bpuf.author_user author,
+        bpuf.permission_type,
+        bpd.gb_code,
+        bpd.id data_id,
+        bpd.data_resource_id permission_id,
+        bpuf.`state`,
+        bpgd.group_id,
+        bpm. NAME,
+        bpd.management_id,
+        bpd.org_id,
+        bpd.distribution_type,
+        bpd.based,
+        bpd.data_resource,
+        bpd.data_resource_code,
+        bpd.parent_id,
+        bpuf.option_permission,
+        bpgm.state flag
+        FROM
+        base_permission_user_func bpuf
+        INNER JOIN base_permission_group_data bpgd ON bpuf.permission_id = bpgd.data_id
+        AND bpuf.group_id = bpgd.group_id
+        AND bpuf.`state` = 1
+        INNER JOIN base_permission_data bpd ON bpd.id = bpgd.data_id
+        AND bpd.`state` = 1
+        INNER JOIN base_permission_group_management bpgm ON bpgm.group_id = bpuf.group_id
+        AND bpgm.group_id = bpgd.group_id
+        AND bpgm.`state` = 1
+        INNER JOIN base_permission_management bpm ON bpd.management_id = bpm.id
+        AND bpgm.management_id = bpm.id
+        AND bpm.`state` > 0
+        WHERE
+        1 = 1
+        <if test="permissionType != null and permissionType != '' ">AND bpuf.permission_type = #{permissionType}</if>
+        <if test="userId != null and userId != '' ">AND bpuf.user_id = #{userId}</if>
+        <if test="groupId != null and groupId != '' ">AND bpgd.group_id = #{groupId}</if>
+        <if test="managementId != null and managementId != '' and managementId>0">and bpd.management_id= #{managementId}
+        </if>
+        <if test="distributionType != null and distributionType != ''">and bpd.distribution_type= #{distributionType}
+        </if>
+        <if test="based != null and based != ''">and bpd.based= #{based}</if>
+        <if test="dataResource != null and dataResource != ''">and bpd.data_resource like
+            CONCAT('%',#{dataResource},'%')
+        </if>
+        group by bpd.data_resource_id
+    </select>
+
+    <select id="getEnableUserDataPermission" parameterType="com.org.permission.server.permission.dto.EnableUserDataPermission"
+            resultMap="basegetEnableUserDataPermission">
+
+        SELECT
+        bpd.gb_code,
+        bpd.id data_id,
+        bpd.data_resource_id permission_id,
+        bpgd.`state`,
+        bpd.org_id,
+        bpgd.group_id,
+        bpm. NAME,
+        bpd.management_id,
+        bpd.distribution_type,
+        bpd.based,
+        bpd.data_resource,
+        bpd.data_resource_code,
+        bpd.parent_id,
+        bpd.option_permission
+        FROM
+        base_permission_group_data bpgd
+        INNER JOIN base_permission_data bpd ON bpd.id = bpgd.data_id
+        AND bpd.`state` = 1
+        INNER JOIN base_permission_group_management bpgm ON bpgm.group_id = bpgd.group_id
+        AND bpgm.`state` = 0
+        INNER JOIN base_permission_management bpm ON bpd.management_id = bpm.id
+        AND bpgm.management_id = bpm.id
+        AND bpm.`state` > 0
+        WHERE
+        1 = 1
+        <if test="groupId != null and groupId != '' ">and bpgd.group_id = #{groupId}</if>
+        <if test="managementId != null and managementId != ''">and bpd.management_id= #{managementId}</if>
+        <if test="distributionType != null and distributionType != ''">and bpd.distribution_type= #{distributionType}
+        </if>
+        <if test="based != null and based != ''">and bpd.based= #{based}</if>
+        <if test="dataResource != null and dataResource != ''">and bpd.data_resource like
+            CONCAT('%',#{dataResource},'%')
+        </if>
+        group by bpd.`id`
+    </select>
+
+    <select id="getOnlyRoleDataPermission" parameterType="java.util.Map"
+            resultMap="baseUserDataPermission">
+        SELECT
+        '' user_id,
+        bprf.author_time,
+        bprf.author_user author,
+        bprf.permission_type,
+        bpd.gb_code,
+        bpd.id data_id,
+        bpd.data_resource_id permission_id,
+        bprf.`state`,
+        bpgd.group_id,
+        bpm. NAME,
+        bpd.management_id,
+        bpd.org_id,
+        bpd.distribution_type,
+        bpd.based,
+        bpd.data_resource,
+        bpd.data_resource_code,
+        bpd.parent_id,
+        bprf.option_permission
+        FROM
+        base_permission_role_func bprf
+        INNER JOIN base_permission_group_data bpgd ON bprf.permission_id = bpgd.data_id
+        AND bprf.`state` = 1
+        INNER JOIN base_permission_data bpd ON bpd.id = bpgd.data_id
+        AND bpd.`state` = 1
+        INNER JOIN base_permission_group_management bpgm ON bpgm.group_id = bprf.group_id
+        AND bpgm.`state` = 1
+        INNER JOIN base_permission_management bpm ON bpd.management_id = bpm.id
+        AND bpgm.management_id = bpm.id
+        AND bpm.`state` > 0
+        WHERE
+        1 = 1
+        <if test="permissionType != null and permissionType != '' ">AND bprf.permission_type = #{permissionType}</if>
+        <if test="roleId != null and roleId != '' ">AND bprf.role_id = #{roleId}</if>
+        <if test="groupId != null and groupId != '' ">AND bprf.group_id = #{groupId}</if>
+        <if test="managementId != null and managementId != '' and managementId>0">and bpd.management_id=
+            #{managementId}
+        </if>
+        <if test="distributionType != null and distributionType != ''">and bpd.distribution_type= #{distributionType}
+        </if>
+        <if test="based != null and based != ''">and bpd.based= #{based}</if>
+        <if test="dataResource != null and dataResource != ''">and bpd.data_resource like
+            CONCAT('%',#{dataResource},'%')
+        </if>
+        group by bpd.`id`
+    </select>
+
+    <select id="getRolePermissionByUidAndGroupId" parameterType="java.util.Map"
+            resultMap="baseGetUserAndRolePermissions">
+        SELECT bprf.permission_type,
+               bprf.permission_id,
+               bprf.group_id
+        FROM base_permission_user_role bpur
+                 INNER JOIN base_permission_role_func bprf ON bpur.role_id = bprf.role_id
+            AND bpur.group_id = bprf.group_id
+            AND bpur.user_id = #{userId}
+            and bpur.group_id = #{groupId}
+            and bpur.`state` = 1
+            and bprf.`state` = 1
+    </select>
+
+    <select id="getUserPermissionsByUidAndGroupId" parameterType="java.util.Map"
+            resultMap="baseGetUserAndRolePermissions">
+        SELECT bpuf.permission_type,
+               bpuf.permission_id,
+               bpuf.group_id
+        FROM base_permission_user_func bpuf
+
+        WHERE bpuf.user_id = #{userId}
+          and bpuf.group_id = #{groupId}
+          and bpuf.`state` = 1
+    </select>
+
+
+    <select id="getUserAndRoleOrgs" parameterType="java.util.Map"
+            resultMap="baseGetUserAndRoleOrgs">
+        SELECT tmp.permission_id org_id,
+               tmp.group_id
+        FROM (SELECT 'user' type,
+                     bpuf.permission_id,
+                     bpuf.group_id,
+                     (
+                         CASE
+                             WHEN bpgp.param_value = '[{"name":"是","select":"0"},{"name":"否","select":"1"}]' THEN
+                                 'role'
+                             WHEN bpgp.param_value = '[{"name":"是","select":"1"},{"name":"否","select":"0"}]' THEN
+                                 'user'
+                             ELSE
+                                 'role'
+                             END
+                         )  groupType
+              FROM base_permission_user_func bpuf
+                       INNER JOIN base_permission_group_param bpgp ON bpuf.group_id = bpgp.group_id
+                  AND bpuf.permission_type = 'org'
+              WHERE bpuf.user_id = #{userId}
+              UNION ALL
+              SELECT 'role' type,
+                     bprf.permission_id,
+                     bprf.group_id,
+                     (
+                         CASE
+                             WHEN bpgp.param_value = '[{"name":"是","select":"0"},{"name":"否","select":"1"}]' THEN
+                                 'role'
+                             WHEN bpgp.param_value = '[{"name":"是","select":"1"},{"name":"否","select":"0"}]' THEN
+                                 'user'
+                             ELSE
+                                 'role'
+                             END
+                         )  groupType
+              FROM base_permission_user_role bpur
+                       INNER JOIN base_permission_role_func bprf ON bpur.role_id = bprf.role_id
+                  AND bpur.group_id = bprf.group_id
+                  AND bprf.permission_type = 'org'
+                       INNER JOIN base_permission_group_param bpgp ON bprf.group_id = bpgp.group_id
+                  AND bpur.user_id = #{userId}) tmp
+        WHERE tmp.type = tmp.groupType
+    </select>
+
+    <select id="batchGetUserAndRoleOrgs" parameterType="java.util.Map" resultMap="baseGetUserAndRoleOrgs">
+        SELECT
+        tmp.permission_id org_id,
+        tmp.group_id
+        FROM
+        (
+        SELECT
+        'user' type,
+        bpuf.permission_id,
+        bpuf.group_id,
+        (
+        CASE
+        WHEN bpgp.param_value = '[{"name":"是","select":"0"},{"name":"否","select":"1"}]' THEN
+        'role'
+        WHEN bpgp.param_value = '[{"name":"是","select":"1"},{"name":"否","select":"0"}]' THEN
+        'user'
+        ELSE
+        'role'
+        END
+        ) groupType
+        FROM
+        base_permission_user_func bpuf
+        INNER JOIN base_permission_group_param bpgp ON bpuf.group_id = bpgp.group_id
+        AND bpuf.permission_type = 'org'
+        WHERE
+        bpuf.user_id in
+        <foreach collection="userIdSet" separator="," item="userId" open="(" close=")">
+            #{userId}
+        </foreach>
+        UNION ALL
+        SELECT
+        'role' type,
+        bprf.permission_id,
+        bprf.group_id,
+        (
+        CASE
+        WHEN bpgp.param_value = '[{"name":"是","select":"0"},{"name":"否","select":"1"}]' THEN
+        'role'
+        WHEN bpgp.param_value = '[{"name":"是","select":"1"},{"name":"否","select":"0"}]' THEN
+        'user'
+        ELSE
+        'role'
+        END
+        ) groupType
+        FROM
+        base_permission_user_role bpur
+        INNER JOIN base_permission_role_func bprf ON bpur.role_id = bprf.role_id
+        AND bpur.group_id = bprf.group_id
+        AND bprf.permission_type = 'org'
+        INNER JOIN base_permission_group_param bpgp ON bprf.group_id = bpgp.group_id
+        AND bpur.user_id in
+        <foreach collection="userIdSet" separator="," item="userId" open="(" close=")">
+            #{userId}
+        </foreach>
+        ) tmp
+        WHERE
+        tmp.type = tmp.groupType
+    </select>
+
+    <select id="getUserOrgsByUidAndGroupId" parameterType="java.util.Map"
+            resultMap="baseGetUserAndRoleOrgs">
+        SELECT
+            bpuf.permission_id org_id,
+            bpuf.group_id
+        FROM
+            base_permission_user_func bpuf
+
+        WHERE
+            bpuf.user_id = #{userId}
+          and bpuf.group_id= #{groupId}
+          AND bpuf.permission_type = 'org'
+          and bpuf.`state`=1
+    </select>
+
+    <select id="getRoleOrgsByUidAndGroupId" parameterType="java.util.Map"
+            resultMap="baseGetUserAndRoleOrgs">
+        SELECT bprf.permission_id org_id,
+               bprf.group_id
+        FROM base_permission_user_role bpur
+                 INNER JOIN base_permission_role_func bprf ON bpur.role_id = bprf.role_id
+            AND bpur.group_id = bprf.group_id
+            AND bprf.permission_type = 'org'
+            AND bpur.user_id = #{userId}
+            and bpur.group_id = #{groupId}
+            and bpur.`state` = 1
+            and bprf.`state` = 1
+    </select>
+
+    <select id="getPlatGroupDataPermission" parameterType="java.util.Map"
+            resultMap="baseUserDataPermission">
+        SELECT
+        bpd.gb_code,
+        bpd.id data_id,
+        bpd.data_resource_id permission_id,
+        bpd.org_id,
+        bpgd.group_id,
+        bpm. NAME,
+        bpd.management_id,
+        bpd.distribution_type,
+        bpd.based,
+        bpd.data_resource,
+        bpd.data_resource_code,
+        bpd.parent_id,
+        bpgm.state flag
+        FROM
+        base_permission_data bpd
+        INNER JOIN base_permission_group_data bpgd ON bpd.id = bpgd.data_id
+        AND bpd.`state` = 1
+        AND bpgd.`state` = 1
+        INNER JOIN base_permission_management bpm ON bpd.management_id = bpm.id
+        INNER JOIN base_permission_group_management bpgm
+        ON bpgm.management_id = bpm.id
+        AND bpm.`state` > 0
+        WHERE
+        1 = 1
+        <if test="groupId != null and groupId != '' ">AND bpgm.group_id = #{groupId}</if>
+        <if test="managementId != null and managementId != ''">and bpd.management_id= #{managementId}</if>
+        <if test="distributionType != null and distributionType != ''">and bpd.distribution_type= #{distributionType}
+        </if>
+        <if test="based != null and based != ''">and bpd.based= #{based}</if>
+        <if test="dataResource != null and dataResource != ''">and bpd.data_resource like
+            CONCAT('%',#{dataResource},'%')
+        </if>
+        group by bpd.`id`
+    </select>
+
+    <select id="getGroupDataPermission" parameterType="java.util.Map"
+            resultMap="baseUserDataPermission">
+        SELECT
+        bpd.gb_code,
+        bpd.id data_id,
+        bpd.data_resource_id permission_id,
+        bpd.org_id,
+        bpgd.group_id,
+        bpm. NAME,
+        bpd.management_id,
+        bpd.distribution_type,
+        bpd.based,
+        bpd.data_resource,
+        bpd.data_resource_code,
+        bpd.parent_id,
+        bpgm.state flag
+        FROM
+        base_permission_group_data bpgd
+        INNER JOIN base_permission_data bpd ON bpd.id = bpgd.data_id
+        AND bpd.`state` = 1
+        AND bpgd.`state` = 1
+        INNER JOIN base_permission_group_management bpgm
+        ON bpgm.group_id = bpgd.group_id
+        INNER JOIN base_permission_management bpm ON bpd.management_id = bpm.id
+        AND bpgm.management_id = bpm.id
+        AND bpm.`state` > 0
+        WHERE
+        1 = 1
+        <if test="groupId != null and groupId != '' ">AND bpgd.group_id = #{groupId}</if>
+        <if test="managementId != null and managementId != ''">and bpd.management_id= #{managementId}</if>
+        <if test="distributionType != null and distributionType != ''">and bpd.distribution_type= #{distributionType}
+        </if>
+        <if test="based != null and based != ''">and bpd.based= #{based}</if>
+        <if test="dataResource != null and dataResource != ''">and bpd.data_resource like
+            CONCAT('%',#{dataResource},'%')
+        </if>
+        group by bpd.`id`
+    </select>
+    <delete id="delDataByCondition" parameterType="com.org.permission.server.permission.entity.BasePermissionUserFunc">
+        delete from base_permission_user_func WHERE 1 = 1
+        <if test="permissionType != null and permissionType != '' ">AND permission_type = #{permissionType}</if>
+        <if test="groupId != null and groupId >0 ">AND group_id = #{groupId}</if>
+        <if test="permissionId != null and permissionId >0 ">AND permission_id = #{permissionId}</if>
+    </delete>
+
+    <update id="batchUserFuncInsert" parameterType="java.util.Map">
+
+        <if test="funcList!=null and funcList.size()>0 ">
+            insert into
+            base_permission_user_func(id,user_id,permission_type,permission_id,option_permission,group_id,author_user,author_time,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+            values
+            <foreach collection="funcList" item="item" index="index" separator="," >
+                (#{item.id,jdbcType=INTEGER},#{item.userId,jdbcType=BIGINT},'func',#{item.permissionId,jdbcType=INTEGER},#{item.optionPermission,jdbcType=INTEGER},#{item.groupId,jdbcType=BIGINT},#{item.authorUser,jdbcType=BIGINT},#{item.authorTime,jdbcType=BIGINT},#{item.state,jdbcType=INTEGER},#{item.createdBy,jdbcType=BIGINT},#{item.createdName,jdbcType=VARCHAR},#{item.createdDate,jdbcType=TIMESTAMP},#{item.modifiedBy,jdbcType=BIGINT},#{item.modifiedName,jdbcType=VARCHAR},#{item.modifiedDate,jdbcType=TIMESTAMP})
+            </foreach>
+            ;
+        </if>
+
+        <if test="orgList!=null and orgList.size()>0 ">
+            insert into
+            base_permission_user_func(id,user_id,permission_type,permission_id,option_permission,group_id,author_user,author_time,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+            values
+            <foreach collection="orgList" item="item" index="index" separator="," >
+                (#{item.id,jdbcType=INTEGER},#{item.userId,jdbcType=BIGINT},'org',#{item.permissionId,jdbcType=INTEGER},#{item.optionPermission,jdbcType=INTEGER},#{item.groupId,jdbcType=BIGINT},#{item.authorUser,jdbcType=BIGINT},#{item.authorTime,jdbcType=BIGINT},#{item.state,jdbcType=INTEGER},#{item.createdBy,jdbcType=BIGINT},#{item.createdName,jdbcType=VARCHAR},#{item.createdDate,jdbcType=TIMESTAMP},#{item.modifiedBy,jdbcType=BIGINT},#{item.modifiedName,jdbcType=VARCHAR},#{item.modifiedDate,jdbcType=TIMESTAMP})
+            </foreach>
+            ;
+        </if>
+        <if test="dataList!=null and dataList.size()>0 ">
+            insert into
+            base_permission_user_func(id,user_id,permission_type,permission_id,option_permission,group_id,author_user,author_time,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+            values
+            <foreach collection="dataList" item="item" index="index" separator="," >
+                (#{item.id,jdbcType=INTEGER},#{item.userId,jdbcType=BIGINT},'data',#{item.permissionId,jdbcType=INTEGER},#{item.optionPermission,jdbcType=INTEGER},#{item.groupId,jdbcType=BIGINT},#{item.authorUser,jdbcType=BIGINT},#{item.authorTime,jdbcType=BIGINT},#{item.state,jdbcType=INTEGER},#{item.createdBy,jdbcType=BIGINT},#{item.createdName,jdbcType=VARCHAR},#{item.createdDate,jdbcType=TIMESTAMP},#{item.modifiedBy,jdbcType=BIGINT},#{item.modifiedName,jdbcType=VARCHAR},#{item.modifiedDate,jdbcType=TIMESTAMP})
+            </foreach>
+        </if>
+    </update>
+
+    <update id="insertUserRoleAndPermission" parameterType="java.util.Map">
+        <if test="list!=null and list.size()>0 ">
+            insert into
+            base_permission_user_role(user_id,role_id,group_id,org_id,effective_time,expire_time,author_user,author_time,state,created_by,created_name,created_date)
+            values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{userId},#{item.roleId},#{groupId},#{orgId},#{item.effectiveTime},#{item.expireTime},#{authorUser},#{authorTime},#{state},#{createdBy},#{createdName},#{createdDate})
+            </foreach>
+            ;
+        </if>
+
+        <if test="funcList!=null and funcList.size()>0 ">
+            insert into
+            base_permission_user_func(user_id,permission_type,permission_id,group_id,author_user,author_time,state,created_by,created_name,created_date)
+            values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{userId},'func',#{item},#{groupId},#{authorUser},#{authorTime},#{state},#{createdBy},#{createdName},#{createdDate})
+            </foreach>
+            ;
+        </if>
+
+        <if test="orgList!=null and orgList.size()>0 ">
+
+            insert into
+            base_permission_user_func(user_id,permission_type,permission_id,group_id,author_user,author_time,state,created_by,created_name,created_date)
+            values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{userId},'org',#{item},#{groupId},#{authorUser},#{authorTime},#{state},#{createdBy},#{createdName},#{createdDate})
+            </foreach>
+            ;
+        </if>
+        <if test="dataList!=null and dataList.size()>0 ">
+
+            insert into
+            base_permission_user_func(user_id,permission_type,permission_id,option_permission,group_id,author_user,author_time,state,created_by,created_name,created_date)
+            values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{userId},'data',#{item.permissionId},#{item.optionPermission},#{groupId},#{authorUser},#{authorTime},#{state},#{createdBy},#{createdName},#{createdDate})
+            </foreach>
+        </if>
+    </update>
+
+    <update id="updateUserRoleAndPermission" parameterType="java.util.Map">
+        <if test="list!=null and list.size()>0 ">
+            delete from base_permission_user_role where user_id=#{userId} and
+            group_id=#{groupId} and state=1;
+            insert into
+            base_permission_user_role(user_id,role_id,group_id,org_id,effective_time,expire_time,author_user,author_time,state,created_by,created_name,created_date)
+            values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{userId},#{item.roleId},#{groupId},#{orgId},#{item.effectiveTime},#{item.expireTime},#{authorUser},#{authorTime},#{state},#{createdBy},#{createdName},#{createdDate})
+            </foreach>
+            ;
+        </if>
+
+        <if test="funcList!=null and funcList.size()>0 ">
+            delete from base_permission_user_func where user_id=#{userId} and
+            group_id=#{groupId} and permission_type='func' and state=1;
+            insert into
+            base_permission_user_func(user_id,permission_type,permission_id,group_id,author_user,author_time,state,created_by,created_name,created_date)
+            values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{userId},'func',#{item},#{groupId},#{authorUser},#{authorTime},#{state},#{createdBy},#{createdName},#{createdDate})
+            </foreach>
+            ;
+        </if>
+
+        <if test="orgList!=null and orgList.size()>0 ">
+            delete from base_permission_user_func where user_id=#{userId} and
+            group_id=#{groupId} and permission_type='org' and state=1;
+            insert into
+            base_permission_user_func(user_id,permission_type,permission_id,group_id,author_user,author_time,state,created_by,created_name,created_date)
+            values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{userId},'org',#{item},#{groupId},#{authorUser},#{authorTime},#{state},#{createdBy},#{createdName},#{createdDate})
+            </foreach>
+            ;
+        </if>
+        <if test="dataList!=null and dataList.size()>0 ">
+            delete from base_permission_user_func where user_id=#{userId} and
+            group_id=#{groupId} and permission_type='data' and state=1;
+            insert into
+            base_permission_user_func(user_id,permission_type,permission_id,option_permission,group_id,author_user,author_time,state,created_by,created_name,created_date)
+            values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{userId},'data',#{item.permissionId},#{item.optionPermission},#{groupId},#{authorUser},#{authorTime},#{state},#{createdBy},#{createdName},#{createdDate})
+            </foreach>
+        </if>
+    </update>
+
+    <update id="delUserRoleAndPermission" parameterType="java.util.Map">
+        delete from base_permission_user_func where user_id=#{userId} and
+            group_id=#{groupId} and permission_type='func' and state=1;
+        delete from base_permission_user_func where user_id=#{userId} and
+            group_id=#{groupId} and permission_type='org' and state=1;
+        delete from base_permission_user_func where user_id=#{userId} and
+            group_id=#{groupId} and permission_type='data' and state=1;
+
+    </update>
+    <update id="delRoleAndPermission" parameterType="java.util.Map">
+        delete from base_permission_user_role where user_id=#{userId} and
+            group_id=#{groupId} and state=1
+    </update>
+    <update id="updateBasePermissionUserFuncExtends" parameterType="com.org.permission.server.permission.entity.BasePermissionUserFunc">
+        update base_permission_user_func
+        <trim prefix="set" suffixOverrides=",">
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="state!=null">
+                state=#{state,jdbcType=INTEGER},
+            </if>
+        </trim>
+        where userId=#{userId}
+        <if test="groupId !=null and groupId >0 ">and groupId = #{groupId}</if>
+        <if test="state ==1 ">and state = 0</if>
+        <if test="state ==0 ">and state = 1</if>
+    </update>
+</mapper>
+

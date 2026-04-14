@@ -1,0 +1,42 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.FinanceOrgFuncMapper">
+
+    <!--新增财务组织职能-->
+    <insert id="addFinanceFunc" parameterType="com.org.permission.common.org.dto.func.FinanceOrgFuncBean">
+        insert into base_organization_function(<include refid="insert_base_list"/>)
+        values(
+        2,
+        #{bean.state},
+        #{bean.orgId},
+        #{bean.aloneFlag},
+        #{bean.taxRegistrationNumber},
+        #{bean.createdBy},
+        #{bean.createdName},
+        #{bean.createdDate}
+        )
+    </insert>
+
+    <update id="updateFinanceFunc" parameterType="com.org.permission.common.org.dto.func.FinanceOrgFuncBean">
+        update base_organization_function
+        set
+        alone_flag = #{bean.aloneFlag},
+        tax_registration_number = #{bean.taxRegistrationNumber},
+        modified_by = #{bean.modifiedBy},
+        modified_name=#{bean.modifiedName},
+        modified_date=#{bean.modifiedDate}
+        where org_id = #{bean.orgId} and function_type=#{bean.funcType}
+    </update>
+
+    <sql id="insert_base_list">
+        function_type,
+        state,
+        org_id,
+        alone_flag,
+        tax_registration_number,
+        created_by,
+        created_name,
+        created_date
+    </sql>
+</mapper>
+

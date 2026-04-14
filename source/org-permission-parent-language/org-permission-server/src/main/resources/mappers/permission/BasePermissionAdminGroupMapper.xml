@@ -1,0 +1,172 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionAdminGroupMapper">
+
+    <resultMap id="BaseResultMap" type="com.org.permission.server.permission.entity.BasePermissionAdminGroup">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="group_id" jdbcType="BIGINT" property="groupId"/>
+        <result column="group_code" jdbcType="VARCHAR" property="groupCode"/>
+        <result column="group_name" jdbcType="VARCHAR" property="groupName"/>
+        <result column="admin_id" jdbcType="BIGINT" property="adminId"/>
+        <result column="admin_name" jdbcType="VARCHAR" property="adminName"/>
+        <result column="effective_time" jdbcType="BIGINT" property="effectiveTime"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+    </resultMap>
+    <!-- 全部字段列表，供查询单个实体使用-->
+    <sql id="Base_Column_List">
+        id
+        ,group_id,group_code,group_name,admin_id,admin_name,effective_time,state,created_by,created_name,created_date,modified_by,modified_name,modified_date
+    </sql>
+    <sql id="Query_Column_List">
+        bpag.id
+        ,bpag.group_id,bpag.group_code,bpag.group_name,bpag.admin_id,bpag.admin_name,bpag.effective_time,bpag.state,bpag.created_by,bpag.created_name,bpag.created_date,bpag.modified_by,bpag.modified_name,bpag.modified_date
+    </sql>
+    <update id="update" parameterType="com.org.permission.server.permission.entity.BasePermissionAdminGroup">
+        update base_permission_admin_group
+        <set>
+            <if test="groupId!=null">
+                group_id=#{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="groupCode!=null">
+                group_code=#{groupCode,jdbcType=VARCHAR},
+            </if>
+            <if test="groupName!=null">
+                group_name=#{groupName,jdbcType=VARCHAR},
+            </if>
+            <if test="adminId!=null">
+                admin_id=#{adminId,jdbcType=BIGINT},
+            </if>
+            <if test="adminName!=null">
+                admin_name=#{adminName,jdbcType=VARCHAR},
+            </if>
+            <if test="effectiveTime!=null">
+                effective_time=#{effectiveTime,jdbcType=BIGINT},
+            </if>
+            <if test="state!=null">
+                state=#{state,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy!=null">
+                created_by=#{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdName!=null">
+                created_name=#{createdName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdDate!=null">
+                created_date=#{createdDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <insert id="addBasePermissionAdminGroup" parameterType= "BasePermissionAdminGroup" useGeneratedKeys="true" keyProperty="id">
+        insert into
+            base_permission_admin_group(id,group_id,group_code,group_name,admin_id,admin_name,effective_time,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+        values( #{id,jdbcType=INTEGER},#{groupId,jdbcType=BIGINT},#{groupCode,jdbcType=VARCHAR},#{groupName,jdbcType=VARCHAR},#{adminId,jdbcType=BIGINT},#{adminName,jdbcType=VARCHAR},#{effectiveTime,jdbcType=BIGINT},#{state,jdbcType=INTEGER},#{createdBy,jdbcType=BIGINT},#{createdName,jdbcType=VARCHAR},#{createdDate,jdbcType=TIMESTAMP},#{modifiedBy,jdbcType=BIGINT},#{modifiedName,jdbcType=VARCHAR},#{modifiedDate,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertList" parameterType= "List">
+        insert into
+        base_permission_admin_group(id,group_id,group_code,group_name,admin_id,admin_name,effective_time,expire_time,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+        values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.id,jdbcType=BIGINT},#{item.groupId,jdbcType=BIGINT},#{item.groupCode,jdbcType=VARCHAR},#{item.groupName,jdbcType=VARCHAR},#{item.adminId,jdbcType=BIGINT},#{item.adminName,jdbcType=VARCHAR},#{item.effectiveTime,jdbcType=TIMESTAMP},#{item.expireTime,jdbcType=TIMESTAMP},#{item.state,jdbcType=INTEGER},#{item.createdBy,jdbcType=BIGINT},#{item.createdName,jdbcType=VARCHAR},#{item.createdDate,jdbcType=TIMESTAMP},#{item.modifiedBy,jdbcType=BIGINT},#{item.modifiedName,jdbcType=VARCHAR},#{item.modifiedDate,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+    <delete id="deleteByAdminId" parameterType= "java.lang.Long">
+        delete from base_permission_admin_group where admin_id = #{adminId,jdbcType=BIGINT}
+    </delete>
+    <select id="load" resultType="com.org.permission.server.permission.entity.BasePermissionAdminGroup"
+            parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_permission_admin_group where id=#{id,jdbcType=INTEGER}
+    </select>
+    <select id="getListUnion" parameterType="com.org.permission.server.permission.entity.BasePermissionAdminGroup" resultType="com.org.permission.server.permission.entity.BasePermissionAdminGroup" >
+        select
+        <include refid="Query_Column_List"/>
+            from base_permission_admin_group bpag, base_organization bo where bpag.group_id = bo.id
+        <if test="id != null  "> and bpag.id = #{id}</if>
+        <if test="groupId != null  "> and bpag.group_id = #{groupId}</if>
+        <if test="groupCode != null and groupCode != '' "> and bpag.group_code = #{groupCode}</if>
+        <if test="groupName != null and groupName != '' "> and bpag.group_name like '%${groupName}%'</if>
+        <if test="groupShortName != null and groupShortName != '' "> and bo.org_short_name like '%${groupShortName}%'</if>
+        <if test="adminId != null  "> and bpag.admin_id = #{adminId}</if>
+        <if test="adminName != null and adminName != '' "> and bpag.admin_name = #{adminName}</if>
+        <if test="state != null  "> and bpag.state = #{state}</if>
+        <if test="createdDateStart !=null and createdDateStart !='' ">
+            <![CDATA[ and bo.create_time > #{createdDateStart} ]]>
+        </if>
+        <if test="createdDateEnd !=null and createdDateEnd !='' ">
+            <![CDATA[ and bo.create_time < #{createdDateEnd} ]]>
+        </if>
+    </select>
+    <select id="getListByAdminId" parameterType="java.util.Set" resultType="com.org.permission.server.permission.entity.BasePermissionAdminGroup">
+        select
+        <include refid="Query_Column_List"/>
+        from base_permission_admin_group bpag
+        WHERE
+        bpag.admin_id IN
+        <foreach collection="userIdSet" index="index" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+
+    </select>
+    <select id="listByParam" parameterType="com.org.permission.server.permission.entity.BasePermissionAdminGroup" resultType="com.org.permission.server.permission.entity.BasePermissionAdminGroup" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from base_permission_admin_group
+        <include refid="Where_Conditions"/>
+    </select>
+    <sql id="Where_Conditions">
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="groupId!=null">
+                and group_id=#{groupId,jdbcType=BIGINT}
+            </if>
+            <if test="groupCode!=null">
+                and group_code=#{groupCode,jdbcType=VARCHAR}
+            </if>
+            <if test="groupName!=null">
+                and group_name=#{groupName,jdbcType=VARCHAR}
+            </if>
+            <if test="adminId!=null">
+                and admin_id=#{adminId,jdbcType=BIGINT}
+            </if>
+            <if test="adminName!=null">
+                and admin_name=#{adminName,jdbcType=VARCHAR}
+            </if>
+            <if test="effectiveTime!=null">
+                and effective_time=#{effectiveTime,jdbcType=BIGINT}
+            </if>
+            <if test="state!=null">
+                and state=#{state,jdbcType=INTEGER}
+            </if>
+        </where>
+    </sql>
+    <update id="batchUpdateLose" parameterType="java.util.Set" >
+        UPDATE base_permission_admin_group bpag
+        SET bpag.`state` = 0
+        WHERE
+        bpag.id IN
+        <foreach collection="list" index="index" item="item" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
+
+    </update>
+</mapper>
+

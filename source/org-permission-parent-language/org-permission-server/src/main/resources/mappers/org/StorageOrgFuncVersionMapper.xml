@@ -1,0 +1,65 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.StorageOrgFuncVersionMapper">
+    <!--新版本仓储组织职能-->
+    <insert id="addStorageFunc">
+        insert into base_organization_function_version(<include refid="insert_base_list"/>)
+        values(
+        #{bean.id},
+        5,
+        #{bean.state},
+        #{bean.orgId},
+        #{reqParam.version},
+        #{bean.accountOrgId},
+        #{bean.settleOrgId},
+        #{bean.logisticsOrgId},
+        #{bean.addressDetail.regionCode},
+        #{bean.addressDetail.regionName},
+        #{bean.addressDetail.invoiceProvCode},
+        #{bean.addressDetail.invoiceProvName},
+        #{bean.addressDetail.invoiceCityCode},
+        #{bean.addressDetail.invoiceCityName},
+        #{bean.addressDetail.invoiceDistrictCode},
+        #{bean.addressDetail.invoiceDistrictName},
+        #{bean.addressDetail.invoiceStreetCode},
+        #{bean.addressDetail.invoiceStreetName},
+        #{bean.addressDetail.address},
+        #{bean.createdBy},
+        #{bean.createdDate},
+        #{bean.modifiedBy},
+        #{bean.modifiedDate},
+        #{reqParam.versionFlag},
+        #{reqParam.versionStartTime},
+        #{reqParam.versionEndTime}
+        )
+    </insert>
+    <sql id="insert_base_list">
+        func_id,
+        function_type,
+        state,
+        org_id,
+        version,
+        default_account_org_id,
+        default_settlement_org_id,
+        default_logistics_org_id,
+        region_code,
+        region_name,
+        province_code,
+        province_name,
+        city_code,
+        city_name,
+        district_code,
+        district_name,
+        street_code,
+        street_name,
+        address,
+        created_by,
+        created_date,
+        modified_by,
+        modified_date,
+        version_flag,
+        version_start_time,
+        version_end_time
+    </sql>
+</mapper>
+

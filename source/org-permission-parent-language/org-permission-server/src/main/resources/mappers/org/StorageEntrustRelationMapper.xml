@@ -1,0 +1,72 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.StorageEntrustRelationMapper">
+    <sql id="base_query_list">
+        id as id,
+        entrust_range as entrustRange,
+        entrust_type as entrustType,
+        entrust_source as entrustSource,
+        default_flag as defaultFlag,
+        state as state,
+        org_id as orgId,
+        owner_id as ownerId,
+        purchase_sale_org_id as purchaseSaleOrg,
+        warehouse_provider_id as warehouseProvider,
+        stock_org_id as stockOrg,
+        warehouse_id as warehouse_id,
+        logistics_provider_id as logisticsProvider,
+        logistics_org_id as logisticsOrg,
+        pay_receive_org_id as payReceiveOrg,
+        settment_org_id as settmentOrg,
+        account_org_id as accountOrg,
+        business_org_id as businessOrg,
+        ori_acc_code as oriAccCode,
+        relevance_logistics_provider_id as relevanceLogisticsProvider,
+        relevance_logistics_org_id as relevanceLogisticsOrg,
+        created_by as createdBy,
+        created_date as createdDate,
+        modified_by as modifiedBy,
+        modified_date as modifiedDate
+    </sql>
+
+
+    <!-- 统计有仓储委托关系的物流组织信息 -->
+    <select id="countHasStorageEntrustRelationLogisticsOrg" parameterType="com.org.permission.common.org.param.EntrustRelationQueryParam"
+            resultType="integer">
+        SELECT count(DISTINCT(logistics_org_id)) FROM base_entrust_relationship WHERE state = 1 and entrust_type = 4
+    </select>
+
+    <!--查询有仓储委托关系的物流组织信息-->
+    <select id="queryHasStorageEntrustRelationLogisticsOrg" parameterType="com.org.permission.common.org.param.EntrustRelationQueryParam"
+            resultType="com.org.permission.common.org.dto.OrgInfoDto">
+        SELECT DISTINCT
+        org.id as id,
+        org.org_type as orgType,
+        org.org_code as orgCode,
+        org.org_name as orgName ,
+        org.main_org_flag as mainOrgFlag
+        FROM base_entrust_relationship rel left join base_organization org on rel.logistics_org_id=org.id
+        WHERE rel.state = 1 and rel.entrust_type = 4
+    </select>
+
+    <select id="queryStorageEntrustRelationLogisticsOrgByWarehouse" parameterType="com.org.permission.common.org.param.QueryStorageEntrustRelationLogisticsOrgParam"
+            resultType="com.org.permission.common.org.dto.EntrustRelationOrgInfoDto">
+        SELECT DISTINCT
+            org.id AS orgId,
+            org.org_type AS orgType,
+            org.org_code AS orgCode,
+            org.org_name AS orgName,
+            org.group_id AS groupId,
+            rel.logistics_provider_id AS logisticsProviderId
+        FROM
+            base_entrust_relationship rel
+            LEFT JOIN base_organization org ON rel.stock_org_id = org.id
+        WHERE
+            rel.state = 1
+            AND rel.entrust_type = 4
+            AND rel.stock_org_id = #{queryParam.stockOrg}
+            AND rel.warehouse_id = #{queryParam.warehouseId}
+    </select>
+
+</mapper>
+

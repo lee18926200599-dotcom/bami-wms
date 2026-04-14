@@ -1,0 +1,69 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.CorporateOrgFuncVersionMapper">
+    <!--新版本法人组织职能-->
+    <insert id="addCorporateFunc">
+        insert into base_organization_function_version(<include refid="insert_base_list"/>)
+        values(
+        #{bean.id},
+        1,
+        #{bean.state},
+        #{bean.orgId},
+        #{reqParam.version},
+        #{bean.parentOrgId},
+        #{bean.enterpriseCode},
+        #{bean.enterpriseName},
+        #{bean.taxpayerCode},
+        #{bean.taxpayerName},
+        #{bean.orgInstitutionCode},
+        #{bean.bizRegistNumber},
+        #{bean.registeredCapital},
+        #{bean.establishTime},
+        #{bean.bizStartTime},
+        #{bean.bizEndTime},
+        #{bean.netAddress},
+        #{bean.remark},
+        #{bean.linker},
+        #{bean.phone},
+        #{bean.email},
+        #{bean.createdBy},
+        #{bean.createdDate},
+        #{bean.modifiedBy},
+        #{bean.modifiedDate},
+        #{reqParam.versionFlag},
+        #{reqParam.versionStartTime},
+        #{reqParam.versionEndTime}
+        )
+    </insert>
+    <sql id="insert_base_list">
+        func_id,
+        function_type,
+        state,
+        org_id,
+        version,
+        parent_org_id,
+        enterprise_code,
+        enterprise_name,
+        taxpayer_code,
+        taxpayer_name,
+        org_institution_code,
+        biz_regist_number,
+        registered_capital,
+        establish_time,
+        business_start_time,
+        business_end_time,
+        net_address,
+        remark,
+        linker1,
+        phone1,
+        email1,
+        created_by,
+        created_date,
+        modified_by,
+        modified_date,
+        version_flag,
+        version_start_time,
+        version_end_time
+    </sql>
+</mapper>
+

@@ -1,0 +1,112 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+
+<!--<mapper namespace="com.org.permission.server.org.mapper.BaseEntrustRelationshipMapper">-->
+
+
+<!--    <update id="updateById" parameterType= "com.org.permission.server.org.entity.BaseEntrustRelationship">-->
+<!--        update base_entrust_relationship-->
+<!--        <set>-->
+<!--            <if test="entrustRange!=null">-->
+<!--                entrust_range=#{entrustRange,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="entrustType!=null">-->
+<!--                entrust_type=#{entrustType,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="entrustSource!=null">-->
+<!--                entrust_source=#{entrustSource,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="entrustSourceId!=null">-->
+<!--                entrust_source_id=#{entrustSourceId,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="defaultFlag!=null">-->
+<!--                default_flag=#{defaultFlag,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="state!=null">-->
+<!--                state=#{state,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="stopTime!=null">-->
+<!--                stop_time=#{stopTime,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="startTime!=null">-->
+<!--                start_time=#{startTime,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="groupId!=null">-->
+<!--                group_id=#{groupId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="ownerId!=null">-->
+<!--                owner_id=#{ownerId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="purchaseSaleOrgId!=null">-->
+<!--                purchase_sale_org_id=#{purchaseSaleOrgId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="warehouseProviderId!=null">-->
+<!--                warehouse_provider_id=#{warehouseProviderId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="stockOrgId!=null">-->
+<!--                stock_org_id=#{stockOrgId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="warehouseId!=null">-->
+<!--                warehouse_id=#{warehouseId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="logisticsProviderId!=null">-->
+<!--                logistics_provider_id=#{logisticsProviderId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="logisticsOrgId!=null">-->
+<!--                logistics_org_id=#{logisticsOrgId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="payReceiveOrgId!=null">-->
+<!--                pay_receive_org_id=#{payReceiveOrgId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="settmentOrgId!=null">-->
+<!--                settment_org_id=#{settmentOrgId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="accountOrgId!=null">-->
+<!--                account_org_id=#{accountOrgId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="businessOrgId!=null">-->
+<!--                business_org_id=#{businessOrgId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="oriAccCode!=null">-->
+<!--                ori_acc_code=#{oriAccCode,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="relevanceLogisticsProviderId!=null">-->
+<!--                relevance_logistics_provider_id=#{relevanceLogisticsProviderId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="relevanceLogisticsOrgId!=null">-->
+<!--                relevance_logistics_org_id=#{relevanceLogisticsOrgId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="signFlag!=null">-->
+<!--                sign_flag=#{signFlag,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="remark!=null">-->
+<!--                remark=#{remark,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="createdBy!=null">-->
+<!--                created_by=#{createdBy,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="createdName!=null">-->
+<!--                created_name=#{createdName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="createdDate!=null">-->
+<!--                created_date=#{createdDate,jdbcType=TIMESTAMP},-->
+<!--            </if>-->
+<!--            <if test="modifiedBy!=null">-->
+<!--                modified_by=#{modifiedBy,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="modifiedName!=null">-->
+<!--                modified_name=#{modifiedName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="modifiedDate!=null">-->
+<!--                modified_date=#{modifiedDate,jdbcType=TIMESTAMP},-->
+<!--            </if>-->
+<!--            <if test="deletedFlag!=null">-->
+<!--                deleted_flag=#{deletedFlag,jdbcType=TINYINT}-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        where id = #{id,jdbcType=BIGINT}-->
+<!--    </update>-->
+
+
+
+<!--</mapper>-->

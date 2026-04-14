@@ -1,0 +1,74 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+
+<!--<mapper namespace="com.org.permission.server.org.mapper.BaseCustContactsMapper">-->
+
+<!--    <update id="updateById" parameterType= "com.org.permission.server.org.entity.BaseCustContacts">-->
+<!--        update base_cust_contacts-->
+<!--        <set>-->
+<!--            <if test="custId!=null">-->
+<!--                cust_id=#{custId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="custSubId!=null">-->
+<!--                cust_sub_id=#{custSubId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="belongOrg!=null">-->
+<!--                belong_org=#{belongOrg,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="businessType!=null">-->
+<!--                business_type=#{businessType,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="entityType!=null">-->
+<!--                entity_type=#{entityType,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="entityId!=null">-->
+<!--                entity_id=#{entityId,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="contactsName!=null">-->
+<!--                contacts_name=#{contactsName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="sex!=null">-->
+<!--                sex=#{sex,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="position!=null">-->
+<!--                position=#{position,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="telephone!=null">-->
+<!--                telephone=#{telephone,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="mobilePhone!=null">-->
+<!--                mobile_phone=#{mobilePhone,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="email!=null">-->
+<!--                email=#{email,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="idNumber!=null">-->
+<!--                id_number=#{idNumber,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="defaultFlag!=null">-->
+<!--                default_flag=#{defaultFlag,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="createdBy!=null">-->
+<!--                created_by=#{createdBy,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="createdName!=null">-->
+<!--                created_name=#{createdName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="createdDate!=null">-->
+<!--                created_date=#{createdDate,jdbcType=TIMESTAMP},-->
+<!--            </if>-->
+<!--            <if test="modifiedBy!=null">-->
+<!--                modified_by=#{modifiedBy,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="modifiedName!=null">-->
+<!--                modified_name=#{modifiedName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="modifiedDate!=null">-->
+<!--                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        where id = #{id,jdbcType=BIGINT}-->
+<!--    </update>-->
+
+
+<!--</mapper>-->

@@ -1,0 +1,146 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionMenuMapper">
+    <resultMap id="base_permission_menus" type="com.org.permission.server.permission.entity.BasePermissionMenu">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="admin_id" jdbcType="BIGINT" property="adminId" />
+        <result column="admin_name" jdbcType="VARCHAR" property="adminName" />
+        <result column="menu_id" jdbcType="INTEGER" property="menuId" />
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+    </resultMap>
+    <!-- 全部字段列表，供查询单个实体使用-->
+    <sql id="Base_Column_List">
+        id,admin_id,admin_name,menu_id,menu_name,state,created_by,created_name,created_date,modified_by,modified_name,modified_date
+    </sql>
+    <insert id="insert" parameterType= "com.org.permission.server.permission.entity.BasePermissionMenu" useGeneratedKeys="true" keyProperty="id">
+        insert into
+            base_permission_menu(id,admin_id,admin_name,menu_id,menu_name,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+        values( #{id,jdbcType=INTEGER},#{adminId,jdbcType=BIGINT},#{adminName,jdbcType=VARCHAR},#{menuId,jdbcType=INTEGER},#{menuName,jdbcType=VARCHAR},#{state,jdbcType=INTEGER},#{createdBy,jdbcType=BIGINT},#{createdName,jdbcType=VARCHAR},#{createdDate,jdbcType=TIMESTAMP},#{modifiedBy,jdbcType=BIGINT},#{modifiedName,jdbcType=VARCHAR},#{modifiedDate,jdbcType=TIMESTAMP})
+    </insert>
+    <update id="update" parameterType= "com.org.permission.server.permission.entity.BasePermissionMenu">
+        update base_permission_menu
+        <set>
+            <if test="adminId!=null">
+                admin_id=#{adminId,jdbcType=BIGINT},
+            </if>
+            <if test="adminName!=null">
+                admin_name=#{adminName,jdbcType=VARCHAR},
+            </if>
+            <if test="menuId!=null">
+                menu_id=#{menuId,jdbcType=INTEGER},
+            </if>
+            <if test="menuName!=null">
+                menu_name=#{menuName,jdbcType=VARCHAR},
+            </if>
+            <if test="state!=null">
+                state=#{state,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy!=null">
+                created_by=#{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdName!=null">
+                created_name=#{createdName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdDate!=null">
+                created_date=#{createdDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <delete id="delete" parameterType= "java.lang.Integer">
+        delete from base_permission_menu where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <select id="load" resultType="com.org.permission.server.permission.entity.BasePermissionMenu" parameterType="java.lang.Integer" resultMap="base_permission_menus">
+        select
+        <include refid="Base_Column_List" />
+        from base_permission_menu where id=#{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="loadByParam" resultType="com.org.permission.server.permission.entity.BasePermissionMenu" parameterType="com.org.permission.server.permission.entity.BasePermissionMenu" resultMap="base_permission_menus">
+        select
+        <include refid="Base_Column_List" />
+        from base_permission_menu
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="find" resultType="com.org.permission.server.permission.vo.BasePermissionMenuVo" parameterType="com.org.permission.server.permission.entity.BasePermissionMenu" resultMap="base_permission_menus" >
+        select
+        <include refid="Base_Column_List" />
+        from base_permission_menu
+        <include refid="Where_Conditions"/>
+        <if test="sort!= null">
+            order by ${sort}
+            <if test="order!= null and order== 1"> ASC </if>
+            <if test="order!= null and order== 0"> DESC </if>
+        </if>
+        <if test="pageOffset!= null"> limit #{pageOffset},#{pageSize} </if>
+    </select>
+    <select id="listByParam" resultType="com.org.permission.server.permission.entity.BasePermissionMenu" parameterType="com.org.permission.server.permission.entity.BasePermissionMenu" resultMap="base_permission_menus" >
+        select
+        <include refid="Base_Column_List" />
+        from base_permission_menu
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="findCount" resultType="int" parameterType="com.org.permission.server.permission.entity.BasePermissionMenu" >
+        select count(*) from base_permission_menu
+        <include refid="Where_Conditions"/>
+    </select>
+
+    <select id="getListBasePermissionMenusByPage" parameterType="com.org.permission.server.permission.vo.BasePermissionMenuVo" resultMap="base_permission_menus">
+        select * from base_permission_menu
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionMenusByPOJO" parameterType="com.org.permission.server.permission.entity.BasePermissionMenu" resultMap="base_permission_menus">
+        select * from base_permission_menu
+        <include refid="Where_Conditions"/>
+    </select>
+
+    <sql id="Where_Conditions">
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="adminId!=null">
+                and admin_id=#{adminId,jdbcType=BIGINT}
+            </if>
+            <if test="adminName!=null">
+                and admin_name=#{adminName,jdbcType=VARCHAR}
+            </if>
+            <if test="menuId!=null">
+                and menu_id=#{menuId,jdbcType=INTEGER}
+            </if>
+            <if test="menuName!=null">
+                and menu_name=#{menuName,jdbcType=VARCHAR}
+            </if>
+            <if test="state!=null">
+                and state=#{state,jdbcType=INTEGER}
+            </if>
+            <if test="createdBy!=null">
+                and created_by=#{createdBy,jdbcType=BIGINT}
+            </if>
+            <if test="createdName!=null">
+                and created_name=#{createdName,jdbcType=VARCHAR}
+            </if>
+            <if test="createdDate!=null">
+                and created_date=#{createdDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedBy!=null">
+                and modified_by=#{modifiedBy,jdbcType=BIGINT}
+            </if>
+        </where>
+    </sql>
+</mapper>
+

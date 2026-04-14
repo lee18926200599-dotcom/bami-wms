@@ -1,0 +1,561 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.OrgFunctionMapper">
+
+    <!--批量新增组织职能-->
+    <insert id="batchAddOrganizationFunction" useGeneratedKeys="true" keyProperty="id">
+        insert into base_organization_function(
+        <include refid="insert_base_list"/>
+        )
+        values
+        <foreach collection="list" item="bean" separator=",">
+            (
+            #{bean.id},
+            #{bean.functionType},
+            #{bean.orgId},
+            #{bean.parentOrgId},
+            #{bean.enterpriseCode},
+            #{bean.enterpriseName},
+            #{bean.taxpayerCode},
+            #{bean.taxpayerName},
+            #{bean.orgInstitutionCode},
+            #{bean.bizRegistNumber},
+            #{bean.state},
+            #{bean.registeredCapital},
+            #{bean.establishTime},
+            #{bean.businessStartTime},
+            #{bean.businessEndTime},
+            #{bean.netAddress},
+            #{bean.remark},
+            #{bean.linker1},
+            #{bean.phone1},
+            #{bean.email1},
+            #{bean.linker2},
+            #{bean.phone2},
+            #{bean.email2},
+            #{bean.alone},
+            #{bean.taxRegistrationNumber},
+            #{bean.defaultPayOrgId},
+            #{bean.defaultSettlementOrgId},
+            #{bean.defaultStockOrgId},
+            #{bean.higerSaleOrg},
+            #{bean.defaultReceiveOrgId},
+            #{bean.defaultAccountOrgId},
+            #{bean.defaultLogisticsOrgId},
+            #{bean.addressDetail.regionCode},
+            #{bean.addressDetail.regionName},
+            #{bean.addressDetail.invoiceProvCode},
+            #{bean.addressDetail.invoiceProvName},
+            #{bean.addressDetail.invoiceCityCode},
+            #{bean.addressDetail.invoiceCityName},
+            #{bean.addressDetail.invoiceDistrictCode},
+            #{bean.addressDetail.invoiceDistrictName},
+            #{bean.addressDetail.invoiceStreetCode},
+            #{bean.addressDetail.invoiceStreetName},
+            #{bean.addressDetail.address},
+            #{bean.longitude},
+            #{bean.latitude},
+            #{bean.createdBy},
+            #{bean.createdDate}
+            )
+        </foreach>
+    </insert>
+
+    <!--修改组织的所有组织职能-->
+    <update id="modifyFuncStateByBUId">
+        update base_organization_function
+        set
+        state = #{modifystate},
+        modified_by = #{modifiedBy},
+        modified_date=#{modifiedDate}
+        where org_id = #{buId}
+        <if test="sourceStates != null == sourceStates.size > 0">
+          and state in (
+            <foreach collection="sourceStates" item="state" separator=",">
+                #{state}
+            </foreach>
+            )
+        </if>
+    </update>
+
+    <!--根据 BU ID + 职能类型 删除组织职能-->
+    <update id="delOrgFuncByOrgIdAndFuncTypes">
+        update base_organization_function set
+        deleted_flag = 1 ,
+        modified_by = #{modifiedBy},
+        modified_date=#{modifiedDate}
+        where org_id = #{orgId} and function_type in (
+        <foreach collection="funcTypes" separator="," item="funcType">
+            #{funcType}
+        </foreach>
+        )
+    </update>
+
+    <sql id="insert_base_list">
+        id,
+        function_type,
+        org_id,
+        parent_org_id,
+        enterprise_code,
+        enterprise_name,
+        taxpayer_code,
+        taxpayer_name,
+        org_institution_code,
+        biz_regist_number,
+        state,
+        registered_capital,
+        establish_time,
+        business_start_time,
+        business_end_time,
+        net_address,
+        remark,
+        linker1,
+        phone1,
+        email1,
+        linker2,
+        phone2,
+        email2,
+        alone_flag,
+        tax_registration_number,
+        default_pay_org_id,
+        default_settlement_org_id,
+        default_stock_org_id,
+        parent_sale_org_id,
+        default_receive_org_id,
+        default_account_org_id,
+        default_logistics_org_id,
+        region_code,
+        region_name,
+        province_code,
+        province_name,
+        city_code,
+        city_name,
+        district_code,
+        district_name,
+        street_code,
+        street_name,
+        address,
+        longitude,
+        latitude,
+        created_by,
+        created_date
+    </sql>
+
+
+    <!--查询业务单元的组织职能-->
+    <select id="queryOrgFunctionsByOrgId" parameterType="java.lang.Long" resultType="integer">
+        SELECT function_type as functionType
+        FROM base_organization_function
+        WHERE org_id = #{buId}
+          and deleted_flag=0
+    </select>
+
+    <!--根据业务单元ID查询法人组织职能-->
+    <select id="queryOrgCorporateFuncByBUId" parameterType="java.lang.Long" resultMap="corporate_org_func_result_map">
+        select id,
+               state,
+               org_id,
+               parent_org_id,
+               enterprise_code,
+               enterprise_name,
+               taxpayer_code,
+               taxpayer_name,
+               org_institution_code,
+               biz_regist_number,
+               registered_capital,
+               establish_time,
+               business_start_time,
+               business_end_time,
+               net_address,
+               linker,
+               phone,
+               email,
+               remark,
+               created_by,
+               created_date,
+               modified_by,
+               modified_date
+        FROM base_organization_function
+        WHERE org_id = #{buId}
+          and function_type = 1
+          and deleted_flag=0
+    </select>
+
+    <!--根据业务单元ID查询财务组织职能-->
+    <select id="queryOrgFinanceFuncByBUId" parameterType="java.lang.Long" resultMap="finance_org_func_result_map">
+        select id,
+               state,
+               org_id,
+               alone_flag,
+               tax_registration_number,
+               created_by,
+               created_date,
+               modified_by,
+               modified_date
+        FROM base_organization_function
+        WHERE org_id = #{buId}
+          and function_type = 2
+          and deleted_flag=0
+    </select>
+
+    <!--根据业务单元ID查询采购组织职能-->
+    <select id="queryOrgPurchaseFuncByBUId" parameterType="java.lang.Long" resultMap="purchase_org_func_result_map">
+        select id,
+               state,
+               org_id,
+               default_pay_org_id,
+               default_settlement_org_id,
+               default_stock_org_id,
+               created_by,
+               created_date,
+               modified_by,
+               modified_date
+        FROM base_organization_function
+        WHERE org_id = #{buId}
+          and function_type = 3
+          and deleted_flag=0
+    </select>
+
+    <!--根据业务单元ID查询销售组织职能-->
+    <select id="queryOrgSaleFuncByBUId" parameterType="java.lang.Long" resultMap="sale_org_func_result_map">
+        select id,
+               state,
+               org_id,
+               parent_sale_org_id,
+               default_receive_org_id,
+               default_settlement_org_id,
+               default_stock_org_id,
+               created_by,
+               created_date,
+               modified_by,
+               modified_date
+        FROM base_organization_function
+        WHERE org_id = #{buId}
+          and function_type = 4
+          and deleted_flag=0
+    </select>
+
+    <!--根据业务单元ID查询仓储组织职能-->
+    <select id="queryOrgStorageFuncByBUId" parameterType="java.lang.Long" resultMap="storage_org_func_result_map">
+        select id,
+               state,
+               org_id,
+               default_account_org_id,
+               default_settlement_org_id,
+               default_logistics_org_id,
+               region_code,
+               region_name,
+               province_code,
+               province_name,
+               city_code,
+               city_name,
+               district_code,
+               district_name,
+               street_code,
+               street_name,
+               address,
+               created_by,
+               created_date,
+               modified_by,
+               modified_date
+        FROM base_organization_function
+        WHERE org_id = #{buId}
+          and function_type = 5
+          and deleted_flag=0
+    </select>
+
+    <!--根据业务单元ID查询物流组织职能-->
+    <select id="queryOrgLogisticsFuncByBUId" parameterType="java.lang.Long" resultMap="logistics_org_func_result_map">
+        select id,
+               state,
+               org_id,
+               default_account_org_id,
+               default_settlement_org_id,
+               logistics_function_code,
+               logistics_function_type,
+               region_code,
+               region_name,
+               province_code,
+               province_name,
+               city_code,
+               city_name,
+               district_code,
+               district_name,
+               street_code,
+               street_name,
+               address,
+               longitude,
+               latitude,
+               created_by,
+               created_date,
+               modified_by,
+               modified_date
+        FROM base_organization_function
+        WHERE org_id = #{buId}
+          and function_type = 6
+          and deleted_flag=0
+    </select>
+
+    <select id="queryOrgBankFuncByBUId" parameterType="java.lang.Long" resultMap="bank_org_func_result_map">
+        select id,
+               state,
+               org_id,
+               default_account_org_id,
+               default_settlement_org_id,
+               created_by,
+               created_date,
+               modified_by,
+               modified_date
+        FROM base_organization_function
+        WHERE org_id = #{buId}
+          and function_type = 7
+          and deleted_flag=0
+    </select>
+
+    <select id="queryBizsFunc" parameterType="com.org.permission.common.org.param.QueryBizsFuncParam"
+            resultMap="organization_function_result_map">
+        select
+        id,
+        function_type,
+        org_id,
+        (select org_name from base_organization where base_organization_function.org_id =base_organization.id)as
+        orgName,
+        default_pay_org_id,
+        (select org_name from base_organization where base_organization_function.default_pay_org_id
+        =base_organization.id)as defaultPayOrgName,
+        default_settlement_org_id,
+        (select org_name from base_organization where base_organization_function.default_settlement_org_id
+        =base_organization.id)as defaultSettlementOrgName,
+        default_stock_org_id,
+        (select org_name from base_organization where base_organization_function.default_stock_org_id
+        =base_organization.id)as defaultStockOrgName,
+        default_receive_org_id,
+        (select org_name from base_organization where base_organization_function.default_receive_org_id
+        =base_organization.id)as defaultReceiveOrgName,
+        default_account_org_id,
+        (select org_name from base_organization where base_organization_function.default_account_org_id
+        =base_organization.id)as defaultAccountOrgName,
+        default_logistics_org_id,
+        (select org_name from base_organization where base_organization_function.default_logistics_org_id
+        =base_organization.id)as defaultLogisticsOrgName,
+        created_by,
+        created_date,
+        modified_by,
+        modified_date
+        from base_organization_function where deleted_flag=0 and state=1
+        <if test="reqParam.ids !=null and reqParam.ids.size>0">
+            and org_id in (
+            <foreach collection="reqParam.ids" item="item" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="reqParam.functionType !=null and reqParam.functionType !=0">
+            and function_type =#{reqParam.functionType}
+        </if>
+    </select>
+
+    <!--法人组织职能映射关系-->
+    <resultMap id="corporate_org_func_result_map" type="com.org.permission.common.org.dto.func.CorporateOrgFuncBean">
+        <id property="id" column="id"/>
+        <result property="orgId" column="org_id"/>
+        <result property="parentOrgId" column="parent_org_id"/>
+        <result property="enterpriseCode" column="enterprise_code"/>
+        <result property="enterpriseName" column="enterprise_name"/>
+        <result property="taxpayerCode" column="taxpayer_code"/>
+        <result property="taxpayerName" column="taxpayer_name"/>
+        <result property="orgInstitutionCode" column="org_institution_code"/>
+        <result property="bizRegistNumber" column="biz_regist_number"/>
+        <result property="registeredCapital" column="registered_capital"/>
+        <result property="establishTime" column="establish_time"/>
+        <result property="bizStartTime" column="business_start_time"/>
+        <result property="bizEndTime" column="business_end_time"/>
+        <result property="netAddress" column="net_address"/>
+        <result property="linker" column="linker"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="remark" column="remark"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+        <association property="orgName" column="org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="parentOrgName" column="parent_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+
+    <!--财务组织职能映射关系-->
+    <resultMap id="finance_org_func_result_map" type="com.org.permission.common.org.dto.func.FinanceOrgFuncBean">
+        <id property="id" column="id"/>
+        <result property="orgId" column="org_id"/>
+        <result property="aloneFlag" column="alone_flag"/>
+        <result property="taxRegistrationNumber" column="tax_registration_number"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+        <association property="orgName" column="org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+
+    <!--采购组织职能映射关系-->
+    <resultMap id="purchase_org_func_result_map" type="com.org.permission.common.org.dto.func.PurchaseOrgFuncBean">
+        <id property="id" column="id"/>
+        <result property="orgId" column="org_id"/>
+        <result property="payOrgId" column="default_pay_org_id"/>
+        <result property="settleOrgId" column="default_settlement_org_id"/>
+        <result property="stockOrgId" column="default_stock_org_id"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+        <association property="orgName" column="org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="payOrgName" column="default_pay_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="settleOrgName" column="default_settlement_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="stockOrgName" column="default_stock_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+
+    <!--销售组织职能映射关系-->
+    <resultMap id="sale_org_func_result_map" type="com.org.permission.common.org.dto.func.SaleOrgFuncBean">
+        <id property="id" column="id"/>
+        <result property="orgId" column="org_id"/>
+        <result property="parentSaleOrgId" column="parent_sale_org_id"/>
+        <result property="receiveOrgId" column="default_receive_org_id"/>
+        <result property="settleOrgId" column="default_settlement_org_id"/>
+        <result property="stockOrgId" column="default_stock_org_id"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+        <association property="orgName" column="org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="parentSaleOrgName" column="parent_sale_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="receiveOrgName" column="default_receive_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="settleOrgName" column="default_settlement_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="stockOrgName" column="default_stock_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+
+    <!--仓储组织职能映射关系-->
+    <resultMap id="storage_org_func_result_map" type="com.org.permission.common.org.dto.func.StorageOrgFuncBean">
+        <id property="id" column="id"/>
+        <result property="orgId" column="org_id"/>
+        <result property="accountOrgId" column="default_account_org_id"/>
+        <result property="settleOrgId" column="default_settlement_org_id"/>
+        <result property="logisticsOrgId" column="default_logistics_org_id"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+        <association property="orgName" column="org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="accountOrgName" column="default_account_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="settleOrgName" column="default_settlement_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="logisticsOrgName" column="default_logistics_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="addressDetail"
+                     resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+    </resultMap>
+
+    <!--物流组织职能映射关系-->
+    <resultMap id="logistics_org_func_result_map" type="com.org.permission.common.org.dto.func.LogisticsOrgFuncBean">
+        <id property="id" column="id"/>
+        <result property="orgId" column="org_id"/>
+        <result property="accountOrgId" column="default_account_org_id"/>
+        <result property="settleOrgId" column="default_settlement_org_id"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+        <result column="logistics_function_type" property="logisticsFunctionType"/>
+        <result column="logistics_function_code" property="logisticsFunctionCode"/>
+        <association property="orgName" column="org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="accountOrgName" column="default_account_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="settleOrgName" column="default_settlement_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="addressDetail"
+                     resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+    </resultMap>
+
+    <!--金融组织职能映射关系-->
+    <resultMap id="bank_org_func_result_map" type="com.org.permission.common.org.dto.func.BankingOrgFuncBean">
+        <id property="id" column="id"/>
+        <result property="orgId" column="org_id"/>
+        <result property="accountOrgId" column="default_account_org_id"/>
+        <result property="settleOrgId" column="default_settlement_org_id"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+        <association property="orgName" column="org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="accountOrgName" column="default_account_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="settleOrgName" column="default_settlement_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+
+    <resultMap id="organization_function_result_map"
+               type="com.org.permission.common.org.dto.OrganizationFunctionDto">
+        <id property="id" column="id"/>
+        <result property="orgId" column="org_id"/>
+        <result property="orgName" column="orgName"></result>
+        <result property="defaultAccountOrgId" column="default_account_org_id"/>
+        <result property="defaultSettlementOrgId" column="default_settlement_org_id"/>
+        <result property="defaultLogisticsOrgId" column="default_logistics_org_id"></result>
+        <result property="defaultPayOrgId" column="default_pay_org_id"></result>
+        <result property="defaultReceiveOrgId" column="default_receive_org_id"></result>
+        <result property="defaultStockOrgId" column="default_stock_org_id"></result>
+
+        <result property="defaultAccountOrgName" column="defaultAccountOrgName"/>
+        <result property="defaultSettlementOrgName" column="defaultSettlementOrgName"/>
+        <result property="defaultLogisticsOrgName" column="defaultLogisticsOrgName"></result>
+        <result property="defaultPayOrgName" column="defaultPayOrgName"></result>
+        <result property="defaultReceiveOrgName" column="defaultReceiveOrgName"></result>
+        <result property="defaultStockOrgName" column="defaultStockOrgName"></result>
+
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+    </resultMap>
+</mapper>
+

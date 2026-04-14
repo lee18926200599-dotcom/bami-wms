@@ -1,0 +1,824 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.BizUnitMapper">
+    <sql id="Base_Column_List">
+        id
+        ,org_type,org_code,org_name,main_org_flag,group_id,parent_id,parent_bu_id,org_short_name,entity_code,entity_name,industry_code,industry_name,region_code,region_name,province_code,province_name,city_code,city_name,district_code,district_name,street_code,street_name,address,phone,email,net_address,credit_code,company_id,establish_time,currency,cust_id,dep_duty_staff,inner_cust_id,business_type,state,start_time,stop_time,init_flag,quoted_flag,remark,main_business,version,logo_url,regist_source,regist_source_id,created_by,created_name,created_date,modified_by,modified_name,modified_date
+    </sql>
+    <!-- 创建业务单元 -->
+    <insert id="addBizUnit" parameterType="com.org.permission.server.org.bean.BizUnitWithFuncDetailBean"
+            useGeneratedKeys="true" keyProperty="bean.id">
+        insert into base_organization
+        (<include refid="insert_base_list"/>)
+        values (
+        #{bean.id},
+        #{bean.groupId},
+        #{bean.custId},
+        #{bean.orgType},
+        #{bean.parentId},
+        #{bean.mainOrgFlag},
+        #{bean.orgCode},
+        #{bean.orgName},
+        #{bean.orgShortName},
+        #{bean.entityCode},
+        #{bean.entityName},
+        #{bean.creditCode},
+        #{bean.companyId},
+        #{bean.industryCode},
+        #{bean.industryName},
+        #{bean.addressDetail.regionCode},
+        #{bean.addressDetail.regionName},
+        #{bean.addressDetail.invoiceProvCode},
+        #{bean.addressDetail.invoiceProvName},
+        #{bean.addressDetail.invoiceCityCode},
+        #{bean.addressDetail.invoiceCityName},
+        #{bean.addressDetail.invoiceDistrictCode},
+        #{bean.addressDetail.invoiceDistrictName},
+        #{bean.addressDetail.invoiceStreetCode},
+        #{bean.addressDetail.invoiceStreetName},
+        #{bean.addressDetail.address},
+        #{bean.phone},
+        #{bean.currency},
+        #{bean.state},
+        #{bean.initFlag},
+        #{bean.startTime},
+        #{bean.remark},
+        #{bean.version},
+        #{bean.createdBy},
+        #{bean.createdDate}
+        )
+    </insert>
+
+    <!--回写新增根业务单元的公司ID-->
+    <update id="writebackRootBUCompanyId" parameterType="java.lang.Long">
+        update base_organization
+        set company_id = #{rootBUId}
+        where id = #{rootBUId}
+    </update>
+
+    <!-- 更新业务单元 -->
+    <update id="updateBizUnit" parameterType="com.org.permission.server.org.bean.UpdateBizUnitWriteBean">
+        update base_organization
+        <trim prefix="set" suffixOverrides=",">
+            <if test="bean.orgName!=null">org_name=#{bean.orgName},</if>
+            <if test="bean.orgShortName!=null">org_short_name=#{bean.orgShortName},</if>
+            <if test="bean.parentId !=null">parent_id=#{bean.parentId},</if>
+            <if test="bean.entityCode!=null">entity_code=#{bean.entityCode},</if>
+            <if test="bean.entityName!=null ">entity_name=#{bean.entityName},</if>
+            <if test="bean.creditCode!=null">credit_code=#{bean.creditCode},</if>
+            <if test="bean.companyId!=null">company_id=#{bean.companyId},</if>
+            <if test="bean.industryCode!=null">industry_code=#{bean.industryCode},</if>
+            <if test="bean.industryName!=null">industry_name=#{bean.industryName},</if>
+            <if test="bean.addressDetail !=null and bean.addressDetail.regionCode!=null">
+                region_code=#{bean.addressDetail.regionCode},
+            </if>
+            <if test="bean.addressDetail !=null and bean.addressDetail.regionName!=null">
+                region_name=#{bean.addressDetail.regionName},
+            </if>
+            <if test="bean.addressDetail !=null and bean.addressDetail.invoiceProvCode !=null">
+                province_code=#{bean.addressDetail.invoiceProvCode},
+            </if>
+            <if test="bean.addressDetail !=null and bean.addressDetail.invoiceProvName !=null">
+                province_name=#{bean.addressDetail.invoiceProvName},
+            </if>
+            <if test="bean.addressDetail !=null and bean.addressDetail.invoiceCityCode!=null">
+                city_code=#{bean.addressDetail.invoiceCityCode},
+            </if>
+            <if test="bean.addressDetail !=null and bean.addressDetail.invoiceCityName!=null">
+                city_name=#{bean.addressDetail.invoiceCityName},
+            </if>
+
+            <if test="bean.addressDetail !=null and bean.addressDetail.invoiceDistrictCode!=null">
+                district_code=#{bean.addressDetail.invoiceDistrictCode},
+            </if>
+            <if test="bean.addressDetail !=null and bean.addressDetail.invoiceDistrictName!=null">
+                district_name=#{bean.addressDetail.invoiceDistrictName},
+            </if>
+
+            <if test="bean.addressDetail !=null and bean.addressDetail.invoiceStreetCode!=null">
+                street_code=#{bean.addressDetail.invoiceStreetCode},
+            </if>
+            <if test="bean.addressDetail !=null and bean.addressDetail.invoiceStreetName!=null">
+                street_name=#{bean.addressDetail.invoiceStreetName},
+            </if>
+            <if test="bean.addressDetail !=null and bean.addressDetail.address!=null">
+                address=#{bean.addressDetail.address},
+            </if>
+            <if test="bean.phone!=null">phone=#{bean.phone},</if>
+            <if test="bean.remark!=null">remark=#{bean.remark},</if>
+            <if test="bean.modifiedBy!=null">modified_by=#{bean.modifiedBy},</if>
+            <if test="bean.modifiedDate!=null">modified_date=#{bean.modifiedDate},</if>
+            <if test="bean.currency!=null">currency=#{bean.currency},</if>
+        </trim>
+        WHERE id=#{bean.id}
+    </update>
+
+    <!--根据ID查询业务单元状态值-->
+    <select id="getBizUnitStateByIdLock" resultType="com.org.permission.server.org.bean.OrgBean"
+            parameterType="java.lang.Long">
+        SELECT id            as id,
+               org_name      as orgName,
+               group_id      as groupId,
+               parent_id     as parentId,
+               state         as state,
+               init_flag     as initFlag,
+               cust_id       as custId,
+               inner_cust_id as innerCustId
+        from base_organization
+        where id = #{bizUnitId}
+    </select>
+
+    <!--业务单元绑定内部客商-->
+    <update id="bindingInnerCust" parameterType="com.org.permission.server.org.dto.param.BindingCustReqParam">
+        update base_organization
+        set inner_cust_id = #{param.custId}
+        where id = #{param.buId}
+    </update>
+
+    <!--业务单元绑定客商-->
+    <update id="bindingCust" parameterType="com.org.permission.server.org.dto.param.BindingCustReqParam">
+        update base_organization
+        set cust_id = #{param.custId}
+        where id = #{param.orgId}
+    </update>
+
+    <select id="queryAvailableBUByNameLock" resultType="com.org.permission.server.org.bean.OrgBean">
+        SELECT id        as id,
+               state     as state,
+               init_flag as initFlag
+        from base_organization
+        where group_id = #{groupId}
+          and org_name = #{buName}
+          and state != 4 for
+        update
+    </select>
+
+    <select id="queryBizUnitByIdLock" parameterType="java.lang.Long"
+            resultMap="biz_unit_with_func_detail_result_map">
+        select id,
+               org_code,
+               org_name,
+               org_short_name,
+               state,
+               init_flag,
+               group_id,
+               parent_id,
+               company_id,
+               entity_code,
+               entity_name,
+               credit_code,
+               industry_code,
+               industry_name,
+               region_name,
+               province_code,
+               province_name,
+               city_code,
+               city_name,
+               district_code,
+               district_name,
+               street_code,
+               street_name,
+               address,
+               phone,
+               currency,
+               remark
+        from base_organization
+        where id = #{bizUnitId}
+          and state != 4 for
+        update
+    </select>
+
+    <!--启用集团根业务单元-->
+    <update id="enableRootBUByGroupId">
+        update base_organization
+        set state         = 1,
+            modified_date = #{modifiedDate},
+            modified_by=#{userId}
+        where group_id = #{groupId}
+          and main_org_flag = 1
+          and org_type = 3
+    </update>
+    <sql id="insert_base_list">
+        id
+        ,
+        group_id,
+        cust_id,
+        org_type,
+        parent_id,
+        main_org_flag,
+        org_code,
+        org_name,
+        org_short_name,
+        entity_code,
+        entity_name,
+        credit_code,
+        company_id,
+        industry_code,
+        industry_name,
+        region_code,
+        region_name,
+        province_code,
+        province_name,
+        city_code,
+        city_name,
+        district_code,
+        district_name,
+        street_code,
+        street_name,
+        address,
+        phone,
+        currency,
+        state,
+        init_flag,
+        start_time,
+        remark,
+        version,
+        created_by,
+        created_date
+    </sql>
+    <!--根据ID查询业务委托关系-->
+    <select id="queryBizUnitById" resultMap="biz_unit_with_func_detail_result_map">
+        select
+        <include refid="Base_Column_List"/>
+        from base_organization where org_type = 3
+        <if test="reqParam.id !=null and reqParam.id != 0">
+            and id =#{reqParam.id}
+        </if>
+        <if test="reqParam.state !=null and reqParam.state != 0">
+            and state =#{reqParam.state}
+        </if>
+    </select>
+
+
+    <select id="queryBizUnitByIds" parameterType="list" resultMap="biz_unit_with_func_detail_result_map">
+        select
+        <include refid="Base_Column_List"/>
+        from base_organization where org_type = 3
+        <if test="buIds != null and buIds.size>0">
+            and id in
+            <foreach collection="buIds" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+
+    <select id="queryBizByGroupIdAndAddress" resultMap="biz_unit_with_func_detail_result_map">
+        select org.id,
+               org.org_name,
+               org.org_short_name,
+               org.phone,
+               org.province_code,
+               org.province_name,
+               org.city_code,
+               org.city_name,
+               org.street_code,
+               org.street_name,
+               org.district_code,
+               org.district_name,
+               org.address,
+               orgf.longitude,
+               orgf.latitude
+        from base_organization org
+                 left JOIN base_organization_function orgf ON org.id = orgf.org_id
+        where org.state = 1
+          and org.org_type = 3
+          and orgf.function_type = 6
+          and org.group_id = #{param.groupId}
+          AND orgf.latitude BETWEEN #{param.startLatitude} AND #{param.endLatitude}
+          AND orgf.longitude BETWEEN #{param.startLongitude} and #{param.endLongitude}
+    </select>
+
+    <!--根据参数统计业务委托关系数量-->
+    <select id="countBizUnit" resultType="integer"
+            parameterType="com.org.permission.common.org.param.QueryBizUnitListReqParam">
+        select COUNT(org.id) from base_organization org
+        <include refid="where_query_condition"/>
+    </select>
+
+    <!--根据参数查询业务委托关系列表-->
+    <select id="queryBizUnitList" parameterType="com.org.permission.common.org.param.QueryBizUnitListReqParam"
+            resultMap="biz_unit_with_func_info_result_map">
+        select
+        <include refid="base_query_list"/>
+        from base_organization org
+        left join base_organization_function fun on org.id =fun.org_id
+        <include refid="where_query_condition"/>
+        <if test="queryParam.functionTypes !=null and queryParam.functionTypes.size>0">
+            and fun.function_type in
+            <foreach collection="queryParam.functionTypes" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="queryBizUnitListTotalCount"
+            parameterType="com.org.permission.common.org.param.QueryBizUnitListReqParam"
+            resultType="java.lang.Integer">
+        select
+        count(distinct(org.id))
+        from base_organization org
+        left join base_organization_function fun on org.id =fun.org_id
+        <include refid="where_query_condition"/>
+        <if test="queryParam.functionTypes !=null and queryParam.functionTypes.size>0">
+            and fun.function_type in
+            <foreach collection="queryParam.functionTypes" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <!--查询根业务单元列表-->
+    <select id="queryRootBUInfoList" parameterType="com.org.permission.server.org.dto.param.RootBUListQueryParam"
+            resultType="com.org.permission.common.org.dto.OrgInfoDto">
+        select id        as id,
+               group_id  as groupId,
+               parent_id as parentId,
+               org_type  as orgType,
+               org_code  as orgCode,
+               org_name  as orgName
+        FROM base_organization
+        WHERE org_type = 3
+          and main_org_flag = 1
+          and state = 1
+    </select>
+
+    <!-- 根据组织职能查询组织简要信息 -->
+    <select id="queryGroupBUByFunc" parameterType="com.org.permission.server.org.dto.param.QueryGroupBUByFuncReqParam"
+            resultType="com.org.permission.server.org.bean.OrgListBean">
+        SELECT
+        DISTINCT
+        biz.id as id,
+        biz.org_code as orgCode,
+        biz.org_name as orgName,
+        biz.parent_id as parentId
+        FROM base_organization biz LEFT JOIN base_organization_function fun ON biz.id = fun.org_id
+        WHERE
+        biz.org_type = 3
+        AND biz.group_id = #{queryParam.groupId}
+        AND biz.deleted_flag=0
+        <if test="queryParam.functionType != null">
+            AND fun.function_type=#{queryParam.functionType}
+        </if>
+        <if test="queryParam.funcTypes != null and queryParam.funcTypes.size>0">
+            AND fun.function_type in
+            <foreach collection="queryParam.funcTypes" open="(" close=")" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test="queryParam.state!=null">
+            AND biz.state = #{queryParam.state}
+        </if>
+        <if test="queryParam.noFuncType != null and queryParam.noFuncType != 0 ">
+            AND biz.id not in (
+            select biz2.id
+            FROM base_organization biz2 LEFT JOIN base_organization_function fun2 ON biz2.id = fun2.org_id
+            WHERE biz2.org_type = 3 AND biz2.group_id = #{queryParam.groupId} AND
+            fun2.function_type=#{queryParam.noFuncType}
+            )
+        </if>
+        <if test="queryParam.permissionOrgIds != null and queryParam.permissionOrgIds.size > 0 ">
+            and biz.id in (
+            <foreach collection="queryParam.permissionOrgIds" item="orgId" separator=",">
+                #{orgId}
+            </foreach>
+            )
+        </if>
+        <if test="queryParam.mainOrgFlag==true">
+            union SELECT
+            DISTINCT
+            biz.id as id,
+            biz.org_code as orgCode,
+            biz.org_name as orgName,
+            biz.parent_id as parentId
+            FROM base_organization biz LEFT JOIN base_organization_function fun ON biz.id = fun.org_id
+            WHERE
+            biz.org_type = 3
+            AND biz.group_id = #{queryParam.groupId}
+            and biz.main_org_flag=1
+        </if>
+
+        <if test="queryParam.logisticsFunctionCode != null">
+            AND fun.logistics_function_code = #{queryParam.logisticsFunctionCode}
+        </if>
+
+        <if test="queryParam.bizMaketFunctionAccountOrg==true and queryParam.ownerOrgId>0">
+            and biz.id in (
+            select org_id from base_organization_function where function_type in(3,4)
+            and default_pay_org_id = #{queryParam.ownerOrgId} OR default_receive_org = #{queryParam.ownerOrgId}
+            )
+        </if>
+
+        <if test="queryParam.bizStorageFunctionAccountOrg==true and queryParam.warehouseProviderOrgId>0">
+            and biz.id in (
+            select org_id from base_organization_function where function_type=5
+            and default_account_org_id =#{queryParam.warehouseProviderOrgId}
+            )
+        </if>
+
+        <if test="queryParam.bizLogisticsFunctionAccountOrg==true and queryParam.logisticsProviderOrgId>0">
+            and biz.id in (
+            select org_id from base_organization_function where function_type=6
+            and default_account_org_id =#{queryParam.logisticsProviderOrgId}
+            )
+        </if>
+
+    </select>
+
+
+    <!-- 根据组织职能查询组织简要信息 -->
+    <select id="queryGroupBUByOrgIdAndFunc" resultType="com.org.permission.server.org.bean.OrgTreeBean">
+        SELECT
+        org.id as id,
+        org.group_id as groupId,
+        org.org_type as orgType,
+        org.parent_id as parentId,
+        org.org_code as orgCode,
+        org.org_name as orgName,
+        org.parent_bu_id as parentBUId,
+        org.main_org_flag as mainOrgFlag
+        FROM base_organization org LEFT JOIN base_organization_function fun ON org.id = fun.org_id
+        WHERE
+        org.group_id in (
+        select group_id from base_organization where org.id in
+        <foreach collection="orgIds" open="(" separator="," item="orgId" close=")">
+            #{orgId}
+        </foreach>
+        )
+        and org.org_type = 3
+        and fun.function_type=#{funcType}
+    </select>
+
+    <!--统计具有某组织职能的业务单元数量-->
+    <select id="countBizUnitListByFunc"
+            parameterType="com.org.permission.common.org.param.QueryBizUnitListByFuncParam" resultType="integer">
+        SELECT count(org.id)
+        FROM base_organization org LEFT JOIN base_organization_function fun ON org.id = fun.org_id
+        WHERE org.org_type = 3 and fun.function_type=#{queryParam.funcType} and org.deleted_flag=0
+        <if test="queryParam.orgName != null  and queryParam.orgName != ''">
+            and org.org_name like '%${queryParam.orgName}%'
+        </if>
+        <if test="queryParam.state != null">
+            and org.state = #{queryParam.state}
+        </if>
+    </select>
+
+    <!--查询具有某组织职能的业务单元-->
+    <select id="queryBizUnitListByFunc"
+            parameterType="com.org.permission.common.org.param.QueryBizUnitListByFuncParam"
+            resultMap="org_concise_info_dto">
+        SELECT
+        org.id,
+        org.group_id,
+        org.org_type,
+        org.org_code,
+        org.org_name,
+        org.state
+        FROM base_organization org LEFT JOIN base_organization_function fun ON org.id = fun.org_id
+        WHERE org.org_type = 3 and fun.function_type=#{queryParam.funcType} and org.deleted_flag=0
+        <if test="queryParam.orgName != null  and queryParam.orgName != ''">
+            and org.org_name like '%${queryParam.orgName}%'
+        </if>
+        <if test="queryParam.state != null">
+            and org.state = #{queryParam.state}
+        </if>
+
+
+    </select>
+    <!--根据组织ID，查询组织信息及组织功能信息-->
+    <select id="queryOrgAndFuncInfo" parameterType="java.lang.Long" resultMap="org_and_func_info">
+        select org.id,
+               org.org_type,
+               org.org_code,
+               org.org_name,
+               org.org_short_name,
+               org.group_id,
+               org.cust_id,
+               org.parent_id,
+               org.main_org_flag,
+               func.id as funcId,
+               func.function_type,
+               func.state
+        from base_organization org
+                 LEFT JOIN base_organization_function func on org.id = func.org_id
+        where org.id = #{orgId}
+    </select>
+
+    <!--过滤具有财务组织职能的业务单元-->
+    <select id="fillHasFinanceOrgFuncBU" parameterType="list" resultType="java.lang.Long">
+        select org.id
+        from base_organization org LEFT JOIN base_organization_function func on org.id = func.org_id
+        where func.function_type = 2 and org.id in (
+        <foreach collection="orgIds" item="orgId" separator=",">
+            #{orgId}
+        </foreach>
+        )
+    </select>
+
+    <!--根据集团 ID 查询根业务单元信息-->
+    <select id="queryRootBUByGroupId" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.OrgListBean">
+        select id       as id,
+               org_name as orgName
+        from base_organization
+        where group_id = #{groupId}
+          and main_org_flag = 1
+    </select>
+
+    <!--根据集团 ID 查询根业务单元信息-->
+    <select id="queryOrgRootBU" parameterType="java.lang.Long"
+            resultType="com.org.permission.common.org.dto.OrgListDto">
+        select id       as id,
+               org_name as orgName
+        from base_organization
+        where group_id = (select group_id
+                          from base_organization
+                          where id = #{orgId})
+          and main_org_flag = 1
+    </select>
+
+    <!--根据全局客商 ID 查询其业务单元-->
+    <select id="queryBUByCustId" parameterType="java.lang.Long" resultType="com.org.permission.server.org.bean.OrgListBean">
+        select id       as id,
+               org_name as orgName
+        from base_organization
+        where cust_id = #{custId}
+          and org_type = 3
+          and deleted_flag = 0
+    </select>
+
+    <!--根据集团id查询所有的业务单元-->
+    <select id="queryBUByGroupId" resultType="com.org.permission.common.org.dto.OrgInfoDto">
+        SELECT DISTINCT biz.id             as id,
+                        biz.org_code       as orgCode,
+                        biz.org_name       as orgName,
+                        biz.org_short_name as orgShortName,
+                        biz.parent_id      as parentId,
+                        biz.group_id       as groupId
+        FROM base_organization biz
+        where group_id = #{reqParam.id}
+          and org_type = 3
+          and state = 1
+    </select>
+
+    <!--根据集团 ID 查询该集团下未绑定客商的业务单元-->
+    <select id="queryGroupUnbindingCustBUs"
+            parameterType="com.org.permission.common.org.param.QueryBizUnitListReqParam"
+            resultType="com.org.permission.server.org.bean.OrgListBean">
+        select
+        id as id,
+        org_code as orgCode,
+        org_name as orgName,
+        group_id as groupId,
+        org_type as orgType,
+        state as state,
+        main_org_flag as rootOrg
+        from base_organization
+        where group_id = #{reqParam.groupId} and (cust_id is null or cust_id = 0) and org_type = 3 and deleted_flag = 0
+        <if test="reqParam.state != null">
+            and state = #{reqParam.state}
+        </if>
+    </select>
+
+    <select id="queryBUByGroupIdForApp" resultType="java.lang.Long">
+        select DISTINCT id
+        from base_organization biz
+        where group_id = #{groupId}
+          and org_type = 3
+          and state = 2
+          and main_org_flag = 1
+    </select>
+
+    <!--查询客商组织信息-->
+    <select id="queryCustOrg" resultType="com.org.permission.common.org.dto.CustOrgDto"
+            parameterType="com.org.permission.common.org.param.QueryByIdReqParam">
+        select id            as buId,
+               group_id      as groupId,
+               cust_id       as custId,
+               main_org_flag as mainOrgFlag
+        from base_organization
+        where cust_id = #{reqParam.id}
+          and org_type = 3
+          and deleted_flag = 0
+    </select>
+
+    <sql id="simple_biz_unit_info">
+        id
+        as id,
+        org_code as orgCode,
+        state as state,
+        org_name as orgName,
+        org_short_name as orgShortName,
+        version as version
+    </sql>
+    <sql id="where_query_condition">
+        <where>
+            org.org_type = 3
+            and org.deleted_flag=0
+            <if test="queryParam.groupId != null and queryParam.groupId != 0">
+                and org.group_id = #{queryParam.groupId}
+            </if>
+            <if test="queryParam.bizUnitCode != null and queryParam.bizUnitCode != '' ">
+                and org.org_code like CONCAT('%',#{queryParam.bizUnitCode},'%')
+            </if>
+            <if test="queryParam.bizUnitName != null and queryParam.bizUnitName != '' ">
+                and org.org_name like CONCAT('%',#{queryParam.bizUnitName},'%')
+            </if>
+            <if test="queryParam.custId != null and queryParam.custId != 0">
+                and org.cust_id = #{queryParam.custId}
+            </if>
+            <if test="queryParam.parentId != null and queryParam.parentId != 0">
+                and org.parent_id = #{queryParam.parentId}
+            </if>
+            <if test="buIds !=null and buIds.size>0">
+                and org.id in(
+                <foreach collection="buIds" separator="," item="buId">
+                    #{buId}
+                </foreach>
+                )
+            </if>
+            <if test="queryParam.state != null">
+                and org.state = #{queryParam.state}
+            </if>
+
+        </where>
+    </sql>
+
+
+    <resultMap id="org_and_func_info" type="com.org.permission.server.org.bean.SimpleBizUnitWithFuncBean">
+        <result column="id" property="id"/>
+        <result column="main_org_flag" property="mainOrgFlag"/>
+        <result column="group_id" property="groupId"/>
+        <result column="cust_id" property="custId"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="parent_bu_id" property="parentBuId"/>
+        <result column="state" property="state"/>
+        <result column="org_type" property="orgType"/>
+        <result column="org_code" property="orgCode"/>
+        <result column="org_name" property="orgName"/>
+        <result column="org_short_name" property="orgShortName"/>
+        <result column="company_id" property="companyId"/>
+        <result property="industryCode" column="industry_code"/>
+        <result property="industryName" column="industry_name"/>
+        <result property="businessType" column="business_type"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="depDutyStaff" column="dep_duty_staff"/>
+        <association property="addressDetail"
+                     resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+        <association property="groupName" column="group_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="companyName" column="group_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="parentName" column="group_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <collection property="orgFuncs" ofType="com.org.permission.common.org.dto.OrgFunctionDto">
+            <result column="function_type" property="functionType"/>
+            <result column="state" property="state"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="org_concise_info_dto" type="com.org.permission.common.org.dto.OrgConciseInfoDto">
+        <result column="id" property="id"/>
+        <result column="group_id" property="groupId"/>
+        <result column="org_type" property="orgType"/>
+        <result column="org_code" property="orgCode"/>
+        <result column="org_name" property="orgName"/>
+        <result column="state" property="state"/>
+        <association property="groupName" column="group_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+
+    <sql id="base_query_list">
+        distinct (org.id) ,
+     org.org_code,
+     org.org_name ,
+     org.org_short_name ,
+     org.cust_id,
+     org.inner_cust_id,
+     org.group_id,
+     org.parent_id ,
+     org.company_id ,
+     org.entity_name,
+     org.entity_code,
+     org.credit_code,
+     org.industry_name,
+     org.industry_code,
+     org.region_code,
+     org.region_name,
+     org.province_code,
+     org.province_name,
+     org.city_code,
+     org.city_name,
+     org.district_code,
+     org.district_name,
+     org.street_code,
+     org.street_name,
+     org.address,
+     org.phone,
+     org.currency ,
+     org.state ,
+     org.remark,
+     org.created_by,
+     org.created_name,
+     org.created_date,
+     org.modified_by,
+     org.modified_name,
+     org.modified_date
+    </sql>
+
+    <!--组织职能简单映射-->
+    <resultMap id="biz_unit_with_func_info_result_map" type="com.org.permission.server.org.bean.BizUnitWithFuncInfoBean">
+        <result column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="org_code" property="orgCode"/>
+        <result column="org_name" property="orgName"/>
+        <result column="org_short_name" property="orgShortName"/>
+        <result column="cust_id" property="custId"/>
+        <result column="inner_cust_id" property="innerCustId"/>
+        <result column="entity_code" property="entityCode"/>
+        <result column="entity_name" property="entityName"/>
+        <result column="credit_code" property="creditCode"/>
+        <result column="industry_code" property="industryCode"/>
+        <result column="industry_name" property="industryName"/>
+        <result column="phone" property="phone"/>
+        <result column="currency" property="currency"/>
+        <result column="state" property="state"/>
+        <result column="remark" property="remark"/>
+        <result column="version" property="version"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+        <association property="groupName" column="group_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="parentName" column="parent_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="companyName" column="company_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="addressDetail"
+                     resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+        <collection property="simpleFunctions" column="id"
+                    select="com.org.permission.server.org.mapper.OrgFunctionMapper.queryOrgFunctionsByOrgId"/>
+    </resultMap>
+
+    <!--组织职能详细信息-->
+    <resultMap id="biz_unit_with_func_detail_result_map" type="com.org.permission.server.org.bean.BizUnitWithFuncDetailBean">
+        <result column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="group_id" property="groupId"/>
+        <result column="main_org_flag" property="mainOrgFlag"/>
+        <result column="init_flag" property="initFlag"/>
+        <result column="start_time" property="startTime"/>
+        <result column="org_code" property="orgCode"/>
+        <result column="org_name" property="orgName"/>
+        <result column="company_id" property="companyId"/>
+        <result column="org_short_name" property="orgShortName"/>
+        <result column="cust_id" property="custId"/>
+        <result column="inner_cust_id" property="innerCustId"/>
+        <result column="entity_code" property="entityCode"/>
+        <result column="entity_name" property="entityName"/>
+        <result column="credit_code" property="creditCode"/>
+        <result column="industry_code" property="industryCode"/>
+        <result column="industry_name" property="industryName"/>
+        <result column="phone" property="phone"/>
+        <result column="currency" property="currency"/>
+        <result column="state" property="state"/>
+        <result column="remark" property="remark"/>
+        <result column="version" property="version"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+        <association property="groupName" column="group_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="parentName" column="parent_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="companyName" column="company_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="corporate" column="id"
+                     select="com.org.permission.server.org.mapper.OrgFunctionMapper.queryOrgCorporateFuncByBUId"/>
+        <association property="finance" column="id"
+                     select="com.org.permission.server.org.mapper.OrgFunctionMapper.queryOrgFinanceFuncByBUId"/>
+        <association property="purchase" column="id"
+                     select="com.org.permission.server.org.mapper.OrgFunctionMapper.queryOrgPurchaseFuncByBUId"/>
+        <association property="sale" column="id"
+                     select="com.org.permission.server.org.mapper.OrgFunctionMapper.queryOrgSaleFuncByBUId"/>
+        <association property="storage" column="id"
+                     select="com.org.permission.server.org.mapper.OrgFunctionMapper.queryOrgStorageFuncByBUId"/>
+        <association property="logistics" column="id"
+                     select="com.org.permission.server.org.mapper.OrgFunctionMapper.queryOrgLogisticsFuncByBUId"/>
+        <association property="banking" column="id"
+                     select="com.org.permission.server.org.mapper.OrgFunctionMapper.queryOrgBankFuncByBUId"/>
+        <association property="addressDetail"
+                     resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+        <association property="lineIdList" column="id"
+                     select="com.org.permission.server.org.mapper.BusinessLineOrgMapper.getUsableLineIdList"/>
+    </resultMap>
+</mapper>
+

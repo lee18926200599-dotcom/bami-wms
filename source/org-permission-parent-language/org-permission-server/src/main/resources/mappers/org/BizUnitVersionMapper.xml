@@ -1,0 +1,237 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.BizUnitVersionMapper">
+
+    <!-- 创建业务单元版本 -->
+    <insert id="saveBizUnitNewVersion" parameterType="com.org.permission.server.org.dto.param.SaveNewVersionBUParam">
+        insert into base_organization_version
+        (<include refid="insert_base_list"/>)
+        values (
+        #{bean.id},
+        #{bean.groupId},
+        3,
+        #{bean.parentId},
+        #{bean.mainOrgFlag},
+        #{bean.orgCode},
+        #{bean.orgName},
+        #{bean.orgShortName},
+        #{bean.entityCode},
+        #{bean.entityName},
+        #{bean.creditCode},
+        #{bean.companyId},
+        #{bean.industryCode},
+        #{bean.industryName},
+        #{bean.addressDetail.regionCode},
+        #{bean.addressDetail.regionName},
+        #{bean.addressDetail.invoiceProvCode},
+        #{bean.addressDetail.invoiceProvName},
+        #{bean.addressDetail.invoiceCityCode},
+        #{bean.addressDetail.invoiceCityName},
+        #{bean.addressDetail.invoiceDistrictCode},
+        #{bean.addressDetail.invoiceDistrictName},
+        #{bean.addressDetail.invoiceStreetCode},
+        #{bean.addressDetail.invoiceStreetName},
+        #{bean.addressDetail.address},
+        #{bean.phone},
+        #{bean.currency},
+        #{bean.state},
+        #{bean.initFlag},
+        #{bean.startTime},
+        #{bean.remark},
+        #{bean.version},
+        #{bean.createdBy},
+        #{bean.createdDate},
+        #{bean.versionFlag},
+        #{bean.versionStartTime},
+        #{bean.versionEndTime}
+        )
+    </insert>
+
+    <sql id="insert_base_list">
+        bu_id,
+        group_id,
+        org_type,
+        parent_id,
+        main_org_flag,
+        org_code,
+        org_name,
+        org_short_name,
+        entity_code,
+        entity_name,
+        credit_code,
+        company_id,
+        industry_code,
+        industry_name,
+        region_code,
+        region_name,
+        province_code,
+        province_name,
+        city_code,
+        city_name,
+        district_code,
+        district_name,
+        street_code,
+        street_name,
+        address,
+        phone,
+        currency,
+        state,
+        init_flag,
+        start_time,
+        remark,
+        version,
+        created_by,
+        created_date,
+        version_flag,
+        version_start_time,
+        version_end_time
+    </sql>
+    <!--统计业务单元版本数量-->
+    <select id="countBUVersionList" parameterType="com.org.permission.server.org.dto.param.VersionPageQueryParam" resultType="integer">
+        select count(id) from base_organization_version
+        <include refid="page_query_condition"/>
+    </select>
+
+    <!--查询业务单元版本信息-->
+    <select id="queryBUVersionList" parameterType="com.org.permission.server.org.dto.param.VersionPageQueryParam"
+            resultMap="bu_version_info_map">
+        select id,bu_id,version,version_start_time,version_end_time from base_organization_version
+        <include refid="page_query_condition"/>
+
+    </select>
+
+    <!--根据版本ID查询业务委托关系 -->
+    <select id="queryBUVersionById" parameterType="java.lang.Long" resultMap="biz_unit_version_with_func_detail_result_map">
+        select
+            bu_id ,
+            org_code,
+            org_name ,
+            org_short_name ,
+            main_org_flag,
+            init_flag,
+            start_time,
+            group_id,
+            parent_id ,
+            company_id ,
+            entity_code,
+            entity_name,
+            credit_code ,
+            industry_code,
+            industry_name,
+            region_name,
+            province_code,
+            province_name,
+            city_code,
+            city_name,
+            district_code,
+            district_name,
+            street_code,
+            street_name,
+            address ,
+            phone,
+            currency ,
+            state ,
+            remark,
+            version,
+            created_by,
+            created_date,
+            modified_by,
+            modified_date
+        from base_organization_version where id =#{versionId}
+    </select>
+
+    <!--组织职能详细信息-->
+    <resultMap id="biz_unit_version_with_func_detail_result_map" type="com.org.permission.server.org.bean.BizUnitWithFuncDetailBean">
+        <result column="bu_id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="group_id" property="groupId"/>
+        <result column="main_org_flag" property="mainOrgFlag"/>
+        <result column="init_flag" property="initFlag"/>
+        <result column="start_time" property="startTime"/>
+        <result column="org_code" property="orgCode"/>
+        <result column="org_name" property="orgName"/>
+        <result column="org_short_name" property="orgShortName"/>
+        <result column="cust_id" property="custId"/>
+        <result column="entity_code" property="entityCode"/>
+        <result column="entity_name" property="entityName"/>
+        <result column="credit_code" property="creditCode"/>
+        <result column="industry_code" property="industryCode"/>
+        <result column="industry_name" property="industryName"/>
+        <result column="region_code" property="addressDetail.regionCode"/>
+        <result column="region_name" property="addressDetail.regionName"/>
+        <result property="addressDetail.invoiceProvCode" column="province_code"/>
+        <result property="addressDetail.invoiceProvName" column="province_name"/>
+        <result property="addressDetail.invoiceCityCode" column="city_code"/>
+        <result property="addressDetail.invoiceCityName" column="city_name"/>
+        <result property="addressDetail.invoiceDistrictCode" column="district_code"/>
+        <result property="addressDetail.invoiceDistrictName" column="district_name"/>
+        <result property="addressDetail.invoiceStreetCode" column="street_code"/>
+        <result property="addressDetail.invoiceStreetName" column="street_name"/>
+        <result column="address" property="addressDetail.address"/>
+        <result column="phone" property="phone"/>
+        <result column="currency" property="currency"/>
+        <result column="state" property="state"/>
+        <result column="remark" property="remark"/>
+        <result column="version" property="version"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+        <association property="groupName" column="group_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="parentName" column="parent_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="companyName" column="company_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="corporate" column="{buId = bu_id,version = version}"
+                     select="com.org.permission.mapper.OrgFuncVersionMapper.queryOrgVersionCorporateFunc"/>
+        <association property="finance" column="{buId = bu_id,version = version}"
+                     select="com.org.permission.mapper.OrgFuncVersionMapper.queryOrgVersionFinanceFunc"/>
+        <association property="purchase" column="{buId = bu_id,version = version}"
+                     select="com.org.permission.mapper.OrgFuncVersionMapper.queryOrgVersionPurchaseFunc"/>
+        <association property="sale" column="{buId = bu_id,version = version}"
+                     select="com.org.permission.mapper.OrgFuncVersionMapper.queryOrgVersionSaleFunc"/>
+        <association property="storage" column="{buId = bu_id,version = version}"
+                     select="com.org.permission.mapper.OrgFuncVersionMapper.queryOrgVersionStorageFunc"/>
+        <association property="logistics" column="{buId = bu_id,version = version}"
+                     select="com.org.permission.mapper.OrgFuncVersionMapper.queryOrgVersionLogisticsFunc"/>
+    </resultMap>
+
+    <resultMap id="bu_version_info_map" type="com.org.permission.server.org.vo.BUVersionInfoVo">
+        <result column="id" property="versionId"/>
+        <result column="bu_id" property="buId"/>
+        <result column="version" property="version"/>
+        <result column="version_start_time" property="versionStartTime"/>
+        <result column="version_end_time" property="versionEndTime"/>
+        <association property="simpleFuncs" column="{buId=bu_id , version=version}"
+                     select="com.org.permission.mapper.OrgFuncVersionMapper.queryOrgFuncTypes"/>
+    </resultMap>
+
+    <sql id="page_query_condition">
+        <trim prefixOverrides="and">
+            <where>
+                <if test="queryParam.buId != null and queryParam.buId > 0">
+                    and bu_id = #{queryParam.buId}
+                </if>
+                <if test="queryParam.version != null and queryParam.version != ''">
+                    and version = #{queryParam.version}
+                </if>
+                <if test="queryParam.versionFlag != null ">
+                    and version_flag = #{queryParam.versionFlag}
+                </if>
+                <if test="queryParam.versionStartTime != null ">
+                    and version_start_time &lt; #{queryParam.versionStartTime}
+                </if>
+                <if test="queryParam.versionEndTime != null ">
+                    and version_end_time &gt; #{queryParam.versionEndTime}
+                </if>
+            </where>
+        </trim>
+    </sql>
+
+
+</mapper>
+

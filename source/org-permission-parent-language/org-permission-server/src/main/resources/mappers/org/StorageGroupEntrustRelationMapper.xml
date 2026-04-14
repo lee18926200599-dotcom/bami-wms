@@ -1,0 +1,277 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.StorageGroupEntrustRelationMapper">
+
+    <!-- 新增集团内仓储业务委托关系 -->
+    <insert id="addStorageEntrustRelation" parameterType="com.org.permission.server.org.bean.StorageGroupEntrustRelationBean"
+            keyProperty="bean.id" useGeneratedKeys="true">
+        insert into base_entrust_relationship(
+        <include refid="storage_insert_base_list"/>
+        )
+        values(
+        #{bean.groupId},
+        #{bean.entrustRange},
+        #{bean.entrustType},
+        #{bean.entrustSource},
+        #{bean.entrustSourceId},
+        #{bean.defaultFlag},
+        #{bean.state},
+        #{bean.stockOrgId},
+        #{bean.logisticsOrgId},
+        #{bean.accountOrgId},
+        #{bean.settleOrgId},
+        #{bean.remark},
+        #{bean.createdBy},
+        #{bean.createdName},
+        #{bean.createdDate}
+        )
+    </insert>
+
+    <!-- 更新集团内仓储业务委托关系 -->
+    <update id="updateStorageEntrustRelation" parameterType="com.org.permission.server.org.bean.StorageGroupEntrustRelationBean">
+        update base_entrust_relationship set
+        default_flag= #{bean.defaultFlag},
+        stock_org_id=#{bean.stockOrgId},
+        logistics_org_id=#{bean.logisticsOrgId},
+        account_org_id=#{bean.accountOrgId},
+        settment_org_id=#{bean.settleOrgId},
+        remark= #{bean.remark},
+        modified_by = #{bean.modifiedBy},
+        modified_date = #{bean.modifiedDate}
+        where id = #{bean.id}
+    </update>
+
+    <!-- 更新默认集团内仓储业务委托关系 -->
+    <update id="updateBUProductStorageEntrustRelation" parameterType="com.org.permission.server.org.bean.StorageGroupEntrustRelationBean">
+        update base_entrust_relationship set
+        logistics_org_id=#{bean.logisticsOrgId},
+        account_org_id=#{bean.accountOrgId},
+        settment_org_id=#{bean.settleOrgId},
+        state=#{bean.state},
+        modified_by = #{bean.modifiedBy},
+        modified_date = #{bean.modifiedDate}
+        where entrust_range = 2
+        and entrust_source = #{bean.entrustSource}
+        and entrust_source_id = #{bean.entrustSourceId}
+        and entrust_type = #{bean.entrustType}
+        and deleted_flag=0
+    </update>
+
+    <!--根据 ID 查询集团内仓储委托关系(锁)-->
+    <select id="queryGroupStorageEntrustRelationByIdLock" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.StorageGroupEntrustRelationBean">
+        select
+        id as id,
+        group_id as groupId,
+        entrust_source as entrustSource,
+        entrust_source_id as entrustSourceId,
+        default_flag as defaultFlag,
+        state as state,
+        stock_org_id as stockOrgId,
+        logistics_org_id as logisticsOrgId,
+        account_org_id as accountOrgId,
+        settment_org_id as settleOrgId
+        FROM base_entrust_relationship
+        WHERE id = #{entrustId}
+    </select>
+
+    <!-- 根据库存组织，查询集团内仓储委托关系 -->
+    <select id="queryGroupStorageEntrustRelationByStockOrgIdLock" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.StorageGroupEntrustRelationBean">
+        select
+        id as id,
+        default_flag as defaultFlag,
+        state as state,
+        stock_org_id as stockOrgId,
+        logistics_org_id as logisticsOrgId,
+        account_org_id as accountOrgId,
+        settment_org_id as settmentOrgId
+        FROM base_entrust_relationship
+        WHERE stock_org_id = #{stockOrg} and entrust_type = 4 and entrust_range= 2 and deleted_flag=0
+    </select>
+
+    <!--根据库存组织ID，删除集团内仓储委托关系-->
+    <update id="deleteGroupStorageEntrustRelationByStockOrgId" parameterType="java.lang.Long">
+        update base_entrust_relationship set deleted_flag=1 where stock_org_id=#{stockOrgId} and entrust_type = 4 and entrust_range= 2
+    </update>
+
+    <sql id="storage_insert_base_list">
+        group_id,
+        entrust_range,
+        entrust_type,
+        entrust_source,
+        entrust_source_id,
+        default_flag,
+        state,
+        stock_org_id,
+        logistics_org_id,
+        account_org_id,
+        settment_org_id,
+        remark,
+        created_by,
+        created_name,
+        created_date
+    </sql>
+
+
+
+    <!--统计仓储委托关系-->
+    <select id="countStorageEntrustRelation" parameterType="com.org.permission.server.org.dto.param.GroupStorageEntrustRelationReqParam"
+            resultType="integer">
+        select count(id) from base_entrust_relationship
+        <include refid="storage_page_where_query_condition"/>
+    </select>
+
+    <!--查询仓储委托关系列表-->
+    <select id="queryStorageEntrustRelationList"
+            parameterType="com.org.permission.server.org.dto.param.GroupStorageEntrustRelationReqParam"
+            resultMap="storage_entrust_relation_result_map">
+        select
+        id,
+        stock_org_id,
+        logistics_org_id,
+        account_org_id,
+        settment_org_id,
+        default_flag,
+        state,
+        remark,
+        created_by,
+        created_date,
+        modified_by,
+        modified_date
+        from base_entrust_relationship
+        <include refid="storage_page_where_query_condition"/>
+    </select>
+
+    <!--查询集团内具有委托关系的物流组织-->
+    <select id="queryInGroupLogisticOrg" parameterType="com.org.permission.common.org.param.QueryStorageEntrustRelationLogisticsOrgParam"
+            resultType="java.lang.Long">
+        select  DISTINCT rel.logistics_org_id from base_entrust_relationship rel LEFT JOIN base_organization org ON
+            rel.logistics_org_id = org.id
+        where
+            rel.entrust_range = 2
+          and rel.entrust_type = 4
+          and org.state = 1
+          and rel.stock_org_id =#{queryParam.stockOrg}
+          and org.city_code = #{queryParam.cityCode}
+    </select>
+
+    <select id="queryGroupStorageEntrustRelation"
+            parameterType="com.org.permission.common.org.param.StorageGroupEntrustRelationQueryParam"
+            resultMap="storage_entrust_relation_result_mappe_dto">
+        select
+        id,
+        stock_org_id,
+        logistics_org_id,
+        account_org_id,
+        settment_org_id,
+        default_flag,
+        state,
+        remark
+        from base_entrust_relationship
+        where
+        state = 1 and entrust_type = 4 and entrust_range = 2
+        <if test="queryParam.defaultFlag !=null ">
+            and default_flag = #{queryParam.defaultFlag}
+        </if>
+        <if test="queryParam.stockOrgId != null and queryParam.stockOrgId > 0">
+            and stock_org_id = #{queryParam.stockOrgId}
+        </if>
+        <if test="queryParam.logisticsOrgId != null and queryParam.logisticsOrgId > 0">
+            and logistics_org_id = #{queryParam.logisticsOrgId}
+        </if>
+        <if test="queryParam.accountOrgId != null and queryParam.accountOrgId > 0">
+            and account_org_id = #{queryParam.accountOrgId}
+        </if>
+        <if test="queryParam.settmentOrgId != null and queryParam.settmentOrgId > 0">
+            and settment_org_id = #{queryParam.settmentOrgId}
+        </if>
+    </select>
+
+    <select id="queryStorageEntrustRelationById"
+            parameterType="java.lang.Long" resultMap="com.org.permission.server.org.mapper.StoragePlatformEntrustRelationMapper.storage_entrust_relation_result_mappe">
+        select
+            id,
+            stock_org_id,
+            logistics_org_id,
+            account_org_id,
+            settment_org_id,
+            default_flag,
+            state,
+            entrust_range,
+            remark
+        from base_entrust_relationship
+        where
+            entrust_type = 4
+          and id =#{id}
+    </select>
+
+    <sql id="storage_page_where_query_condition">
+        <where>
+            group_id = #{queryParam.groupId} and entrust_range = 2 and entrust_type = 4 and deleted_flag=0
+            <if test="queryParam.state !=null">
+                and state=#{queryParam.state}
+            </if>
+            <if test="queryParam.defaultFlag !=null">
+                and default_flag=#{queryParam.defaultFlag}
+            </if>
+            <if test="queryParam.conditionId != null and queryParam.conditionId!=0">
+                and
+                (
+                logistics_org_id=#{queryParam.conditionId}
+                or
+                stock_org_id=#{queryParam.conditionId}
+                or
+                account_org_id=#{queryParam.conditionId}
+                or
+                settment_org_id=#{queryParam.conditionId}
+                )
+            </if>
+        </where>
+    </sql>
+
+    <resultMap id="storage_entrust_relation_result_map" type="com.org.permission.server.org.bean.StorageGroupEntrustRelationInfoBean">
+        <id property="id" column="id"/>
+        <result property="defaultFlag" column="default_flag"/>
+        <result property="state" column="state"/>
+        <result property="stockOrgId" column="stock_org_id"/>
+        <result property="logisticsOrgId" column="logistics_org_id"/>
+        <result property="accountOrgId" column="account_org_id"/>
+        <result property="settleOrgId" column="settment_org_id"/>
+        <result property="remark" column="remark"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="modifiedBy" column="modified_by"/>
+        <result property="modifiedDate" column="modified_date"/>
+
+        <association property="stockOrgName" column="stock_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="logisticsOrgName" column="logistics_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="accountOrgName" column="account_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="settleOrgName" column="settment_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+
+    <resultMap id="storage_entrust_relation_result_mappe_dto" type="com.org.permission.common.org.dto.StorageGroupEntrustRelationDto">
+        <id property="id" column="id"/>
+        <result property="defaultFlag" column="default_flag"/>
+        <result property="state" column="state"/>
+        <result property="stockOrgId" column="stock_org_id"/>
+        <result property="logisticsOrgId" column="logistics_org_id"/>
+        <result property="accountOrgId" column="account_org_id"/>
+        <result property="settmentOrgId" column="settment_org_id"/>
+        <result property="remark" column="remark"/>
+
+        <association property="stockOrgName" column="stock_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="logisticsOrgName" column="logistics_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="accountOrgName" column="account_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="settmentOrgName" column="settment_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+</mapper>
+

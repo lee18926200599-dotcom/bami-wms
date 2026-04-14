@@ -1,0 +1,40 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+
+<!--<mapper namespace="com.org.permission.server.org.mapper.BaseCustSummarySubMapper">-->
+
+<!--    <update id="updateById" parameterType= "com.org.permission.server.org.entity.BaseCustSummarySub">-->
+<!--        update base_cust_summary_sub-->
+<!--        <set>-->
+<!--            <if test="custSubId!=null">-->
+<!--                cust_sub_id=#{custSubId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="orgId!=null">-->
+<!--                org_id=#{orgId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="assignedBuzFuncs!=null">-->
+<!--                assigned_buz_funcs=#{assignedBuzFuncs,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="createdBy!=null">-->
+<!--                created_by=#{createdBy,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="createdName!=null">-->
+<!--                created_name=#{createdName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="createdDate!=null">-->
+<!--                created_date=#{createdDate,jdbcType=TIMESTAMP},-->
+<!--            </if>-->
+<!--            <if test="modifiedBy!=null">-->
+<!--                modified_by=#{modifiedBy,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="modifiedName!=null">-->
+<!--                modified_name=#{modifiedName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="modifiedDate!=null">-->
+<!--                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        where id = #{id,jdbcType=BIGINT}-->
+<!--    </update>-->
+
+<!--</mapper>-->

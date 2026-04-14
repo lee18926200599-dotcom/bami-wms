@@ -1,0 +1,130 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionGroupManagementMapper">
+
+    <resultMap type="com.org.permission.server.permission.entity.BasePermissionGroupManagement" id="base_permission_group_managements">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="management_id" jdbcType="INTEGER" property="managementId" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+    </resultMap>
+
+    <insert id="addBasePermissionGroupManagement" parameterType="com.org.permission.server.permission.entity.BasePermissionGroupManagement" useGeneratedKeys="true" keyProperty="id" >
+        insert into
+            base_permission_group_management(id,group_id,management_id,remark,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+        values( #{id,jdbcType=INTEGER},#{groupId,jdbcType=BIGINT},#{managementId,jdbcType=INTEGER},#{remark,jdbcType=VARCHAR},#{state,jdbcType=INTEGER},#{createdBy,jdbcType=BIGINT},#{createdName,jdbcType=VARCHAR},#{createdDate,jdbcType=TIMESTAMP},#{modifiedBy,jdbcType=BIGINT},#{modifiedName,jdbcType=VARCHAR},#{modifiedDate,jdbcType=TIMESTAMP})
+    </insert>
+    <update id="delBasePermissionGroupManagement" parameterType="java.lang.Long">
+        update  base_permission_group_management set state='0' where id=#{id}
+    </update>
+    <delete id="delBasePermissionGroupManagementTrue"  parameterType="java.lang.Long">
+        delete from base_permission_group_management where id=#{id}
+    </delete>
+    <update id="updateBasePermissionGroupManagement" parameterType="com.org.permission.server.permission.entity.BasePermissionGroupManagement">
+        update base_permission_group_management
+        <set>
+            <if test="groupId!=null">
+                group_id=#{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="managementId!=null">
+                management_id=#{managementId,jdbcType=INTEGER},
+            </if>
+            <if test="remark!=null">
+                remark=#{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="state!=null">
+                state=#{state,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy!=null">
+                created_by=#{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdName!=null">
+                created_name=#{createdName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdDate!=null">
+                created_date=#{createdDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="getBasePermissionGroupManagementByID" parameterType="java.lang.Long" resultMap="base_permission_group_managements">
+        select * from base_permission_group_management where   id=#{id}
+    </select>
+    <select id="getBasePermissionGroupManagementCount" resultType="Integer">
+        select count('1') from base_permission_group_management where state='1'
+    </select>
+    <select id="getBasePermissionGroupManagementCountAll" parameterType="String" resultMap="base_permission_group_managements">
+        select count('1') from base_permission_group_management
+    </select>
+    <select id="getListBasePermissionGroupManagementsByPage" parameterType="com.org.permission.server.permission.vo.BasePermissionGroupManagementVo" resultMap="base_permission_group_managements">
+        select * from base_permission_group_management
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionGroupManagementsByPOJO" parameterType="com.org.permission.server.permission.entity.BasePermissionGroupManagement" resultMap="base_permission_group_managements">
+        select * from base_permission_group_management
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionGroupManagementsByPojoPage" parameterType="java.util.Map"  resultMap="base_permission_group_managements">
+        select * from base_permission_group_management where 1=1
+        <if test="pojo.id != null and pojo.id != ''"> and id = #{pojo.id}</if>
+        <if test="pojo.groupId != null and pojo.groupId != ''"> and group_id = #{pojo.groupId}</if>
+        <if test="pojo.managementId != null and pojo.managementId != ''"> and management_id = #{pojo.managementId}</if>
+        <if test="pojo.remark != null and pojo.remark != ''"> and remark = #{pojo.remark}</if>
+       <if test="pojo.state != null and pojo.state != ''"> and state = #{pojo.state}</if>
+    </select>
+
+    <sql id="Where_Conditions">
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="id != null  "> and id = #{id}</if>
+            <if test="groupId!=null">
+                and group_id=#{groupId,jdbcType=BIGINT}
+            </if>
+            <if test="managementId!=null">
+                and management_id=#{managementId,jdbcType=INTEGER}
+            </if>
+            <if test="remark!=null">
+                and remark=#{remark,jdbcType=VARCHAR}
+            </if>
+            <if test="state!=null">
+                and state=#{state,jdbcType=INTEGER}
+            </if>
+            <if test="createdBy!=null">
+                and created_by=#{createdBy,jdbcType=BIGINT}
+            </if>
+            <if test="createdName!=null">
+                and created_name=#{createdName,jdbcType=VARCHAR}
+            </if>
+            <if test="createdDate!=null">
+                and created_date=#{createdDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedBy!=null">
+                and modified_by=#{modifiedBy,jdbcType=BIGINT}
+            </if>
+            <if test="modifiedName!=null">
+                and modified_name=#{modifiedName,jdbcType=VARCHAR}
+            </if>
+            <if test="modifiedDate!=null">
+                and modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+
+</mapper>
+

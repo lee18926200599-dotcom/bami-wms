@@ -1,0 +1,229 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.StaffTypeMapper">
+    <resultMap id="BaseResultMap" type="com.org.permission.server.org.bean.StaffTypeBean">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="type_level" jdbcType="TINYINT" property="typeLevel"/>
+        <result column="belong_org" jdbcType="BIGINT" property="belongOrg"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+        <result column="biz_code" jdbcType="VARCHAR" property="bizCode"/>
+        <result column="type_code" jdbcType="VARCHAR" property="typeCode"/>
+        <result column="type_name" jdbcType="VARCHAR" property="typeName"/>
+        <result column="state" jdbcType="TINYINT" property="state"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="deleted_flag" jdbcType="TINYINT" property="deletedFlag"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+    </resultMap>
+    <!-- 全部字段列表，供查询单个实体使用-->
+    <sql id="Base_Column_List">
+        id
+        ,type_level,belong_org,parent_id,biz_code,type_code,type_name,state,remark,deleted_flag,created_by,created_name,created_date,modified_by,modified_name,modified_date
+    </sql>
+    <!-- 新增人员类别 -->
+    <insert id="addStaffType" parameterType="com.org.permission.server.org.bean.StaffTypeBean">
+        insert into base_staff_type(
+        <include refid="base_inser_list"/>
+        ) values(
+        #{bean.typeLevel},
+        #{bean.belongOrg},
+        #{bean.typeCode},
+        #{bean.typeName},
+        #{bean.bizCode},
+        #{bean.parentId},
+        #{bean.state},
+        #{bean.remark},
+        #{bean.createdBy},
+        #{bean.createdDate}
+        )
+    </insert>
+    <!-- 更新人员类别 -->
+    <update id="updateStaffType" parameterType="com.org.permission.server.org.dto.param.StaffTypeParam">
+        UPDATE base_staff_type
+        SET type_name     = #{bean.typeName},
+            parent_id     = #{bean.parentId},
+            remark        = #{bean.remark},
+            modified_date = #{modifiedDate},
+            modified_by   = #{bean.modifiedBy}
+        where id = #{bean.id}
+    </update>
+
+    <!-- 启用 | 停用 人员类别 -->
+    <update id="enableStaffType" parameterType="com.org.permission.common.org.param.EnableOperateParam">
+        update base_staff_type
+        set state         = #{bean.state},
+            modified_by   = #{bean.userId},
+            modified_date = #{modifiedDate}
+        where id = #{bean.id}
+    </update>
+
+    <!--批量停用人员类别-->
+    <update id="batchDisableStaffType">
+        update base_staff_type set
+        state = 2,
+        modified_by = #{userId},
+        modified_date = #{modifiedDate}
+        where id in (
+        <foreach collection="staffTypeIds" separator="," item="staffTypeId">
+            #{staffTypeId}
+        </foreach>
+        )
+    </update>
+
+    <!-- 删除人员类别 -->
+    <update id="deleteStaffType" parameterType="com.org.permission.common.org.param.KeyOperateParam">
+        update base_staff_type
+        set deleted_flag=1,
+            modified_by = #{bean.userId},
+            modified_date = #{modifiedDate}
+        where id = #{bean.id}
+    </update>
+    <!--主键查询人员类别（锁）-->
+    <select id="queryStaffTypeStateByIdLock" parameterType="java.lang.Long" resultType="com.org.permission.server.org.bean.StateBean">
+        SELECT id, state
+        FROM base_staff_type
+        WHERE id = #{id}
+    </select>
+
+    <!--主键查询人员类别信息（锁）-->
+    <select id="queryStaffTypeByIdLock" parameterType="java.lang.Long"  resultType="com.org.permission.server.org.bean.StaffTypeBean">
+        select id           as id,
+               type_level   as typeLevel,
+               belong_org   as belongOrg,
+               type_code    as typeCode,
+               type_name    as typeName,
+               biz_code     as bizCode,
+               parent_id    as parentId,
+               state        as state,
+               deleted_flag as deletedFlag
+        from base_staff_type
+        WHERE id = #{id}
+    </select>
+
+    <!--查询一个组织（集团级）下具有某个名字的人员类别-->
+    <select id="queryStaffTypeByUnixCondition" resultType="java.lang.Long">
+        SELECT id
+        FROM base_staff_type
+        WHERE (type_name = #{typeName} or biz_code = #{bizCode})
+          and belong_org in (#{belongOrg}, 1)
+          and deleted_flag = 0
+    </select>
+    <!--查询一个组织（集团级）下所有人员类别-->
+    <select id="queryStaffTypeByOrg" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.StaffTypeTreeBean">
+        select id         as id,
+               type_level as typeLevel,
+               belong_org as belongOrg,
+               type_code  as typeCode,
+               type_name  as typeName,
+               biz_code   as bizCode,
+               parent_id  as parentId,
+               state      as state
+        from base_staff_type
+        WHERE belong_org = #{belongOrg}
+          and deleted_flag = 0
+    </select>
+
+    <!-- 新增插入 list -->
+    <sql id="base_inser_list">
+        type_level
+        ,
+		belong_org,
+		type_code,
+		type_name,
+		biz_code,
+		parent_id,
+		state,
+		remark,
+		created_by,
+		created_date
+    </sql>
+
+    <!-- 查询人员类别集合（构建类别树） -->
+    <select id="queryStaffTypeTree" parameterType="com.org.permission.common.org.param.QueryStaffTypeTreeReqParam"
+            resultType="com.org.permission.server.org.bean.StaffTypeTreeBean">
+        SELECT
+        id as id,
+        type_level as typeLevel,
+        belong_org as belongOrg,
+        type_code as typeCode,
+        type_name as typeName,
+        biz_code as bizCode,
+        parent_id as parentId,
+        state as state
+        FROM base_staff_type WHERE
+        deleted_flag=0
+        <if test="queryParam.state != null ">
+            and state = #{queryParam.state}
+        </if>
+        and belong_org in( #{queryParam.belongOrg},1)
+    </select>
+
+    <!-- 查询人员类别集合（构建类别树） -->
+    <select id="queryStaffTypeNameById" parameterType="java.lang.Long" resultType="string">
+        SELECT type_name
+        FROM base_staff_type
+        WHERE id = #{0}
+    </select>
+
+    <!--根据ID查询人员类别信息-->
+    <select id="queryStaffTypeById" parameterType="java.lang.Long" resultMap="base_result_mappe">
+        select
+        <include refid="Base_Column_List"/>
+        from base_staff_type
+        WHERE id = #{typeId}
+        and deleted_flag = 0
+    </select>
+
+    <select id="queryChildren" resultMap="base_result_mappe">
+        select type_level,
+               belong_org,
+               type_code,
+               type_name,
+               biz_code,
+               parent_id,
+               state,
+               remark,
+               created_by,
+               created_date,
+               modified_by,
+               modified_date
+        from base_staff_type
+        WHERE parent_id = #{parentId}
+          and state = #{state}
+    </select>
+
+    <select id="queryStaffTypeIdByTypeName" resultType="java.lang.Long">
+        select id from base_staff_type where type_name=#{typeName} and deleted_flag=0
+        <if test="belongOrg!=null and belongOrg != 0">
+            and belong_org in (#{belongOrg},1)
+        </if>
+    </select>
+    <resultMap id="base_result_mappe" type="com.org.permission.server.org.bean.StaffTypeInfoBean">
+        <id column="id" property="id"/>
+        <result column="type_level" property="typeLevel"/>
+        <result column="belong_org" property="belongOrgId"/>
+        <result column="type_code" property="typeCode"/>
+        <result column="type_name" property="typeName"/>
+        <result column="biz_code" property="bizCode"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="remark" property="remark"/>
+        <result column="state" property="state"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+        <association property="belongOrgName" column="belong_org"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="parentName" column="parent_id"
+                     select="com.org.permission.server.org.mapper.StaffTypeMapper.queryStaffTypeNameById"/>
+    </resultMap>
+</mapper>
+

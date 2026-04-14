@@ -1,0 +1,173 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionDataMapper">
+    <resultMap id="BaseResultMap" type="com.org.permission.server.permission.entity.BasePermissionData">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="management_id" jdbcType="INTEGER" property="managementId" />
+        <result column="distribution_type" jdbcType="VARCHAR" property="distributionType" />
+        <result column="based" jdbcType="VARCHAR" property="based" />
+        <result column="org_id" jdbcType="BIGINT" property="orgId" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="gb_code" jdbcType="VARCHAR" property="gbCode" />
+        <result column="data_resource_id" jdbcType="VARCHAR" property="dataResourceId" />
+        <result column="data_resource" jdbcType="VARCHAR" property="dataResource" />
+        <result column="data_resource_code" jdbcType="VARCHAR" property="dataResourceCode" />
+        <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+        <result column="option_permission" jdbcType="INTEGER" property="optionPermission" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+    </resultMap>
+    <insert id="addBasePermissionData" parameterType="com.org.permission.server.permission.entity.BasePermissionData" useGeneratedKeys="true" keyProperty="id" >
+        insert into base_permission_data(id, management_id, distribution_type, based, org_id, group_id, gb_code,
+                                         data_resource_id, data_resource,data_resource_code, parent_id, option_permission, state,
+                                         created_by, created_name, created_date, modified_by, modified_name,
+                                         modified_date)
+        values (#{id,jdbcType=BIGINT}, #{managementId,jdbcType=INTEGER}, #{distributionType,jdbcType=VARCHAR},
+                #{based,jdbcType=VARCHAR}, #{orgId,jdbcType=BIGINT}, #{groupId,jdbcType=BIGINT},
+                #{gbCode,jdbcType=VARCHAR}, #{dataResourceId,jdbcType=VARCHAR}, #{dataResource,jdbcType=VARCHAR},#{dataResourceCode,jdbcType=VARCHAR},
+                #{parentId,jdbcType=INTEGER}, #{optionPermission,jdbcType=INTEGER}, #{state,jdbcType=INTEGER},
+                #{createdBy,jdbcType=BIGINT}, #{createdName,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP},
+                #{modifiedBy,jdbcType=BIGINT}, #{modifiedName,jdbcType=VARCHAR}, #{modifiedDate,jdbcType=TIMESTAMP})
+    </insert>
+    <update id="delBasePermissionData" parameterType="java.lang.Long">
+        update  base_permission_data set state='0' where id=#{id}
+    </update>
+    <delete id="delBasePermissionDataTrue"  parameterType="java.lang.Long">
+        delete from base_permission_data where id=#{id}
+    </delete>
+    <update id="updateBasePermissionData" parameterType="com.org.permission.server.permission.entity.BasePermissionData">
+        update base_permission_data
+        <set>
+            <if test="managementId!=null">
+                management_id=#{managementId,jdbcType=INTEGER},
+            </if>
+            <if test="distributionType!=null">
+                distribution_type=#{distributionType,jdbcType=VARCHAR},
+            </if>
+            <if test="based!=null">
+                based=#{based,jdbcType=VARCHAR},
+            </if>
+            <if test="orgId!=null">
+                org_id=#{orgId,jdbcType=BIGINT},
+            </if>
+            <if test="groupId!=null">
+                group_id=#{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="gbCode!=null">
+                gb_code=#{gbCode,jdbcType=VARCHAR},
+            </if>
+            <if test="dataResourceId!=null">
+                data_resource_id=#{dataResourceId,jdbcType=VARCHAR},
+            </if>
+            <if test="dataResource!=null">
+                data_resource=#{dataResource,jdbcType=VARCHAR},
+            </if>
+            <if test="dataResourceCode!=null">
+                data_resource_code=#{dataResourceCode,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId!=null">
+                parent_id=#{parentId,jdbcType=INTEGER},
+            </if>
+            <if test="optionPermission!=null">
+                option_permission=#{optionPermission,jdbcType=INTEGER},
+            </if>
+            <if test="state!=null">
+                state=#{state,jdbcType=INTEGER},
+            </if>
+            <if test="createdBy!=null">
+                created_by=#{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdName!=null">
+                created_name=#{createdName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdDate!=null">
+                created_date=#{createdDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="getBasePermissionDataByID" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from base_permission_data where   id=#{id}
+    </select>
+    <select id="getBasePermissionDataCount" resultType="integer">
+        select count('1') from base_permission_data where state='1'
+    </select>
+    <select id="getBasePermissionDataCountAll" parameterType="string" resultMap="BaseResultMap">
+        select count('1') from base_permission_data
+    </select>
+    <select id="getListBasePermissionDatasByPage" parameterType="com.org.permission.server.permission.vo.BasePermissionDataVo" resultMap="BaseResultMap">
+        select * from base_permission_data where 1=1
+        <if test="id != null  "> and id = #{id}</if>
+        <if test="managementId != null  "> and management_id = #{managementId}</if>
+        <if test="distributionType != null and distributionType != '' "> and distribution_type = #{distributionType}</if>
+        <if test="based != null and based != '' "> and based = #{based}</if>
+        <if test="orgId != null  "> and org_id = #{orgId}</if>
+        <if test="groupId != null  "> and group_id = #{groupId}</if>
+        <if test="gbCode != null and gbCode != '' "> and gb_code = #{gbCode}</if>
+        <if test="dataResourceId != null and dataResourceId != '' "> and data_resource_id = #{dataResourceId}</if>
+        <if test="dataResource != null and dataResource != '' "> and data_resource = #{dataResource}</if>
+        <if test="dataResourceCode != null and dataResourceCode != '' "> and data_resource_code = #{dataResourceCode}</if>
+        <if test="parentId != null  "> and parent_id = #{parentId}</if>
+        <if test="optionPermission != null  "> and option_permission = #{optionPermission}</if>
+        <if test="createdDate != null "> and created_date = #{createdDate}</if>
+        <if test="createdBy != null  and createdBy>0"> and created_by = #{createdBy}</if>
+        <if test="modifiedBy != null  and modifiedBy>0"> and modified_by = #{modifiedBy}</if>
+        <if test="modifiedDate != null "> and modified_date = #{modifiedDate}</if>
+        <if test="state != null  "> and state = #{state}</if>
+    </select>
+    <select id="getListBasePermissionDatasByPOJO" parameterType="com.org.permission.server.permission.entity.BasePermissionData" resultMap="BaseResultMap">
+        select * from base_permission_data where 1=1
+        <if test="id != null  "> and id = #{id}</if>
+        <if test="managementId != null  "> and management_id = #{managementId}</if>
+        <if test="distributionType != null and distributionType != '' "> and distribution_type = #{distributionType}</if>
+        <if test="based != null and based != '' "> and based = #{based}</if>
+        <if test="orgId != null  "> and org_id = #{orgId}</if>
+        <if test="groupId != null  "> and group_id = #{groupId}</if>
+        <if test="gbCode != null and gbCode != '' "> and gb_code = #{gbCode}</if>
+        <if test="dataResourceId != null and dataResourceId != '' "> and data_resource_id = #{dataResourceId}</if>
+        <if test="dataResource != null and dataResource != '' "> and data_resource = #{dataResource}</if>
+        <if test="dataResourceCode != null and dataResourceCode != '' "> and data_resource_code = #{dataResourceCode}</if>
+        <if test="parentId != null  "> and parent_id = #{parentId}</if>
+        <if test="optionPermission != null  "> and option_permission = #{optionPermission}</if>
+        <if test="createdDate != null "> and created_date = #{createdDate}</if>
+        <if test="createdBy != null  and createdBy>0"> and created_by = #{createdBy}</if>
+        <if test="modifiedBy != null  and modifiedBy>0"> and modified_by = #{modifiedBy}</if>
+        <if test="modifiedDate != null "> and modified_date = #{modifiedDate}</if>
+        <if test="state != null  "> and state = #{state}</if>
+    </select>
+    <select id="getListBasePermissionDatasByPojoPage" parameterType="java.util.Map"  resultMap="BaseResultMap">
+        select * from base_permission_data where 1=1
+        <if test="pojo.id != null and pojo.id != ''"> and id = #{pojo.id}</if>
+        <if test="pojo.managementId != null and pojo.managementId != ''"> and management_id = #{pojo.managementId}</if>
+        <if test="pojo.distributionType != null and pojo.distributionType != ''"> and distribution_type = #{pojo.distributionType}</if>
+        <if test="pojo.based != null and pojo.based != ''"> and based = #{pojo.based}</if>
+        <if test="pojo.orgId != null and pojo.orgId != ''"> and org_id = #{pojo.orgId}</if>
+        <if test="pojo.groupId != null and pojo.groupId != ''"> and group_id = #{pojo.groupId}</if>
+        <if test="pojo.gbCode != null and pojo.gbCode != ''"> and gb_code = #{pojo.gbCode}</if>
+        <if test="pojo.dataResourceId != null and pojo.dataResourceId != ''"> and data_resource_id = #{pojo.dataResourceId}</if>
+        <if test="pojo.dataResource != null and pojo.dataResource != ''"> and data_resource = #{pojo.dataResource}</if>
+        <if test="pojo.dataResourceCode != null and pojo.dataResourceCode != ''"> and data_resource_code = #{pojo.dataResourceCode}</if>
+        <if test="pojo.parentId != null and pojo.parentId != ''"> and parent_id = #{pojo.parentId}</if>
+        <if test="pojo.optionPermission != null and pojo.optionPermission != ''"> and option_permission = #{pojo.optionPermission}</if>
+        <if test="pojo.createdDate != null"> and created_date = #{pojo.createdDate}</if>
+        <if test="pojo.createdBy != null"> and created_by = #{pojo.createdBy}</if>
+        <if test="pojo.modifiedBy != null"> and modified_by = #{pojo.modifiedBy}</if>
+        <if test="pojo.modifiedDate != null"> and modified_date = #{pojo.modifiedDate}</if>
+        <if test="pojo.state != null and pojo.state != ''"> and state = #{pojo.state}</if>
+    </select>
+</mapper>
+

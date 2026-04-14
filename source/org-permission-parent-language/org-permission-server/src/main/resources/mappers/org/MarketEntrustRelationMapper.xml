@@ -1,0 +1,260 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.MarketEntrustRelationMapper">
+
+    <!-- 新增业务委托关 -->
+    <insert id="addMarketEntrustRelation" parameterType="com.org.permission.server.org.bean.MarketEntrustRelationBean">
+        insert into base_entrust_relationship(
+        <include refid="market_insert_base_list"/>
+        )
+        values(
+        #{bean.createdBy},
+        #{bean.entrustRange},
+        #{bean.entrustType},
+        #{bean.entrustSource},
+        #{bean.defaultFlag},
+        #{bean.state},
+        #{bean.ownerId},
+        #{bean.marketOrgId},
+        #{bean.warehouseProviderId},
+        #{bean.stockOrgId},
+        #{bean.warehouseId},
+        #{bean.oriAccCode},
+        #{bean.remark},
+        #{bean.createdDate},
+        #{bean.createdName},
+        #{bean.signFlag}
+        )
+    </insert>
+
+    <!--更新采销业务委托关系-->
+    <update id="updateMarketEntrustRelation" parameterType="com.org.permission.server.org.bean.MarketEntrustRelationBean">
+        update base_entrust_relationship set
+        default_flag= #{bean.defaultFlag},
+        owner_id=#{bean.ownerId},
+        purchase_sale_org_id=#{bean.marketOrgId},
+        warehouse_provider_id=#{bean.warehouseProviderId},
+        stock_org_id=#{bean.stockOrgId},
+        warehouse_id= #{bean.warehouseId},
+        sign_flag=#{bean.signFlag},
+        remark= #{bean.remark},
+        modified_by = #{bean.modifiedBy},
+        modified_date = #{bean.modifiedDate}
+        where id = #{bean.id}
+    </update>
+
+    <!-- 根据货主查询采销委托关系 -->
+    <select id="queryMarketEntrustRelationByOwerLock" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.MarketEntrustRelationBean">
+        SELECT
+        id as id,
+        owner_id as ownerId,
+        purchase_sale_org_id as marketOrgId,
+        warehouse_provider_id as warehouseProviderId,
+        stock_org_id as stockOrgId,
+        warehouse_id as warehouseId,
+        default_flag as defaultFlag,
+        state as state
+        FROM base_entrust_relationship
+        WHERE owner_id = #{owerId} and entrust_type = 1 and entrust_range = 1 and deleted_flag=0
+    </select>
+
+    <!--根据 ID 查询采销委托关系（锁）-->
+    <select id="queryEntrustRelationById" parameterType="java.lang.Long"
+            resultType="com.org.permission.server.org.bean.MarketEntrustRelationBean">
+        SELECT
+        id as id,
+        owner_id as ownerId,
+        purchase_sale_org_id as marketOrgId,
+        warehouse_provider_id as warehouseProviderId,
+        stock_org_id as stockOrgId,
+        warehouse_id as warehouseId,
+        default_flag as defaultFlag,
+        state as state
+        FROM base_entrust_relationship
+        WHERE id = #{entrustId} and entrust_type = 1 and entrust_range = 1 and deleted_flag=0
+    </select>
+
+    <sql id="market_insert_base_list">
+        created_by,
+        entrust_range,
+        entrust_type,
+        entrust_source,
+        default_flag,
+        state,
+        owner_id,
+        purchase_sale_org_id,
+        warehouse_provider_id,
+        stock_org_id,
+        warehouse_id,
+        ori_acc_code,
+        remark,
+        created_date,
+        created_name,
+        sign_flag
+    </sql>
+    <!--统计采销委托关系-->
+    <select id="countMarketEntrustRelation" parameterType="com.org.permission.server.org.dto.param.MarketEntrustRelationReqParam"
+            resultType="integer">
+        select count(id) from base_entrust_relationship
+        <include refid="market_page_where_query_condition"/>
+
+    </select>
+
+    <!--查询采销委托关系列表-->
+    <select id="queryMarketEntrustRelationList" parameterType="com.org.permission.server.org.dto.param.MarketEntrustRelationReqParam"
+            resultMap="market_entrust_relation_result_mappe">
+        select
+        id,
+        owner_id,
+        purchase_sale_org_id,
+        warehouse_provider_id,
+        stock_org_id,
+        warehouse_id,
+        default_flag,
+        state,
+        ori_acc_code,
+        remark,
+        created_by,
+        created_date,
+        modified_by,
+        modified_date,
+        sign_flag
+        from base_entrust_relationship
+        <include refid="market_page_where_query_condition"/>
+    </select>
+
+    <!--查询采销委托关系-->
+    <select id="queryMarketEntrustRelation" parameterType="com.org.permission.common.org.param.MarketEntrustRelationQueryParam"
+            resultMap="market_entrust_relation_base_info_result_map">
+        SELECT
+        id,
+        owner_id,
+        purchase_sale_org_id,
+        warehouse_provider_id,
+        stock_org_id,
+        warehouse_id,
+        default_flag,
+        sign_flag
+        FROM base_entrust_relationship
+        WHERE
+        entrust_type = 1 and state = 1 and entrust_range = 1
+        <if test="queryParam.defaultFlag !=null ">
+            and default_flag = #{queryParam.defaultFlag}
+        </if>
+        <if test="queryParam.ownerId != null and  queryParam.ownerId != 0">
+            and owner_id = #{queryParam.ownerId}
+        </if>
+        <if test="queryParam.marketingOrgId != null and  queryParam.marketingOrgId != 0">
+            and purchase_sale_org_id = #{queryParam.marketingOrgId}
+        </if>
+        <if test="queryParam.warehouseProviderId != null and queryParam.warehouseProviderId != 0">
+            and warehouse_provider_id = #{queryParam.warehouseProviderId}
+        </if>
+        <if test="queryParam.stockOrgId != null and queryParam.stockOrgId != 0">
+            and stock_org_id = #{queryParam.stockOrgId}
+        </if>
+        <if test="queryParam.warehouseId != null and queryParam.warehouseId != 0">
+            and warehouse_id = #{queryParam.warehouseId}
+        </if>
+        <if test="queryParam.oriAccCode != null and queryParam.warehouseId != ''">
+            and ori_acc_code like '%${queryParam.oriAccCode}%'
+        </if>
+    </select>
+
+    <!--仓库入驻货主排行榜-->
+    <select id="warehouseEnterOwnerRankingList" parameterType="com.org.permission.common.org.param.WarehouseEnterOwnerRankingListParam"
+            resultType="com.org.permission.common.org.dto.WarehouseEnterOwnerRankingListDto">
+        select warehouse_id as warehouseId,count(distinct owner_id) as ownerCount
+        from base_entrust_relationship where entrust_type = 1
+        <if test="reqParam.state == null ">
+            and state = #{reqParam.state}
+        </if>
+
+        group by warehouse_id
+        order by ownerCount
+        <choose>
+            <when test="reqParam.orderWay == 0 ">
+                desc
+            </when>
+            <otherwise>
+                asc
+            </otherwise>
+        </choose>
+        limit #{reqParam.rankingList}
+    </select>
+
+    <sql id="market_page_where_query_condition">
+        <where>
+            entrust_range = 1 and entrust_type = 1 and deleted_flag=0
+            <if test="queryParam.ids!=null">
+                and( owner_id in(
+                <foreach collection="queryParam.ids" item="ownerId" separator=",">
+                    #{ownerId}
+                </foreach>
+                )
+                or warehouse_provider_id in(
+                <foreach collection="queryParam.ids" item="warehouseProviderId" separator=",">
+                    #{warehouseProviderId}
+                </foreach>
+                )
+                or warehouse_id in(
+                <foreach collection="queryParam.ids" item="warehouse_id" separator=",">
+                    #{warehouse_id}
+                </foreach>
+                )
+                )
+            </if>
+            <if test="queryParam.state !=null">
+                and state=#{queryParam.state}
+            </if>
+            <if test="queryParam.defaultFlag !=null">
+                and default_flag=#{queryParam.defaultFlag}
+            </if>
+            <if test="queryParam.signFlag !=null">
+                and sign_flag=#{queryParam.signFlag}
+            </if>
+        </where>
+    </sql>
+
+    <resultMap id="market_entrust_relation_result_mappe" type="com.org.permission.server.org.bean.MarketEntrustRelationInfoBean">
+        <id property="id" column="id"/>
+        <result property="id" column="id"/>
+        <result property="ownerId" column="owner_id"/>
+        <result property="marketOrgId" column="purchase_sale_org_id"/>
+        <result property="warehouseProviderId" column="warehouse_provider_id"/>
+        <result property="stockOrgId" column="stock_org_id"/>
+        <result property="warehouseId" column="warehouse_id"/>
+        <result property="defaultFlag" column="default_flag"/>
+        <result property="state" column="state"/>
+        <result property="oriAccCode" column="ori_acc_code"/>
+        <result property="remark" column="remark"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="modifiedBy" column="modified_by"/>
+        <result property="modifiedDate" column="modified_date"/>
+        <result property="signFlag" column="sign_flag"/>
+        <association property="marketOrgName" column="purchase_sale_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="stockOrgName" column="stock_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+
+    <resultMap id="market_entrust_relation_base_info_result_map" type="com.org.permission.common.org.dto.MarketEntrustRelationDto">
+        <id property="id" column="id"/>
+        <result property="id" column="id"/>
+        <result property="ownerId" column="owner_id"/>
+        <result property="marketOrgId" column="purchase_sale_org_id"/>
+        <result property="warehouseProviderId" column="warehouse_provider_id"/>
+        <result property="stockOrgId" column="stock_org_id"/>
+        <result property="warehouseId" column="warehouse_id"/>
+        <result property="defaultFlag" column="default_flag"/>
+        <result property="oriAccCode" column="ori_acc_code"/>
+        <result property="signFlag" column="sign_flag"/>
+        <association property="marketOrgName" column="purchase_sale_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="stockOrgName" column="stock_org_id"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+</mapper>
+

@@ -1,0 +1,43 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.BankingOrgFuncMapper">
+
+    <!--新增平台组织职能-->
+    <insert id="addBankingFunc" parameterType="com.org.permission.common.org.dto.func.BankingOrgFuncBean" keyProperty="bean.id" useGeneratedKeys="true">
+        insert into base_organization_function(<include refid="insert_base_list"/>)
+        values(
+        7,
+        #{bean.state},
+        #{bean.orgId},
+        #{bean.accountOrgId},
+        #{bean.settleOrgId},
+        #{bean.createdBy},
+        #{bean.createdName},
+        #{bean.createdDate}
+        )
+    </insert>
+
+    <update id="updateBankFunc" parameterType="com.org.permission.common.org.dto.func.BankingOrgFuncBean">
+        update base_organization_function
+        set
+        state = #{bean.state},
+        default_account_org_id=#{bean.accountOrgId},
+        default_settlement_org_id=#{bean.settleOrgId},
+        modified_by = #{bean.modifiedBy},
+        modified_name = #{bean.modifiedName},
+        modified_date=#{bean.modifiedDate}
+        where org_id = #{bean.orgId} and function_type=#{bean.funcType}
+    </update>
+
+    <sql id="insert_base_list">
+        function_type,
+        state,
+        org_id,
+        default_account_org_id,
+        default_settlement_org_id,
+        created_by,
+        created_name,
+        created_date
+    </sql>
+</mapper>
+

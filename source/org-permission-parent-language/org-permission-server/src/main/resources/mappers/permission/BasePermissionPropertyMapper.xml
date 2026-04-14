@@ -1,0 +1,127 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionPropertyMapper">
+
+    <resultMap type="com.org.permission.server.permission.entity.BasePermissionProperty" id="base_permission_propertys">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="property_value" jdbcType="VARCHAR" property="propertyValue"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+    </resultMap>
+
+    <insert id="addBasePermissionProperty" parameterType="com.org.permission.server.permission.entity.BasePermissionProperty"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into base_permission_property(id, name, property_value, created_by, created_name, created_date,
+                                             modified_by, modified_name, modified_date)
+        values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{propertyValue,jdbcType=VARCHAR},
+                #{createdBy,jdbcType=BIGINT}, #{createdName,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP},
+                #{modifiedBy,jdbcType=BIGINT}, #{modifiedName,jdbcType=VARCHAR}, #{modifiedDate,jdbcType=TIMESTAMP})
+    </insert>
+    <update id="delBasePermissionProperty" parameterType="java.lang.Long">
+        update base_permission_property
+        set state='0'
+        where id = #{id}
+    </update>
+    <delete id="delBasePermissionPropertyTrue" parameterType="java.lang.Long">
+        delete
+        from base_permission_property
+        where id = #{id}
+    </delete>
+    <update id="updateBasePermissionProperty" parameterType="com.org.permission.server.permission.entity.BasePermissionProperty">
+        update base_permission_property
+        <set>
+            <if test="name!=null">
+                name=#{name,jdbcType=VARCHAR},
+            </if>
+            <if test="propertyValue!=null">
+                property_value=#{propertyValue,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy!=null">
+                created_by=#{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdName!=null">
+                created_name=#{createdName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdDate!=null">
+                created_date=#{createdDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="getBasePermissionPropertyByID" parameterType="java.lang.Long" resultMap="base_permission_propertys">
+        select *
+        from base_permission_property
+        where id = #{id}
+    </select>
+    <select id="getBasePermissionPropertyCount" resultType="Integer">
+        select count('1')
+        from base_permission_property
+        where state = '1'
+    </select>
+    <select id="getBasePermissionPropertyCountAll" parameterType="String" resultMap="base_permission_propertys">
+        select count('1')
+        from base_permission_property
+    </select>
+    <select id="getListBasePermissionPropertysByPage" parameterType="com.org.permission.server.permission.vo.BasePermissionPropertyVo"
+            resultMap="base_permission_propertys">
+        select * from base_permission_property
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionPropertysByPOJO" parameterType="com.org.permission.server.permission.entity.BasePermissionProperty"
+            resultMap="base_permission_propertys">
+        select * from base_permission_property
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionPropertysByPojoPage" parameterType="java.util.Map"
+            resultMap="base_permission_propertys">
+        select * from base_permission_property where 1=1
+        <if test="pojo.id != null and pojo.id != ''">and id = #{pojo.id}</if>
+        <if test="pojo.name != null and pojo.name != ''">and name = #{pojo.name}</if>
+        <if test="pojo.propertyValue != null and pojo.propertyValue != ''">and property_value = #{pojo.propertyValue}
+        </if>
+    </select>
+    <sql id="Where_Conditions">
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="name!=null">
+                and name=#{name,jdbcType=VARCHAR}
+            </if>
+            <if test="propertyValue!=null">
+                and property_value=#{propertyValue,jdbcType=VARCHAR}
+            </if>
+            <if test="createdBy!=null">
+                and created_by=#{createdBy,jdbcType=BIGINT}
+            </if>
+            <if test="createdName!=null">
+                and created_name=#{createdName,jdbcType=VARCHAR}
+            </if>
+            <if test="createdDate!=null">
+                and created_date=#{createdDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedBy!=null">
+                and modified_by=#{modifiedBy,jdbcType=BIGINT}
+            </if>
+            <if test="modifiedName!=null">
+                and modified_name=#{modifiedName,jdbcType=VARCHAR}
+            </if>
+            <if test="modifiedDate!=null">
+                and modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+</mapper>
+

@@ -1,0 +1,34 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BaseUserMapper">
+
+    <resultMap type="com.org.permission.server.permission.entity.BaseUser" id="base_users">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="user_code" jdbcType="VARCHAR" property="userCode" />
+        <result column="org_id" jdbcType="BIGINT" property="orgId" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="source" jdbcType="INTEGER" property="source" />
+        <result column="real_name" jdbcType="VARCHAR" property="realName" />
+        <result column="manager_level" jdbcType="INTEGER" property="managerLevel" />
+        <result column="identity_type" jdbcType="INTEGER" property="identityType" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="lock_flag" jdbcType="TINYINT" property="lockFlag" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="effective_date" jdbcType="TIMESTAMP" property="effectiveDate" />
+        <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+    </resultMap>
+
+
+</mapper>
+

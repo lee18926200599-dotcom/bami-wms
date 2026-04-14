@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.org.permission</groupId>
+        <artifactId>org-permission-parent</artifactId>
+        <version>2.1-SNAPSHOT</version>
+    </parent>
+    <groupId>com.org.permission</groupId>
+    <artifactId>org-permission-common</artifactId>
+    <version>2.1-SNAPSHOT</version>
+    <name>org-permission-common</name>
+    <description>org-permission-common</description>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <lombok.version>1.18.8</lombok.version>
+        <usercenter.common.version>1.0-SNAPSHOT</usercenter.common.version>
+        <common.util.version>1.0.0-SNAPSHOT</common.util.version>
+        <common.base.version>1.0.0-SNAPSHOT</common.base.version>
+        <common.framewaork.version>1.0.0-SNAPSHOT</common.framewaork.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    <dependencies>
+
+        <dependency>
+            <groupId>com.common</groupId>
+            <artifactId>common-util</artifactId>
+            <version>${common.util.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.common</groupId>
+            <artifactId>common-base</artifactId>
+            <version>${common.base.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.common</groupId>
+            <artifactId>common-framework</artifactId>
+            <version>${common.framewaork.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>spring-cloud-starter-openfeign</artifactId>
+                    <groupId>org.springframework.cloud</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.usercenter</groupId>
+            <artifactId>usercenter-common</artifactId>
+            <version>${usercenter.common.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org-permission-common</artifactId>
+                    <groupId>com.org.permission</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+</project>

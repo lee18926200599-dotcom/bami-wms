@@ -1,0 +1,43 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionGroupManagementMapper">
+
+    <resultMap type="com.org.permission.server.permission.dto.BasePermissionManagementDto" id="basePermissionManagementDto">
+        <id property="id" column="id"/>
+        <result property="managementId" column="management_id"/>
+        <result property="name" column="name"/>
+        <result property="remark" column="remark"/>
+        <result property="des" column="des"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
+    <select id="getManageMentByGroupId" parameterType="com.org.permission.server.permission.dto.GroupManageMentDto"
+            resultMap="basePermissionManagementDto">
+        SELECT
+        bpgm.id,
+        bpgm.management_id,
+        bpm.`name`,
+        bpm.des,
+        bpm.remark,
+        bpgm.`state`
+        FROM
+        base_permission_group_management bpgm
+        LEFT JOIN base_permission_management bpm ON bpgm.management_id = bpm.id
+        WHERE 1=1
+        <if test="groupId !=null ">and bpgm.group_id = #{groupId}</if>
+        <if test="managementId != null and managementId != '' and managementId>0">
+          and bpgm.management_id = #{managementId}
+        </if>
+        <if test="state !=null ">and bpgm.state = #{state}</if>
+    </select>
+
+    <insert id="insertList" parameterType= "List">
+        insert into
+        base_permission_group_management(group_id,management_id,remark,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+        values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.groupId,jdbcType=BIGINT},#{item.managementId,jdbcType=BIGINT},#{item.remark,jdbcType=VARCHAR},#{item.state,jdbcType=INTEGER},#{item.createdBy,jdbcType=BIGINT},#{item.createdName,jdbcType=VARCHAR},#{item.createdDate,jdbcType=TIMESTAMP},#{item.modifiedBy,jdbcType=BIGINT},#{item.modifiedName,jdbcType=VARCHAR},#{item.modifiedDate,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+</mapper>
+

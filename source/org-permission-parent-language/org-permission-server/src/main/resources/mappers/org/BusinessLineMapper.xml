@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.org.permission.server.org.mapper.BusinessLineMapper">
+    <resultMap id="BaseResultMap" type="com.org.permission.server.org.bean.BaseBusinessLine">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="business_line_code" jdbcType="VARCHAR" property="businessLineCode"/>
+        <result column="business_line_name" jdbcType="VARCHAR" property="businessLineName"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+    </resultMap>
+    <!-- 全部字段列表，供查询单个实体使用-->
+    <sql id="Base_Column_List">
+        id
+        ,business_line_code,business_line_name,state,remark,created_by,created_name,created_date,modified_by,modified_name,modified_date
+    </sql>
+
+    <update id="update" parameterType="com.org.permission.server.org.bean.BaseBusinessLine">
+        update base_business_line
+        <set>
+            <if test="businessLineCode!=null">
+                business_line_code=#{businessLineCode,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLineName!=null">
+                business_line_name=#{businessLineName,jdbcType=VARCHAR},
+            </if>
+            remark=#{remark,jdbcType=VARCHAR},
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateState" parameterType="com.org.permission.server.org.bean.BaseBusinessLine">
+        update base_business_line set
+                state=#{state,jdbcType=INTEGER},
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateList" parameterType="List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update base_business_line
+            <set>
+                <if test="item.businessLineCode!=null">
+                    business_line_code=#{item.businessLineCode,jdbcType=VARCHAR},
+                </if>
+                <if test="item.businessLineName!=null">
+                    business_line_name=#{item.businessLineName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.state!=null">
+                    state=#{item.state,jdbcType=INTEGER},
+                </if>
+                <if test="item.remark!=null">
+                    remark=#{item.remark,jdbcType=VARCHAR},
+                </if>
+                <if test="item.createdBy!=null">
+                    created_by=#{item.createdBy,jdbcType=BIGINT},
+                </if>
+                <if test="item.createdName!=null">
+                    created_name=#{item.createdName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.createdDate!=null">
+                    created_date=#{item.createdDate,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.modifiedBy!=null">
+                    modified_by=#{item.modifiedBy,jdbcType=BIGINT},
+                </if>
+                <if test="item.modifiedName!=null">
+                    modified_name=#{item.modifiedName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.modifiedDate!=null">
+                    modified_date=#{item.modifiedDate,jdbcType=TIMESTAMP}
+                </if>
+            </set>
+            where id = #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+
+    <insert id="insert" parameterType="com.org.permission.server.org.bean.BaseBusinessLine" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into base_business_line(id, business_line_code, business_line_name, state, remark, created_by,
+                                       created_name, created_date, modified_by, modified_name, modified_date)
+        values (#{id,jdbcType=BIGINT}, #{businessLineCode,jdbcType=VARCHAR}, #{businessLineName,jdbcType=VARCHAR},
+                #{state,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT},
+                #{createdName,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{modifiedBy,jdbcType=BIGINT},
+                #{modifiedName,jdbcType=VARCHAR}, #{modifiedDate,jdbcType=TIMESTAMP})
+    </insert>
+
+
+    <select id="load" resultType="com.org.permission.server.org.bean.BaseBusinessLine" parameterType="java.lang.Long"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_business_line where id=#{id,jdbcType=BIGINT}
+    </select>
+
+
+    <select id="listByParam" resultType="com.org.permission.server.org.bean.BaseBusinessLine" parameterType="java.util.Map"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_business_line
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getLastData" resultType="com.org.permission.server.org.bean.BaseBusinessLine" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_business_line
+        order by id desc limit 1;
+    </select>
+
+    <select id="getPageList" resultType="com.org.permission.server.org.bean.BaseBusinessLine"
+            parameterType="com.org.permission.server.org.dto.param.BusinessLineParam" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_business_line
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="businessLineCode!=null">
+                and business_line_code LIKE CONCAT('%',#{businessLineCode,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="businessLineName!=null">
+                and business_line_name LIKE CONCAT('%',#{businessLineName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="state!=null">
+                and state=#{state,jdbcType=INTEGER}
+            </if>
+            <if test="idList != null and idList.size>0">
+                and id in
+                <foreach collection="idList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="getByIdList" resultType="com.org.permission.server.org.bean.BaseBusinessLine" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from base_business_line
+        where id in
+        <foreach collection="idList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+    <sql id="Where_Conditions">
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="businessLineCode!=null">
+                and business_line_code=#{businessLineCode,jdbcType=VARCHAR}
+            </if>
+            <if test="businessLineName!=null">
+                and business_line_name=#{businessLineName,jdbcType=VARCHAR}
+            </if>
+            <if test="state!=null">
+                and state=#{state,jdbcType=INTEGER}
+            </if>
+            <if test="createdBy!=null">
+                and created_by=#{createdBy,jdbcType=BIGINT}
+            </if>
+            <if test="createdName!=null">
+                and created_name=#{createdName,jdbcType=VARCHAR}
+            </if>
+            <if test="createdDate!=null">
+                and created_date=#{createdDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedBy!=null">
+                and modified_by=#{modifiedBy,jdbcType=BIGINT}
+            </if>
+            <if test="modifiedName!=null">
+                and modified_name=#{modifiedName,jdbcType=VARCHAR}
+            </if>
+            <if test="modifiedDate!=null">
+                and modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+
+</mapper>

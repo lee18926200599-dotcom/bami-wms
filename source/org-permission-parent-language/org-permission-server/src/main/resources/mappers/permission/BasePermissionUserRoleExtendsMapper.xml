@@ -1,0 +1,247 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionUserRoleMapper">
+
+    <delete id="delBasePermissionUserRoleTrueByRoleId"
+            parameterType="java.util.Map">
+        delete
+        from base_permission_user_role
+        where role_id = #{roleId}
+          and group_id = #{groupId}
+    </delete>
+
+    <resultMap type="com.org.permission.server.permission.dto.OrgUserDto" id="baseOrgUserDto">
+        <result property="userId" column="user_id"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="orgName" column="org_name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="orgId" column="org_id"/>
+        <result property="userCode" column="user_code"/>
+        <result property="userName" column="user_name"/>
+        <result property="realName" column="real_name"/>
+    </resultMap>
+
+
+    <select id="getRoleOrgUserList" parameterType="java.util.Map"
+            resultMap="baseOrgUserDto">
+        SELECT
+        user_id
+        from base_permission_user_role bpur
+        WHERE
+        1 = 1
+        <if test="roleId != null and roleId != '' ">AND bpur.role_id = #{roleId}</if>
+        <if test="groupId != null and groupId != '' ">AND bpur.group_id = #{groupId}</if>
+        AND bpur.`state` = 1
+    </select>
+
+    <update id="batchUserRoleCreate" parameterType="java.util.Map">
+
+        <if test="list!=null and list.size()>0 ">
+            <foreach collection="list" index="index" item="item"
+                     separator=";">
+                insert into
+                base_permission_user_role(id,user_id,role_id,group_id,org_id,effective_time,expire_time,author_user,author_time,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+                values(
+                #{id,jdbcType=INTEGER},#{userId,jdbcType=BIGINT},#{roleId,jdbcType=INTEGER},#{groupId,jdbcType=BIGINT},#{orgId,jdbcType=BIGINT},#{effectiveTime,jdbcType=BIGINT},#{expireTime,jdbcType=BIGINT},#{authorUser,jdbcType=BIGINT},#{authorTime,jdbcType=BIGINT},#{state,jdbcType=INTEGER},#{createdBy,jdbcType=BIGINT},#{createdName,jdbcType=VARCHAR},#{createdDate,jdbcType=TIMESTAMP},#{modifiedBy,jdbcType=BIGINT},#{modifiedName,jdbcType=VARCHAR},#{modifiedDate,jdbcType=TIMESTAMP})
+            </foreach>
+        </if>
+    </update>
+
+    <insert id="batchSaveUserRole">
+        <if test="saveList!=null and saveList.size()>0 ">
+            insert into
+            base_permission_user_role(id,user_id,role_id,group_id,org_id,effective_time,expire_time,author_user,author_time,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+            values
+            <foreach collection="saveList" item="item" index="index" separator=",">
+                (#{item.id,jdbcType=BIGINT},#{item.userId,jdbcType=BIGINT},#{item.roleId,jdbcType=BIGINT},#{item.groupId,jdbcType=BIGINT},#{item.orgId,jdbcType=BIGINT},#{item.effectiveTime,jdbcType=TIMESTAMP},#{item.expireTime,jdbcType=TIMESTAMP},#{item.authorUser,jdbcType=BIGINT},#{item.authorTime,jdbcType=TIMESTAMP},#{item.state,jdbcType=INTEGER},#{item.createdBy,jdbcType=BIGINT},#{item.createdName,jdbcType=VARCHAR},#{item.createdDate,jdbcType=TIMESTAMP},#{item.modifiedBy,jdbcType=BIGINT},#{item.modifiedName,jdbcType=VARCHAR},#{item.modifiedDate,jdbcType=TIMESTAMP})
+            </foreach>
+        </if>
+    </insert>
+
+    <delete id="batchDeleteUserRole">
+        delete from base_permission_user_role where group_id = #{groupId} and role_id = #{roleId} and user_id in
+        <foreach collection="userIdList" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteUserRoleCreate" parameterType="java.util.Map">
+        DELETE
+        FROM base_permission_user_role
+        WHERE role_id = #{roleId}
+          AND group_id = #{groupId}
+    </delete>
+
+    <resultMap type="com.org.permission.server.permission.dto.UserExpireDto"
+               id="base-selectUserExpire">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="orgName" column="org_name"/>
+        <result property="orgId" column="org_id"/>
+        <result property="userNumber" column="user_number"/>
+        <result property="userName" column="user_name"/>
+        <result property="realName" column="real_name"/>
+        <result property="effectiveTime" column="effective_time"/>
+        <result property="expireTime" column="expire_time"/>
+        <result property="roleId" column="role_id"/>
+    </resultMap>
+    <select id="selectUserExpire" parameterType="java.util.Map"
+            resultMap="base-selectUserExpire">
+        SELECT
+        bpur.id,
+        bpur.user_id,
+        bpur.effective_time,
+        bpur.expire_time,
+        bpur.role_id
+        FROM
+        base_permission_user_role bpur
+        where 1=1
+        <if test="userId != null and userId != '' ">AND bpur.user_id = #{userId}</if>
+        <if test="roleId != null and roleId != '' ">AND bpur.role_id = #{roleId}</if>
+        <if test="groupId != null and groupId != '' ">AND bpur.group_id = #{groupId}</if>
+        AND bpur.`state` = 1
+    </select>
+    <resultMap type="com.org.permission.server.permission.dto.OutPutUserRoleDto"
+               id="base-getUserRoleList">
+        <result property="id" column="id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="roleCode" column="role_code"/>
+        <result property="roleName" column="role_name"/>
+        <result property="orgId" column="org_id"/>
+        <result property="orgName" column="org_name"/>
+        <result property="effectiveTime" column="effective_time"/>
+        <result property="expireTime" column="expire_time"/>
+        <result property="authorTime" column="author_time"/>
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="author" column="author"/>
+    </resultMap>
+    <select id="getUserRoleList" parameterType="com.org.permission.server.permission.dto.InputParentDto"
+            resultMap="base-getUserRoleList">
+        SELECT
+        bpur.id,
+        bpr.id role_id,
+        bpr.role_code,
+        bpr.role_name,
+        bpr.org_id,
+        bpur.effective_time,
+        bpur.expire_time,
+        bpur.author_time,
+        bpur.user_id,
+        bpur.author_user author
+        FROM
+        base_permission_role bpr
+        INNER JOIN
+        base_permission_user_role bpur ON bpr.id = bpur.role_id
+        AND
+        bpr.group_id = bpur.group_id
+        WHERE
+        1 = 1
+        <if test="userId != null and userId != '' ">AND bpur.user_id = #{userId}</if>
+        <if test="groupId != null and groupId != '' ">AND bpur.group_id = #{groupId}</if>
+        AND bpr.`state` = 1
+    </select>
+
+    <resultMap type="com.org.permission.server.permission.dto.OrgRoleDto" id="base-getOrgRoleList">
+        <result property="roleId" column="role_id"/>
+        <result property="roleCode" column="role_code"/>
+        <result property="roleName" column="role_name"/>
+        <result property="orgId" column="org_id"/>
+        <result property="orgName" column="org_name"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="parentId" column="parent_id"/>
+    </resultMap>
+    <select id="getOrgRoleList" parameterType="java.util.Map"
+            resultMap="base-getOrgRoleList">
+        SELECT
+        bpr.id role_id,
+        bpr.role_code,
+        bpr.role_name,
+        bpr.org_id,
+        bo.org_code,
+        bo.org_name,
+        (
+        CASE
+        WHEN bo.org_type = 4 THEN
+        bo.parent_bu_id
+        ELSE
+        bo.parent_id
+        END
+        ) parent_id
+        FROM
+        base_permission_role bpr
+        LEFT
+        JOIN base_organization bo ON bpr.org_id = bo.id
+        AND bpr.group_id =
+        bo.group_id
+        WHERE
+        bpr.`state` = 1
+        <if test="list != null and list.size()>0">
+            and bpr.org_id IN
+            <foreach collection="list" index="index" item="item" open="("
+                     separator="," close=")">
+                #{item.permissionId}
+            </foreach>
+        </if>
+        <if test="roleName != null and roleName != ''">and bpr.role_name like CONCAT('%',#{roleName},'%')</if>
+        <if test="orgName != null and orgName != ''">AND bo.org_name like CONCAT('%',#{orgName},'%')</if>
+    </select>
+    <select id="getUserOrgRoleList" parameterType="java.util.Map"
+            resultMap="base-getOrgRoleList">
+        SELECT
+        bpr.id role_id,
+        bpr.role_code,
+        bpr.role_name,
+        bpr.org_id,
+        bo.org_code,
+        bo.org_name,
+        (
+        CASE
+        WHEN bo.org_type = 4 THEN
+        bo.parent_bu_id
+        ELSE
+        bo.parent_id
+        END
+        ) parent_id
+        FROM
+        base_permission_user_role bpur
+        LEFT JOIN base_permission_role bpr ON bpur.role_id = bpr.id
+        AND bpur.group_id = bpr.group_id
+        LEFT JOIN base_organization bo ON bpr.org_id = bo.id
+        where 1=1
+        and bpur.`state`=1
+        and bpr.`state`=1
+        <if test="userId != null and userId != '' ">AND bpur.user_id = #{userId}</if>
+        <if test="groupId != null and groupId != '' ">AND bpur.group_id = #{groupId}</if>
+    </select>
+
+
+    <update id="batchUpdateUserRole" parameterType="java.util.Map">
+        <if test="list!=null and list.size()>0 ">
+            UPDATE base_permission_user_role bpur
+            SET bpur.`state` = 0
+            WHERE
+            bpur.id in
+            <foreach collection="list" index="index" item="item" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </update>
+
+
+    <update id="updateBasePermissionUserRoleExtends"
+            parameterType="com.org.permission.server.permission.entity.BasePermissionUserRole">
+        update base_permission_user_role
+        <trim prefix="set" suffixOverrides=",">
+            <if test="modifiedBy != null  ">modified_by = #{modifiedBy},</if>
+            <if test="modifiedDate != null  ">modified_date = #{modifiedDate},</if>
+            <if test="state != null  ">state = #{state},</if>
+        </trim>
+        where userId=#{userId}
+        <if test="groupId !=null and groupId >0 ">and groupId = #{groupId}</if>
+        <if test="state ==1 ">and state = 0</if>
+        <if test="state ==0 ">and state = 1</if>
+    </update>
+</mapper>
+

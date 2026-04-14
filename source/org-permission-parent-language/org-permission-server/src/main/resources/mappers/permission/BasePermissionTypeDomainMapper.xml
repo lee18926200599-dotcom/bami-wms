@@ -1,0 +1,128 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionTypeDomainMapper">
+
+    <resultMap type="com.org.permission.server.permission.entity.BasePermissionTypeDomain" id="base_permission_type_domains">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="type_id" jdbcType="INTEGER" property="typeId" />
+        <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+        <result column="domain_id" jdbcType="INTEGER" property="domainId" />
+        <result column="domain_name" jdbcType="VARCHAR" property="domainName" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+    </resultMap>
+
+    <insert id="addBasePermissionTypeDomain" parameterType="com.org.permission.server.permission.entity.BasePermissionTypeDomain" useGeneratedKeys="true" keyProperty="id" >
+        insert into
+            base_permission_type_domain(id,type_id,type_name,domain_id,domain_name,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+        values( #{id,jdbcType=INTEGER},#{typeId,jdbcType=INTEGER},#{typeName,jdbcType=VARCHAR},#{domainId,jdbcType=INTEGER},#{domainName,jdbcType=VARCHAR},#{createdBy,jdbcType=BIGINT},#{createdName,jdbcType=VARCHAR},#{createdDate,jdbcType=TIMESTAMP},#{modifiedBy,jdbcType=BIGINT},#{modifiedName,jdbcType=VARCHAR},#{modifiedDate,jdbcType=TIMESTAMP})
+    </insert>
+    <update id="delBasePermissionTypeDomain" parameterType="java.lang.Long">
+        update  base_permission_type_domain set status='0' where id=#{id}
+    </update>
+    <delete id="delBasePermissionTypeDomainTrue"  parameterType="java.lang.Long">
+        delete from base_permission_type_domain where id=#{id}
+    </delete>
+    <update id="updateBasePermissionTypeDomain" parameterType="com.org.permission.server.permission.entity.BasePermissionTypeDomain">
+        update base_permission_type_domain
+        <set>
+            <if test="typeId!=null">
+                type_id=#{typeId,jdbcType=INTEGER},
+            </if>
+            <if test="typeName!=null">
+                type_name=#{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="domainId!=null">
+                domain_id=#{domainId,jdbcType=INTEGER},
+            </if>
+            <if test="domainName!=null">
+                domain_name=#{domainName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy!=null">
+                created_by=#{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdName!=null">
+                created_name=#{createdName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdDate!=null">
+                created_date=#{createdDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="getBasePermissionTypeDomainByID" parameterType="java.lang.Long" resultMap="base_permission_type_domains">
+        select * from base_permission_type_domain where   id=#{id}
+    </select>
+    <select id="getBasePermissionTypeDomainCount" resultType="Integer">
+        select count('1') from base_permission_type_domain where status='1'
+    </select>
+    <select id="getBasePermissionTypeDomainCountAll" parameterType="String" resultMap="base_permission_type_domains">
+        select count('1') from base_permission_type_domain
+    </select>
+    <select id="getListBasePermissionTypeDomainsByPage" parameterType="com.org.permission.server.permission.vo.BasePermissionTypeDomainVo" resultMap="base_permission_type_domains">
+        select * from base_permission_type_domain
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionTypeDomainsByPOJO" parameterType="com.org.permission.server.permission.entity.BasePermissionTypeDomain" resultMap="base_permission_type_domains">
+        select * from base_permission_type_domain
+        <include refid="Where_Conditions"/>
+    </select>
+    <select id="getListBasePermissionTypeDomainsByPojoPage" parameterType="java.util.Map"  resultMap="base_permission_type_domains">
+        select * from base_permission_type_domain where 1=1
+        <if test="pojo.id != null and pojo.id != ''"> and id = #{pojo.id}</if>
+        <if test="pojo.typeId != null and pojo.typeId != ''"> and type_id = #{pojo.typeId}</if>
+        <if test="pojo.typeName != null and pojo.typeName != ''"> and type_name = #{pojo.typeName}</if>
+        <if test="pojo.domainId != null and pojo.domainId != ''"> and domain_id = #{pojo.domainId}</if>
+        <if test="pojo.domainName != null and pojo.domainName != ''"> and domain_name = #{pojo.domainName}</if>
+    </select>
+    <sql id="Where_Conditions">
+        <where>
+            <!-- 以下查询条件为模拟生成，请大家开发时进行修改-->
+            <if test="id != null  "> and id = #{id}</if>
+            <if test="typeId!=null">
+                and type_id=#{typeId,jdbcType=INTEGER}
+            </if>
+            <if test="typeName!=null">
+                and type_name=#{typeName,jdbcType=VARCHAR}
+            </if>
+            <if test="domainId!=null">
+                and domain_id=#{domainId,jdbcType=INTEGER}
+            </if>
+            <if test="domainName!=null">
+                and domain_name=#{domainName,jdbcType=VARCHAR}
+            </if>
+            <if test="createdBy!=null">
+                and created_by=#{createdBy,jdbcType=BIGINT}
+            </if>
+            <if test="createdName!=null">
+                and created_name=#{createdName,jdbcType=VARCHAR}
+            </if>
+            <if test="createdDate!=null">
+                and created_date=#{createdDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="modifiedBy!=null">
+                and modified_by=#{modifiedBy,jdbcType=BIGINT}
+            </if>
+            <if test="modifiedName!=null">
+                and modified_name=#{modifiedName,jdbcType=VARCHAR}
+            </if>
+            <if test="modifiedDate!=null">
+                and modified_date=#{modifiedDate,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+</mapper>
+

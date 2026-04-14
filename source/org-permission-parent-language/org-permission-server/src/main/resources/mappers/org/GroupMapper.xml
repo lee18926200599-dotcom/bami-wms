@@ -1,0 +1,553 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.GroupMapper">
+    <!-- 创建集团 -->
+    <insert id="addGroup" parameterType="com.org.permission.server.org.bean.GroupInfoBean" useGeneratedKeys="true" keyProperty="bean.id">
+        insert into base_organization
+        (<include refid="insert_base_list"/>)
+        values (
+        #{bean.id},
+        #{bean.id},
+        #{bean.orgType},
+        #{bean.orgCode},
+        #{bean.orgName},
+        #{bean.orgShortName},
+        #{bean.industryCode},
+        #{bean.industryName},
+        #{bean.addressDetail.regionCode},
+        #{bean.addressDetail.regionName},
+        #{bean.addressDetail.invoiceProvCode},
+        #{bean.addressDetail.invoiceProvName},
+        #{bean.addressDetail.invoiceCityCode},
+        #{bean.addressDetail.invoiceCityName},
+        #{bean.addressDetail.invoiceDistrictCode},
+        #{bean.addressDetail.invoiceDistrictName},
+        #{bean.addressDetail.invoiceStreetCode},
+        #{bean.addressDetail.invoiceStreetName},
+        #{bean.addressDetail.address},
+        #{bean.phone},
+        #{bean.email},
+        #{bean.netAddress},
+        #{bean.establishTime},
+        #{bean.creditCode},
+        #{bean.currency},
+        #{bean.custId},
+        #{bean.bizTypeId},
+        #{bean.remark},
+        #{bean.mainBusiness},
+        #{bean.state},
+        #{bean.createdBy},
+        #{bean.createdDate}
+        )
+    </insert>
+
+    <!-- 回写集团ID-->
+    <update id="writeBackGroupId" parameterType="java.lang.Long">
+        update base_organization set group_id = #{id} where id =#{id}
+    </update>
+
+    <!--根据ID查询集团（锁）-->
+    <select id="queryGroupByIdLock" parameterType="java.lang.Long" resultMap="base_result_map">
+        select
+        <include refid="query_base_list"/>
+        from base_organization where id =#{groupId} and deleted_flag=0
+    </select>
+
+    <!--根据集团ID查询集团客商信息（锁）-->
+    <select id="queryGroupCustInfoByGroupIdLock" parameterType="java.lang.Long" resultType="com.org.permission.server.org.bean.OrgCustInfoBean">
+        select
+        id as groupId,
+        cust_id as custId,
+        business_type as businessType,
+        state as state,
+        init_flag as initFlag
+        from base_organization where id =#{groupId} and deleted_flag=0
+    </select>
+
+    <!--根据客商ID查询启用的集团-->
+    <select id="queryEnableGroupsByCustIdLock" parameterType="long" resultType="integer">
+        SELECT COUNT (id)
+        from base_organization
+        where cust_id = #{custId} and state = 1 and deleted_flag=0
+    </select>
+
+    <!--集团LOGO管理-->
+    <update id="manageLogo" parameterType="com.org.permission.server.org.bean.GroupLogoWriteBean">
+        update base_organization set
+            logo_url =  #{bean.logoUrl},
+            modified_by = #{bean.userId},
+            modified_date = #{bean.modifiedDate}
+        where id = #{bean.groupId}
+    </update>
+
+    <!--根据ID查询集团状态值-->
+    <select id="getGroupStateByIdLock" parameterType="java.lang.Long" resultType="com.org.permission.server.org.bean.OrgBean">
+        SELECT
+        id as id,
+        state as state,
+        group_id as groupId,
+        parent_id as parentId,
+        init_flag as initFlag,
+        main_org_flag as mainOrgFlag,
+        cust_id as custId,
+        inner_cust_id as innerCustId,
+        currency as currency,
+        business_type as bizTypeId,
+        deleted_flag as deletedFlag
+        from base_organization where id=#{groupId}
+    </select>
+
+    <!--更新集团-->
+    <update id="updateGroup" parameterType="com.org.permission.server.org.bean.UpdateGroupWriteBean">
+        update base_organization set
+        org_name = #{bean.orgName},
+        org_short_name=#{bean.orgShortName},
+        industry_code = #{bean.industryCode},
+        industry_name = #{bean.industryName},
+        region_code= #{bean.addressDetail.regionCode},
+        region_name= #{bean.addressDetail.regionName},
+        province_code = #{bean.addressDetail.invoiceProvCode},
+        province_name = #{bean.addressDetail.invoiceProvName},
+        city_code = #{bean.addressDetail.invoiceCityCode},
+        city_name = #{bean.addressDetail.invoiceCityName},
+        district_code = #{bean.addressDetail.invoiceDistrictCode},
+        district_name = #{bean.addressDetail.invoiceDistrictName},
+        street_code = #{bean.addressDetail.invoiceStreetCode},
+        street_name = #{bean.addressDetail.invoiceStreetName},
+        address=#{bean.addressDetail.address},
+        phone=#{bean.phone},
+        email =#{bean.email},
+        net_address=#{bean.netAddress},
+        establish_time =#{bean.establishTime},
+        credit_code=#{bean.creditCode},
+        currency=#{bean.currency},
+        cust_id=#{bean.custId},
+        business_type=#{bean.bizTypeId},
+        remark=#{bean.remark},
+        main_business=#{bean.mainBusiness},
+        modified_by = #{bean.modifiedBy},
+        modified_date = #{bean.modifiedDate}
+        where id = #{bean.id}
+    </update>
+
+    <!--绑定客商-->
+    <update id="bindingCust" parameterType="com.org.permission.server.org.dto.param.BindingCustReqParam">
+        update base_organization set
+        cust_id = #{bean.custId},
+        modified_by = #{bean.userId},
+        modified_date = now()
+        where id = #{bean.orgId}
+    </update>
+
+    <!--根据集团名精确查询集团-->
+    <select id="queryGroupByNameLock" parameterType="string" resultType="com.org.permission.server.org.bean.OrgTypeBean">
+        SELECT
+        id as id,
+        group_id as groupId,
+        state as state,
+        org_type as orgType
+        from base_organization where org_name=#{orgName} and org_type = 2  and deleted_flag=0
+    </select>
+
+    <sql id="query_base_list">
+        id,
+        org_type,
+        org_code,
+        org_name,
+        org_short_name,
+        industry_code,
+        industry_name,
+        region_code,
+        region_name,
+        province_code,
+        province_name,
+        city_code,
+        city_name,
+        district_code,
+        district_name,
+        street_code,
+        street_name,
+        address,
+        phone,
+        email,
+        net_address,
+        credit_code,
+        establish_time,
+        currency,
+        cust_id ,
+        business_type,
+        state,
+        init_flag,
+        remark,
+        main_business as mainBusiness
+    </sql>
+    <sql id="insert_base_list">
+        id,
+        group_id,
+        org_type,
+        org_code,
+        org_name,
+        org_short_name,
+        industry_code,
+        industry_name,
+        region_code,
+        region_name,
+        province_code,
+        province_name,
+        city_code,
+        city_name,
+        district_code,
+        district_name,
+        street_code,
+        street_name,
+        address,
+        phone,
+        email,
+        net_address,
+        establish_time,
+        credit_code,
+        currency,
+        cust_id,
+        business_type,
+        remark,
+        main_business,
+        state,
+        created_by,
+        created_date
+    </sql>
+    <resultMap id="base_result_map" type="com.org.permission.server.org.bean.GroupInfoBean">
+        <result column="id" property="id"/>
+        <result column="org_type" property="orgType"/>
+        <result column="org_code" property="orgCode"/>
+        <result column="org_name" property="orgName"/>
+        <result column="org_short_name" property="orgShortName"/>
+        <result column="industry_code" property="industryCode"/>
+        <result column="industry_name" property="industryName"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="net_address" property="netAddress"/>
+        <result column="credit_code" property="creditCode"/>
+        <result column="establish_time" property="establishTime"/>
+        <result column="currency" property="currency"/>
+        <result column="cust_id" property="custId"/>
+        <result column="business_type" property="bizTypeId"/>
+        <result column="state" property="state"/>
+        <result column="init_flag" property="initFlag"/>
+        <result column="remark" property="remark"/>
+        <result column="main_business" property="mainBusiness"/>
+        <association property="addressDetail" resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+    </resultMap>
+    <!--根据ID查询业务委托关系 -->
+    <select id="queryGroupById" parameterType="java.lang.Long" resultMap="base_group_map">
+        select
+        <include refid="base_query_list"/>
+        from base_organization where id =#{groupId}
+    </select>
+
+    <!--根据参数统计业务委托关系数量 -->
+    <select id="countGroup" resultType="integer" parameterType="com.org.permission.common.org.param.QueryGroupListReqParam">
+        select COUNT(id) from base_organization
+        <include refid="where_query_condition"/>
+    </select>
+
+    <!--根据参数查询业务委托关系列表 -->
+    <select id="queryGroupList" resultMap="base_group_map" parameterType="com.org.permission.common.org.param.QueryGroupListReqParam">
+        select
+        <include refid="base_query_list"/>
+        from base_organization
+        <include refid="where_query_condition"/>
+    </select>
+
+    <!--查询集团LOGO -->
+    <select id="queryGroupLogoById" parameterType="java.lang.Long" resultType="string">
+        SELECT logo_url FROM base_organization WHERE id = #{groupId}
+    </select>
+
+    <!-- 根据集团ID,查询全局客户ID  -->
+    <select id="queryCustByGroupId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT cust_id FROM base_organization WHERE id = #{groupId} and org_type=2
+    </select>
+
+    <!--查询集团的业务类型-->
+    <select id="queryGroupBusinessType" parameterType="java.lang.Long" resultType="string">
+        select business_type from base_organization where id=#{groupId} and init_flag=1 and state=1 and deleted_flag=0
+    </select>
+
+    <select id="queryGroupListInfo" parameterType="com.org.permission.common.org.param.QueryOrgListInfoReqParam"
+            resultType="com.org.permission.server.org.bean.OrgListBean">
+        select
+        id as id,
+        org_code as orgCode,
+        org_name as orgName
+        from base_organization WHERE org_type= 2 and deleted_flag=0
+        <if test="queryParam.orgName != null and queryParam.orgName != '' ">
+            and org_name like CONCAT('%',#{queryParam.orgName},'%')
+        </if>
+        <if test="queryParam.state !=null">
+            and state =#{queryParam.state}
+        </if>
+    </select>
+
+    <select id="queryGroupIncludeBusinessType" resultType="string" parameterType="com.org.permission.server.org.dto.param.QueryGroupIncludeBusinessTypeParam">
+        select
+        business_type
+        FROM
+        base_organization
+        WHERE
+        org_type = 2 and deleted_flag=0
+        and state = 1
+        <![CDATA[ and cust_id>0 ]]>
+        <if test="param.startTime !=null and param.endTime !=null">and start_time BETWEEN #{param.startTime} and #{param.endTime}</if>
+    </select>
+
+    <select id="queryTotalCountByBusiType" resultType="integer" parameterType="list">
+        select count(1) from base_organization where business_type in
+        <foreach collection="param" item="type" separator="," open="(" close=")">
+            ${type}
+        </foreach>
+        and org_type = 2 and deleted_flag=0
+        <![CDATA[ and cust_id>0 ]]>
+    </select>
+
+    <!--查询跟业务单元列表-->
+    <select id="queryAllGroupInfoList" parameterType="com.org.permission.server.org.dto.param.GroupListQueryParam"
+            resultType="com.org.permission.common.org.dto.OrgInfoDto">
+        select
+        id as id,
+        group_id as groupId,
+        parent_id as parentId,
+        org_type as orgType,
+        org_code as orgCode,
+        business_type as businessType,
+        cust_id as custId,
+        org_name as orgName,
+        org_short_name as orgShortName,
+        created_date as createdDate
+        FROM base_organization
+        WHERE org_type = 2 and state=1 and deleted_flag=0
+        <if test="queryParam.orgName !=null and queryParam.orgName !='' ">
+            and org_name like CONCAT('%',#{queryParam.orgName},'%')
+        </if>
+        <if test="queryParam.orgShortName !=null and queryParam.orgShortName !='' ">
+            and org_short_name like CONCAT('%',#{queryParam.orgShortName},'%')
+        </if>
+        <if test="queryParam.businessType !=null">
+            and(
+            <foreach collection="queryParam.businessType" item="item" separator="or">
+                FIND_IN_SET(#{item},business_type)
+            </foreach>
+            )
+        </if>
+        <if test="queryParam.ids !=null">
+            and(
+            <foreach collection="queryParam.ids" item="item" separator="or">
+                FIND_IN_SET(#{item},id)
+            </foreach>
+            )
+        </if>
+        <if test="queryParam.createdDateStart !=null ">
+            <![CDATA[ and created_date > #{queryParam.createdDateStart} ]]>
+        </if>
+        <if test="queryParam.createdDateEnd !=null ">
+            <![CDATA[ and created_date < #{queryParam.createdDateEnd} ]]>
+        </if>
+
+    </select>
+
+
+    <select id="queryGroupsByPojo" resultType="integer">
+        select count(1) from base_organization where  state=1 and deleted_flag=0
+        and org_type=2
+        <if test="queryParam.id !=null and queryParam.id!=0">and id=#{queryParam.id}</if>
+        <if test="queryParam.orgName!=null and queryParam.orgName!=''">and org_name like CONCAT('%',#{queryParam.orgName},'%')</if>
+        <if test="queryParam.orgShortName !=null and queryParam.orgShortName !='' ">
+            and org_short_name like CONCAT('%',#{queryParam.orgShortName},'%')
+        </if>
+        <if test="queryParam.businessType !=null">
+            and(
+            <foreach collection="queryParam.businessType" item="item" separator="or">
+                FIND_IN_SET(#{item},business_type)
+            </foreach>
+            )
+        </if>
+        <if test="queryParam.createdDateStart !=null and queryParam.createdDateStart !='' ">
+            <![CDATA[ and created_date > #{queryParam.createdDateStart} ]]>
+        </if>
+        <if test="queryParam.createdDateEnd !=null and queryParam.createdDateEnd !='' ">
+            <![CDATA[ and created_date < #{queryParam.createdDateEnd} ]]>
+        </if>
+    </select>
+
+
+
+    <select id="queryGroupsNotRelCust" parameterType="com.org.permission.common.org.param.GroupListQueryParam"
+            resultType="com.org.permission.common.org.dto.OrgInfoDto">
+        select
+            id as id,
+            group_id as groupId,
+            parent_id as parentId,
+            org_type as orgType,
+            org_code as orgCode,
+            org_name as orgName
+        FROM base_organization
+        WHERE org_type = 2 and cust_id is null and state=1 and deleted_flag=0
+    </select>
+
+    <!--根据业务单元ID集合查询集团信息（权限）-->
+    <select id="queryGroupInfoByOrgIds" parameterType="com.org.permission.common.query.BatchQueryParam"
+            resultType="com.org.permission.common.org.dto.OrgInfoDto">
+        select
+        id as id,
+        group_id as groupId,
+        parent_id as parentId,
+        org_type as orgType,
+        org_code as orgCode,
+        org_name as orgName,
+        org_short_name as orgShortName,
+        business_type as businessType,
+        created_date as createdDate
+        FROM base_organization
+        WHERE state =1 and deleted_flag=0 and id in (
+        select group_id from base_organization where id in (
+        <foreach collection="queryParam.ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+        )
+        <if test="queryParam.businessType !=null">
+            and(
+            <foreach collection="queryParam.businessType" item="item" separator="or">
+                FIND_IN_SET(#{item},business_type)
+            </foreach>
+            )
+        </if>
+        <if test="queryParam.orgName !=null and queryParam.orgName !='' ">
+            and org_name like CONCAT('%',#{queryParam.orgName},'%')
+        </if>
+        <if test="queryParam.orgShortName !=null and queryParam.orgShortName !='' ">
+            and org_short_name like CONCAT('%',#{queryParam.orgShortName},'%')
+        </if>
+        <if test="queryParam.createdDateStart !=null and queryParam.createdDateStart !='' ">
+            <![CDATA[ and created_date > #{queryParam.createdDateStart} ]]>
+        </if>
+        <if test="queryParam.createdDateEnd !=null and queryParam.createdDateEnd !='' ">
+            <![CDATA[ and created_date < #{queryParam.createdDateEnd} ]]>
+        </if>
+    </select>
+
+    <resultMap type="com.org.permission.server.org.bean.GroupInfoBean" id="base_group_map">
+        <id property="id" column="id"/>
+        <result property="orgType" column="org_type"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="orgName" column="org_name"/>
+        <result property="orgShortName" column="org_short_name"/>
+        <result property="industryCode" column="industry_code"/>
+        <result property="industryName" column="industry_name"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="netAddress" column="net_address"/>
+        <result property="creditCode" column="credit_code"/>
+        <result property="establishTime" column="establish_time"/>
+        <result property="currency" column="currency"/>
+        <result property="custId" column="cust_id"/>
+        <result property="businessType" column="business_type"/>
+        <result property="state" column="state"/>
+        <result property="initFlag" column="init_flag"/>
+        <result property="remark" column="remark"/>
+        <result property="mainBusiness" column="main_business"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="modifiedBy" column="modified_by"/>
+        <result property="modifiedDate" column="modified_date"/>
+        <result property="logoUrl" column="logo_url"></result>
+        <association property="addressDetail" resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+    </resultMap>
+
+    <sql id="base_query_list">
+        id,
+        org_type,
+        org_code,
+        org_name,
+        org_short_name,
+        industry_code,
+        industry_name,
+        region_code,
+        region_name,
+        province_code,
+        province_name,
+        city_code,
+        city_name,
+        district_code,
+        district_name,
+        street_code,
+        street_name,
+        address,
+        phone,
+        email,
+        net_address,
+        credit_code,
+        establish_time,
+        currency,
+        cust_id,
+        business_type,
+        state,
+        init_flag,
+        remark,
+        main_business,
+        created_by,
+        created_date,
+        logo_url,
+        modified_by,
+        modified_date
+    </sql>
+
+    <sql id="where_query_condition">
+        <where>
+            org_type = 2 and deleted_flag=0
+            <if test="queryParam.orgCode != null and queryParam.orgCode != '' ">
+                and org_code like  CONCAT('%',#{queryParam.orgCode},'%')
+            </if>
+            <if test="queryParam.orgName != null and queryParam.orgName != '' ">
+                and org_name like CONCAT('%',#{queryParam.orgName},'%')
+            </if>
+            <if test="queryParam.creditCode != null and queryParam.creditCode != '' ">
+                and credit_code like CONCAT('%',#{queryParam.creditCode},'%')
+            </if>
+            <if test="queryParam.orgShortName != null and queryParam.orgShortName != '' ">
+                and org_short_name like CONCAT('%',#{queryParam.orgShortName},'%')
+            </if>
+            <if test="queryParam.custId != null and queryParam.custId > 0">
+                and cust_id = #{queryParam.custId}
+            </if>
+            <if test="queryParam.bizType != null and queryParam.bizType != '' ">
+                and business_type like CONCAT('%',#{queryParam.bizType},'%')
+            </if>
+            <if test="queryParam.ids !=null and queryParam.ids.size>0">
+                and id in
+                <foreach collection="queryParam.ids" separator="," item="item" open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="queryParam.state != null">
+                and state =#{queryParam.state}
+            </if>
+
+        </where>
+    </sql>
+    <!--基础地址信息封装-->
+    <resultMap id="base_address_map" type="com.org.permission.common.org.dto.BaseAddressDto">
+        <result column="region_code" property="regionCode"/>
+        <result column="region_name" property="regionName"/>
+        <result column="province_code" property="invoiceProvCode"/>
+        <result column="province_name" property="invoiceProvName"/>
+        <result column="city_code" property="invoiceCityCode"/>
+        <result column="city_name" property="invoiceCityName"/>
+        <result column="district_code" property="invoiceDistrictCode"/>
+        <result column="district_name" property="invoiceDistrictName"/>
+        <result column="street_code" property="invoiceStreetCode"/>
+        <result column="street_name" property="invoiceStreetName"/>
+        <result column="address" property="address"/>
+    </resultMap>
+
+</mapper>
+

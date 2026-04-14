@@ -1,0 +1,208 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+
+<!--<mapper namespace="com.org.permission.server.org.mapper.BaseStaffMapper">-->
+
+<!--    <select id="selectByQuery" resultType="com.org.permission.common.dto.BaseStaffDto" parameterType="com.org.permission.server.org.vo.BaseStaffVO"  >-->
+<!--        SELECT-->
+<!--                s.id,-->
+<!--                s.regist_source,-->
+<!--                s.regist_source_id,-->
+<!--                s.dep_id,-->
+<!--                s.org_id,-->
+<!--                s.group_id,-->
+<!--                s.staff_code,-->
+<!--                s.biz_code,-->
+<!--                sd.staff_type_id,-->
+<!--                s.realname,-->
+<!--                s.direct_supervisor,-->
+<!--                s.sex,-->
+<!--                s.certificate_type,-->
+<!--                s.certificate_no,-->
+<!--                s.birthday,-->
+<!--                s.phone,-->
+<!--                s.email,-->
+<!--                s.province_code,-->
+<!--                s.province_name,-->
+<!--                s.city_code,-->
+<!--                s.city_name,-->
+<!--                s.district_code,-->
+<!--                s.district_name,-->
+<!--                s.street_code,-->
+<!--                s.street_name,-->
+<!--                s.address,-->
+<!--                s.employment_type,-->
+<!--                s.state,-->
+<!--                s.user_id,-->
+<!--                s.created_by,-->
+<!--                s.created_name,-->
+<!--                s.created_date,-->
+<!--                s.modified_by,-->
+<!--                s.modified_name,-->
+<!--                s.modified_date,-->
+<!--                sd.start_date,-->
+<!--                sd.end_date-->
+<!--        FROM-->
+<!--                base_staff s-->
+<!--        LEFT JOIN-->
+<!--                base_staff_duty sd on s.id = sd.staff_id-->
+
+<!--        <where>-->
+
+<!--            <if test="registSourceId!=null and registSourceId !=''">-->
+<!--                and s.regist_source_id=#{registSourceId}-->
+<!--            </if>-->
+<!--            <if test="depId!=null">-->
+<!--                and s.dep_id=#{depId}-->
+<!--            </if>-->
+<!--            <if test="orgId!=null">-->
+<!--                and s.org_id=#{orgId}-->
+<!--            </if>-->
+<!--            <if test="groupId!=null">-->
+<!--                and s.group_id=#{groupId}-->
+<!--            </if>-->
+<!--            <if test="staffCode!=null and staffCode !=''">-->
+<!--                and s.staff_code=#{staffCode}-->
+<!--            </if>-->
+<!--            <if test="certificateNo!=null and certificateNo !=''">-->
+<!--                and s.certificate_no=#{certificateNo}-->
+<!--            </if>-->
+<!--            <if test="bizCode!=null and bizCode !=''">-->
+<!--                and s.biz_code=#{bizCode}-->
+<!--            </if>-->
+<!--            <if test="sex!=null and sex !=''">-->
+<!--                and s.sex=#{sex}-->
+<!--            </if>-->
+<!--            <if test="realname!=null and realname !=''">-->
+<!--                and s.realname=#{realname}-->
+<!--            </if>-->
+<!--            <if test="directSupervisor!=null and directSupervisor !=''">-->
+<!--                and s.direct_supervisor=#{directSupervisor}-->
+<!--            </if>-->
+<!--            <if test="userCreateFlag==0">-->
+<!--                and ISNULL(s.user_create_flag)-->
+<!--            </if>-->
+<!--            <if test="userCreateFlag==1">-->
+<!--                and s.user_create_flag IS NOT NULL-->
+<!--            </if>-->
+<!--            <if test="state!=null">-->
+<!--                and s.state=#{state}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--    </select>-->
+
+
+
+
+
+
+
+
+<!--    <update id="updateById" parameterType= "com.org.permission.server.org.entity.BaseStaff">-->
+<!--        update base_staff-->
+<!--        <set>-->
+<!--            <if test="registSource!=null">-->
+<!--                regist_source=#{registSource,jdbcType=INTEGER},-->
+<!--            </if>-->
+<!--            <if test="registSourceId!=null">-->
+<!--                regist_source_id=#{registSourceId,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="depId!=null">-->
+<!--                dep_id=#{depId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="orgId!=null">-->
+<!--                org_id=#{orgId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="groupId!=null">-->
+<!--                group_id=#{groupId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="staffCode!=null">-->
+<!--                staff_code=#{staffCode,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="bizCode!=null">-->
+<!--                biz_code=#{bizCode,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="realname!=null">-->
+<!--                realname=#{realname,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="directSupervisor!=null">-->
+<!--                direct_supervisor=#{directSupervisor,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="sex!=null">-->
+<!--                sex=#{sex,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="certificateType!=null">-->
+<!--                certificate_type=#{certificateType,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="certificateNo!=null">-->
+<!--                certificate_no=#{certificateNo,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="birthday!=null">-->
+<!--                birthday=#{birthday,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="phone!=null">-->
+<!--                phone=#{phone,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="email!=null">-->
+<!--                email=#{email,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="provinceCode!=null">-->
+<!--                province_code=#{provinceCode,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="provinceName!=null">-->
+<!--                province_name=#{provinceName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="cityCode!=null">-->
+<!--                city_code=#{cityCode,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="cityName!=null">-->
+<!--                city_name=#{cityName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="districtCode!=null">-->
+<!--                district_code=#{districtCode,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="districtName!=null">-->
+<!--                district_name=#{districtName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="streetCode!=null">-->
+<!--                street_code=#{streetCode,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="streetName!=null">-->
+<!--                street_name=#{streetName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="address!=null">-->
+<!--                address=#{address,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="employmentType!=null">-->
+<!--                employment_type=#{employmentType},-->
+<!--            </if>-->
+<!--            <if test="state!=null">-->
+<!--                state=#{state,jdbcType=TINYINT},-->
+<!--            </if>-->
+<!--            <if test="userId!=null">-->
+<!--                user_id=#{userId,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="createdBy!=null">-->
+<!--                created_by=#{createdBy,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="createdName!=null">-->
+<!--                created_name=#{createdName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="createdDate!=null">-->
+<!--                created_date=#{createdDate,jdbcType=TIMESTAMP},-->
+<!--            </if>-->
+<!--            <if test="modifiedBy!=null">-->
+<!--                modified_by=#{modifiedBy,jdbcType=BIGINT},-->
+<!--            </if>-->
+<!--            <if test="modifiedName!=null">-->
+<!--                modified_name=#{modifiedName,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="modifiedDate!=null">-->
+<!--                modified_date=#{modifiedDate,jdbcType=TIMESTAMP}-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        where id = #{id,jdbcType=BIGINT}-->
+<!--    </update>-->
+
+
+<!--</mapper>-->

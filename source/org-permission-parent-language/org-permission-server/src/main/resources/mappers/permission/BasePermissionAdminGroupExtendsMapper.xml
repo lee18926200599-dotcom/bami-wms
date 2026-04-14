@@ -1,0 +1,87 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionAdminGroupMapper">
+
+    <resultMap type="com.org.permission.common.permission.dto.GroupDto" id="base_getChooseList">
+        <result property="id" column="id"/>
+        <result property="groupCode" column="org_code"/>
+        <result property="groupName" column="org_name"/>
+        <result property="groupId" column="group_id"/>
+    </resultMap>
+
+    <select id="getChooseList" parameterType="java.util.Map"
+            resultMap="base_getChooseList">
+        select id,group_id,group_code org_code,group_name org_name from
+        base_permission_admin_group where 1=1
+        <if test="groupName != null and groupName != ''">and group_name like CONCAT('%',#{groupName},'%')</if>
+        <if test="adminId!=null">and admin_id = #{adminId}</if>
+        and state = 1
+    </select>
+
+
+    <insert id="insertAdminGroup" parameterType="java.util.Map">
+        <if test="list!=null and list.size()>0 ">
+            insert into
+            base_permission_admin_group(id,group_id,group_code,group_name,admin_id,admin_name,effective_time,state,created_by,created_name,created_date,modified_by,modified_name,modified_date)
+            values
+            <foreach collection="list" item="item" index="index" separator="," >
+                (#{item.id,jdbcType=INTEGER},#{item.groupId,jdbcType=BIGINT},#{item.groupCode,jdbcType=VARCHAR},#{item.groupName,jdbcType=VARCHAR},#{item.adminId,jdbcType=BIGINT},#{item.adminName,jdbcType=VARCHAR},#{item.effectiveTime,jdbcType=BIGINT},#{item.state,jdbcType=INTEGER},#{item.createdBy,jdbcType=BIGINT},#{item.createdName,jdbcType=VARCHAR},#{item.createdDate,jdbcType=TIMESTAMP},#{item.modifiedBy,jdbcType=BIGINT},#{item.modifiedName,jdbcType=VARCHAR},#{item.modifiedDate,jdbcType=TIMESTAMP})
+            </foreach>
+        </if>
+    </insert>
+
+    <update id="updateAdminGroup" parameterType="java.util.Map">
+        <if test="delList!=null and delList.size()>0 ">
+            DELETE from base_permission_admin_group where admin_id=#{adminId} and
+            group_id in
+            <foreach collection="delList" index="index" item="item" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+            ;
+        </if>
+        <if test="addList!=null and addList.size()>0 ">
+            insert into
+            base_permission_admin_group(group_id,group_code,group_name,admin_id,admin_name,effective_time,state,created_by,created_name,created_date)
+            values
+            <foreach collection="addList" item="item" index="index" separator="," >
+                (#{item.groupId,jdbcType=BIGINT},#{item.groupCode,jdbcType=VARCHAR},#{item.groupName,jdbcType=VARCHAR},#{adminId,jdbcType=BIGINT},#{adminName,jdbcType=VARCHAR},#{item.effectiveTime},#{state,jdbcType=INTEGER},#{createdBy,jdbcType=BIGINT},#{createdName,jdbcType=VARCHAR},#{createdDate})
+            </foreach>
+        </if>
+    </update>
+
+    <update id="batchUpdateGroupAdmin" parameterType="java.util.Map">
+        <if test="list!=null and list.size()>0 ">
+            UPDATE base_permission_admin_group bpag
+            SET bpag.`state` = 0
+            WHERE
+            bpag.id IN
+            <foreach collection="list" index="index" item="item" open="("
+                     separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </update>
+    
+    <update id="updateBasePermissionAdminGroupByAdminId"
+            parameterType="com.org.permission.server.permission.entity.BasePermissionAdminGroup">
+        update base_permission_admin_group
+        <trim prefix="set" suffixOverrides=",">
+            <if test="modifiedBy!=null">
+                modified_by=#{modifiedBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifiedName!=null">
+                modified_name=#{modifiedName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifiedDate!=null">
+                modified_date=#{modifiedDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="state != null  ">state = #{state},</if>
+        </trim>
+        where admin_id = #{adminId}
+        <if test="state ==1 ">and state = 0</if>
+        <if test="state ==0 ">and state = 1</if>
+    </update>
+
+</mapper>
+

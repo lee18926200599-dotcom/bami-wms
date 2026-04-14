@@ -1,0 +1,56 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.PurchaseOrgFuncMapper">
+
+    <!--新增采购组织职能-->
+    <insert id="addPurchaseFunc" parameterType="com.org.permission.common.org.dto.func.PurchaseOrgFuncBean" keyProperty="bean.id"
+            useGeneratedKeys="true">
+        insert into base_organization_function(<include refid="insert_base_list"/>)
+        values(
+        3,
+        #{bean.state},
+        #{bean.orgId},
+        #{bean.payOrgId},
+        #{bean.settleOrgId},
+        #{bean.stockOrgId},
+        #{bean.createdBy},
+        #{bean.createdName},
+        #{bean.createdDate}
+        )
+    </insert>
+
+    <update id="updatePurchaseFunc" parameterType="com.org.permission.common.org.dto.func.PurchaseOrgFuncBean">
+        update base_organization_function
+        set
+        default_pay_org_id=#{bean.payOrgId},
+        default_settlement_org_id=#{bean.settleOrgId},
+        default_stock_org_id=#{bean.stockOrgId},
+        modified_by = #{bean.modifiedBy},
+        modified_date=#{bean.modifiedDate}
+        where org_id = #{bean.orgId} and function_type=#{bean.funcType}
+    </update>
+    <!--业务委托关系更新采购组织职能-->
+    <update id="entrustCascadeUpdatePurchaseFunc" parameterType="com.org.permission.common.org.dto.func.PurchaseOrgFuncBean">
+        update base_organization_function
+        set
+        default_pay_org_id=#{bean.payOrgId},
+        default_settlement_org_id=#{bean.settleOrgId},
+        default_stock_org_id=#{bean.stockOrgId},
+        modified_by = #{bean.modifiedBy},
+        modified_date=#{bean.modifiedDate}
+        where id = #{bean.id}
+    </update>
+
+    <sql id="insert_base_list">
+        function_type,
+        state,
+        org_id,
+        default_pay_org_id,
+        default_settlement_org_id,
+        default_stock_org_id,
+        created_by,
+        created_name,
+        created_date
+    </sql>
+</mapper>
+

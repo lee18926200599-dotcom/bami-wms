@@ -1,0 +1,1028 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.org.mapper.StaffMapper">
+
+    <insert id="createStaff" parameterType="com.org.permission.server.org.bean.StaffBean" useGeneratedKeys="true"
+            keyProperty="bean.id">
+        insert into base_staff
+        (regist_source,
+         regist_source_id,
+         dep_id,
+         org_id,
+         group_id,
+         staff_code,
+         realname,
+         direct_supervisor,
+         sex,
+         certificate_type,
+         certificate_no,
+         birthday,
+         phone,
+         email,
+         province_code,
+         province_name,
+         city_code,
+         city_name,
+         district_code,
+         district_name,
+         street_code,
+         street_name,
+         address,
+         employment_type,
+         state,
+         created_by,
+         created_name,
+         created_date)
+        VALUES (#{bean.registSource},
+                #{bean.registSourceId},
+                #{bean.depId},
+                #{bean.orgId},
+                #{bean.groupId},
+                #{bean.staffCode},
+                #{bean.realname},
+                #{bean.directSupervisor},
+                #{bean.sex},
+                #{bean.certificateType},
+                #{bean.certificateNo},
+                #{bean.birthday},
+                #{bean.phone},
+                #{bean.email},
+                #{bean.addressDetail.invoiceProvCode},
+                #{bean.addressDetail.invoiceProvName},
+                #{bean.addressDetail.invoiceCityCode},
+                #{bean.addressDetail.invoiceCityName},
+                #{bean.addressDetail.invoiceDistrictCode},
+                #{bean.addressDetail.invoiceDistrictName},
+                #{bean.addressDetail.invoiceStreetCode},
+                #{bean.addressDetail.invoiceStreetName},
+                #{bean.addressDetail.address},
+                #{bean.employmentType},
+                #{bean.state},
+                #{bean.createdBy},
+                #{bean.createdName},
+                #{bean.createdDate})
+    </insert>
+
+
+    <update id="modifyStaff" parameterType="com.org.permission.common.org.param.ModifyStaffInfoDto">
+        update base_staff
+        set
+        dep_id=#{bean.staffDuty.depId},
+        org_id=#{bean.staffDuty.orgId},
+        realname=#{bean.realname},
+        sex=#{bean.sex},
+        certificate_type=#{bean.certificateType},
+        certificate_no=#{bean.certificateNo},
+        birthday=#{bean.birthday},
+        phone=#{bean.phone},
+        email=#{bean.email},
+        province_code=#{bean.addressDetail.invoiceProvCode},
+        province_name=#{bean.addressDetail.invoiceProvName},
+        city_code=#{bean.addressDetail.invoiceCityCode},
+        city_name=#{bean.addressDetail.invoiceCityName},
+        district_code=#{bean.addressDetail.invoiceDistrictCode},
+        district_name=#{bean.addressDetail.invoiceDistrictName},
+        street_code=#{bean.addressDetail.invoiceStreetCode},
+        street_name=#{bean.addressDetail.invoiceStreetName},
+        employment_type=#{bean.employmentType},
+        <if test="bean.directSupervisor !=null">
+            direct_supervisor=#{bean.direct_supervisor},
+        </if>
+        <if test="bean.registSource !=null">
+            regist_source=#{bean.registSource},
+        </if>
+        <if test="bean.registSourceId !=null">
+            regist_source_id=#{bean.registSourceId},
+        </if>
+        address=#{bean.addressDetail.address}
+        where id=#{bean.id}
+    </update>
+
+    <!--查询人员基本状态信息-->
+    <select id="queryStaffStateByIdLock" parameterType="java.lang.Long" resultType="com.org.permission.server.org.bean.StaffStateBean">
+        select id      as id,
+               state   as state,
+               user_id as userId
+        from base_staff
+        where id = #{staffId}
+          and deleted_flag = 0
+    </select>
+
+    <!--根据人员ID获取人员信息（锁）-->
+    <select id="queryStaffsByIdLock" parameterType="list" resultType="com.org.permission.common.org.dto.RegistStaffDto">
+        select
+        id as id,
+        dep_id as depId,
+        org_id as orgId,
+        group_id as groupId,
+        staff_code as staffCode,
+        realname as realname,
+        phone as phone,
+        employment_type as employmentType,
+        user_id as userId,
+        state as state,
+        certificate_type as certificateType,
+        regist_source as registSource
+        from base_staff
+        where id in (
+        <foreach collection="staffIds" item="staffId" separator=",">
+            #{staffId}
+        </foreach>
+        )
+
+    </select>
+
+    <!--根据人员id更新用户id-->
+    <update id="updataUserId">
+        <foreach close="" collection="successList" item="item" open="" separator=";">
+            update base_staff set user_id=#{item.userId}
+            where id=#{item.id}
+        </foreach>
+    </update>
+
+    <update id="deleteStaffById">
+        UPDATE base_staff
+        set deleted_flag=1,
+            modified_by=#{userId},
+            user_id=0,
+            modified_date=now()
+        where id = #{staffId}
+    </update>
+
+    <!--启停人员-->
+    <update id="modifyStaffState" parameterType="com.org.permission.common.org.param.ModifyOperateParam">
+        update base_staff
+        set state         = #{param.state},
+            modified_by   = #{param.userId},
+            modified_date = #{param.opTime}
+        where id = #{param.id}
+    </update>
+
+    <update id="batchEnableStaff">
+        update base_staff
+        set state = #{state},
+        modified_by = #{userId},
+        modified_date = now()
+        where id in
+        <if test="staffIds !=null and staffIds.size>0">
+            <foreach collection="staffIds" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+        </if>
+    </update>
+
+    <update id="deleteUserIdByStaffId">
+        update base_staff
+        set user_id=0
+        where id = #{staffId}
+    </update>
+
+    <update id="updateUserIdByStaffId">
+        update base_staff
+        set user_id=#{userId}
+        where id = #{staffId}
+    </update>
+    <update id="updateStaffCodeById">
+        update base_staff
+        set staff_code=#{staffCode}
+        where id = #{staffId}
+    </update>
+    <!-- 统计部门人数 -->
+    <select id="countDepStaff" parameterType="java.lang.Long" resultType="integer">
+        SELECT COUNT(id)
+        from base_staff
+        WHERE dep_id = #{depId}
+          and deleted_flag=0
+    </select>
+    <select id="queryStaffByDepIds" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT user_id from base_staff where dep_id in (
+        <foreach collection="depIdlist" separator="," item="depId">
+            #{depId}
+        </foreach>
+        ) and state=1 and user_id !=0
+    </select>
+    <!--根据集团id停用人员-->
+    <update id="disableStaffByGroupId">
+        update base_staff
+        set state= 2,
+            modified_by   = #{updateUser},
+            modified_date = #{modifiedDate}
+        where group_id = #{groupId}
+          and deleted_flag=0
+    </update>
+
+
+    <!-- 查询人员详细信息-->
+    <select id="queryDetailInfoById" resultMap="staff_info_with_duty_result">
+        select <include refid="base_staff_info_sql"/>
+        from base_staff as staff
+        left join base_staff_duty as duty on staff.id=duty.staff_id
+        LEFT join base_staff_type as type on duty.staff_type_id=type.id
+        where staff.id=#{queryParam.id} and staff.deleted_flag=0
+    </select>
+
+    <!--查询人员以及任职信息-->
+    <select id="queryStaffWithDuty" resultMap="staff_info_with_duty_result">
+        SELECT
+        <include refid="base_staff_info_sql"/>
+        from base_staff as staff
+        left join base_staff_duty as duty on staff.id=duty.staff_id
+        LEFT join base_staff_type as type on duty.staff_type_id=type.id
+        where staff.id=#{staffId}
+        and staff.deleted_flag=0
+    </select>
+
+    <select id="queryStaffsMainByDepIds" resultMap="staff_info_with_duty_result">
+        SELECT
+        <include refid="base_staff_info_sql"/>
+        from base_staff as staff
+        left join base_staff_duty as duty on staff.id=duty.staff_id
+        LEFT join base_staff_type as type on duty.staff_type_id=type.id
+        where staff.dep_id in (
+        <foreach collection="depIds" item="depId" separator=",">
+            #{depId}
+        </foreach>
+        )
+        and staff.deleted_flag=0
+        <if test="queryParam.userId != null and queryParam.userId > 0">
+            and staff.user_id = #{queryParam.userId}
+        </if>
+        <if test="staffId != null and staffId > 0">
+            and staff.id = #{staffId}
+        </if>
+        <if test="queryParam.staffName != null and queryParam.staffName != ''">
+            and staff.realname like CONCAT('%',#{queryParam.staffName},'%')
+        </if>
+        <if test="queryParam.staffTypeBizCode!=null">
+            and type.biz_code in (
+            <foreach collection="queryParam.staffTypeBizCode" separator="," item="bizCode">
+                #{bizCode}
+            </foreach>
+            )
+        </if>
+        <if test="queryParam.employmentType != null">
+            and staff.employment_type = #{queryParam.employmentType}
+        </if>
+    </select>
+
+    <select id="queryStaffsByGroupId" resultMap="staff_info_with_duty_result">
+        SELECT
+        <include refid="base_staff_info_sql"/>
+        from base_staff as staff
+        left join base_staff_duty as duty on staff.id=duty.staff_id
+        LEFT join base_staff_type as type on duty.staff_type_id=type.id
+        where staff.group_id = #{groupId}
+        and staff.deleted_flag=0
+        <if test="extendParam.userId != null and extendParam.userId > 0">
+            and staff.user_id = #{extendParam.userId}
+        </if>
+        <if test="staffId != null and staffId != ''">
+            and staff.id = #{staffId}
+        </if>
+        <if test="extendParam.staffName != null and extendParam.staffName != ''">
+            and staff.realname like '%${extendParam.staffName}%'
+        </if>
+        <if test="extendParam.staffTypeBizCode!=null">
+            and type.biz_code in (
+            <foreach collection="extendParam.staffTypeBizCode" separator="," item="bizCode">
+                #{bizCode}
+            </foreach>
+            )
+        </if>
+        <if test="extendParam.employmentType != null">
+            and staff.employment_type = #{extendParam.employmentType}
+        </if>
+    </select>
+
+    <!--统计人员数量（主要依据组织 ID）-->
+    <select id="countStaffMainByOrgId" resultType="integer">
+        select
+        count(DISTINCT staff.id)
+        from base_staff as staff
+        left join base_staff_duty as duty on staff.id=duty.staff_id
+        LEFT join base_staff_type as type on duty.staff_type_id=type.id
+        where
+        <include refid="query_current_org_staffs_condition"/>
+    </select>
+
+    <!--分页查询人员信息（主要依据组织 ID）-->
+    <select id="pageableQueryStaffMainByOrgId" resultMap="staff_info_with_duty_result">
+        select
+        <include refid="base_staff_with_type_sql"/>
+        from base_staff as staff
+        left join base_staff_duty as duty on staff.id=duty.staff_id
+        LEFT join base_staff_type as type on duty.staff_type_id=type.id
+        where
+        <include refid="query_current_org_staffs_condition"/>
+        GROUP BY staff.id
+
+    </select>
+
+    <sql id="query_current_org_staffs_condition">
+        staff.deleted_flag=0
+        <if test="queryParam.state !=null and queryParam.state !=0">
+            and  staff.state=#{queryParam.state}
+        </if>
+        <if test="queryParam.staffName != null and queryParam.staffName != '' ">
+            and staff.realname like CONCAT('%',#{queryParam.staffName},'%')
+        </if>
+
+        <if test="queryParam.condition != null and queryParam.condition != ''">
+            and (staff.realname like '%${queryParam.condition}%'
+            or staff.phone like '%${queryParam.condition}%'
+            or staff.email like '%${queryParam.condition}%'
+            )
+        </if>
+
+        <if test="queryParam.staffTypeBizCode != null and queryParam.staffTypeBizCode.size > 0 ">
+            and type.biz_code in (
+            <foreach collection="queryParam.staffTypeBizCode" separator="," item="bizCode">
+                #{bizCode}
+            </foreach>
+            )
+        </if>
+        <if test="queryParam.orgId != null and queryParam.orgId > 0">
+            and
+            (staff.dep_id = #{queryParam.orgId} or staff.org_id = #{queryParam.orgId} or staff.group_id = #{queryParam.orgId})
+        </if>
+        <if test="queryParam.staffCode !=null and queryParam.staffCode !=''">
+            and  staff.staff_code=#{queryParam.staffCode}
+        </if>
+    </sql>
+
+    <!--批量查询人员信息-->
+    <select id="batchQueryStaffInfo" resultMap="staff_info_with_duty_result">
+        select
+        <include refid="base_staff_info_sql"/>
+        from base_staff as staff
+        left join base_staff_duty as duty on staff.id=duty.staff_id
+        LEFT join base_staff_type as type on duty.staff_type_id=type.id
+        where 1=1
+        <if test="reqParam.ids !=null and reqParam.ids.size>0">
+            and staff.id in(
+            <foreach collection="reqParam.ids" item="id" separator=",">
+                #{id}
+            </foreach>
+            )
+        </if>
+        <if test="reqParam.realname !=null and reqParam.realName != '' ">
+            and staff.realname like CONCAT('%',#{reqParam.realname},'%')
+        </if>
+        <if test="reqParam.userIds !=null and reqParam.userIds.size>0">
+            and staff.user_id in(
+            <foreach collection="reqParam.userIds" item="item" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="reqParam.state !=null and reqParam.state">
+            and staff.state=#{reqParam.state}
+        </if>
+        <if test="reqParam.staffCode !=null and reqParam.staffCode != '' ">
+            and staff.staff_code = #{reqParam.staffCode}
+        </if>
+        <if test="reqParam.queryString != null and reqParam.queryString != ''">
+            and (
+            staff.staff_code like concat('%',#{reqParam.queryString},'%')
+            or staff.realname like concat('%',#{reqParam.queryString},'%')
+            )
+        </if>
+        <if test="staffTypes != null and staffTypes.size()>0">
+            and type.id in (
+            <foreach collection="staffTypes" item="item" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
+        <if test="unitOrgIds != null and unitOrgIds.size()>0">
+            and staff.org_id in (
+            <foreach collection="unitOrgIds" item="item" separator=",">
+                #{item}
+            </foreach>
+            )
+
+        </if>
+
+        and staff.deleted_flag=0
+    </select>
+
+    <select id="batchQueryStaffBasicInfo" resultMap="staff_info_result" parameterType="com.org.permission.common.org.param.StaffBasicParam">
+        select * from base_staff
+        <where>
+            state=1
+            <if test="reqParam.phones !=null">
+                and phone in
+                <foreach collection="reqParam.phones" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="reqParam.buId !=null and reqParam.buId != 0">
+                and org_id =#{reqParam.buId}
+            </if>
+            <if test="reqParam.ids !=null and reqParam.ids.size>0">
+                and id in
+                <foreach collection="reqParam.ids" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="reqParam.codes !=null and reqParam.codes.size > 0">
+                and staff_code in
+                <foreach collection="reqParam.codes" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="reqParam.names !=null and reqParam.names.size > 0">
+                and realname in
+                <foreach collection="reqParam.names" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="queryStaffByDepId" resultMap="staff_info_with_duty_result">
+        select <include refid="base_staff_info_sql"/>
+        from base_staff as staff
+        left join base_staff_duty as duty on staff.id=duty.staff_id
+        LEFT join base_staff_type as type on duty.staff_type_id=type.id
+        where staff.dep_id = #{depId} and staff.deleted_flag=0
+    </select>
+
+    <!--根据用户 ID 查询人员 ID-->
+    <select id="queryStaffIdByUserId" resultType="java.lang.Long">
+        select id from base_staff where user_id=#{userId} and deleted_flag=0
+    </select>
+    <!--根据用户 ID 查询人员信息-->
+    <select id="queryStaffInfoByUserId" resultMap="staff_info_result">
+        select * from base_staff where user_id=#{userId} and deleted_flag=0
+    </select>
+    <!-- 根据部门ID，关联用户，查询人员信息 -->
+    <select id="countStaffList" resultType="integer" parameterType="com.org.permission.common.org.param.QueryStaffListReqParam">
+        SELECT COUNT(s.id)
+        FROM base_staff s
+        LEFT JOIN base_staff_duty d on s.id = d.staff_id
+        LEFT JOIN base_staff_type t ON d.staff_type_id= t.id
+        <include refid="staff_list_query_condition"/>
+        GROUP BY s.id
+    </select>
+
+    <!-- 根据部门ID，关联用户，查询人员信息 -->
+    <select id="queryStaffList" resultMap="staff_info_with_duty_result"
+            parameterType="com.org.permission.common.org.param.QueryStaffListReqParam">
+        SELECT
+        <include refid="staff_duty_type_column_list"/>
+        FROM base_staff s
+        LEFT JOIN base_staff_duty d on s.id = d.staff_id
+        LEFT JOIN base_staff_type t ON d.staff_type_id= t.id
+        <include refid="staff_list_query_condition"/>
+
+    </select>
+
+    <select id="validateCardNoExsit" resultMap="staff_info_with_duty_result"
+            parameterType="com.org.permission.common.org.param.QueryStaffListReqParam">
+        SELECT
+            id
+        FROM base_staff
+        where certificate_no =#{queryParam.certificateNo,jdbcType=VARCHAR}
+          and deleted_flag=0
+        and group_id =#{queryParam.groupId}
+    </select>
+
+
+
+    <!-- 根据部门ID，关联用户，查询人员信息 -->
+    <select id="queryStaffIdList" resultType="java.lang.Long"
+            parameterType="com.org.permission.common.org.param.QueryStaffListReqParam">
+        SELECT
+        s.id
+        FROM base_staff s
+        LEFT JOIN base_staff_duty d on s.id = d.staff_id
+        LEFT JOIN base_staff_type t ON d.staff_type_id= t.id
+        <include refid="staff_list_query_condition"/>
+        GROUP by s.id
+    </select>
+
+    <select id="queryyStaffListCount" resultType="java.lang.Integer">
+        SELECT
+        count(distinct(s.id))
+        FROM base_staff s
+        LEFT JOIN base_staff_duty d on s.id = d.staff_id
+        LEFT JOIN base_staff_type t ON d.staff_type_id= t.id
+        <include refid="staff_list_query_condition"/>
+    </select>
+
+    <!--查询人员姓名-->
+    <select id="queryStaffName" parameterType="java.lang.Long" resultType="string">
+        select realname from base_staff where id=#{staffId}
+    </select>
+
+    <!-- 根据部门ID,人员状态，关联用户，查询人员信息 -->
+    <select id="queryStaffsByDepIds" resultMap="staff_info_with_duty_result">
+        SELECT
+        <include refid="staff_duty_type_column_list"/>
+        FROM base_staff s
+        LEFT JOIN base_staff_duty d on s.id = d.staff_id
+        LEFT JOIN base_staff_type t ON d.staff_type_id = t.id
+        WHERE
+        s.dep_id IN (
+        <foreach collection="depIds" separator="," item="depId">
+            #{depId}
+        </foreach>
+        )
+        <if test="queryParam !=null">
+            <if test="queryParam.staffstate != null">
+                AND s.state = #{queryParam.staffstate}
+            </if>
+            <if test="queryParam.staffstate ==null">
+                AND s.state in (1,2)
+            </if>
+            <if test="queryParam.associateUser == true">
+                AND s.user_id != 0
+            </if>
+            <if test="queryParam.associateUser == false">
+                AND s.user_id = 0
+            </if>
+            <if test="queryParam.staffName != null and queryParam.staffName != ''">
+                AND s.realname like CONCAT('%',#{queryParam.staffName},'%')
+            </if>
+            <if test="queryParam.staffCode != null and queryParam.staffCode != ''">
+                AND s.staff_code like CONCAT('%',#{queryParam.staffCode},'%')
+            </if>
+            <if test="queryParam.phone != null and queryParam.phone != ''">
+                AND s.phone like CONCAT('%',#{queryParam.phone},'%')
+            </if>
+            <if test="queryParam.staffTypeBizCode != null and queryParam.staffTypeBizCode != ''">
+                AND t.biz_code = #{queryParam.staffTypeBizCode}
+            </if>
+        </if>
+    </select>
+
+    <!--统计人员档案数量-->
+    <select id="countStaffArchive" parameterType="com.org.permission.server.org.dto.param.QueryArchiveListParam" resultType="integer">
+        select count(id) from base_staff
+        <include refid="staff_archive_query_condition"/>
+    </select>
+
+    <!--查询人员档案-->
+    <select id="queryStaffArchive" parameterType="com.org.permission.server.org.dto.param.QueryArchiveListParam"
+            resultType="com.org.permission.server.org.vo.ArchiveInfoVo">
+        select id as id , realname as name , user_id as userId from base_staff
+        <include refid="staff_archive_query_condition"/>
+    </select>
+
+    <!--查询姓名是否已存在-->
+    <select id="queryStaffUniqueByRealname" resultType="java.lang.Long">
+        select id from base_staff where realname=#{realname} and group_id=#{groupId} and deleted_flag=0
+        <if test="certificateNo !=null and certificateNo !='' ">
+            and certificate_no= #{certificateNo}
+        </if>
+        limit 1
+    </select>
+    <select id="queryStaffUniqueByStaffCode" resultType="java.lang.Long">
+        select id from base_staff where staff_code=#{staffCode} and group_id=#{groupId} and deleted_flag=0
+        limit 1
+    </select>
+    <!--人员档案查询条件-->
+    <sql id="staff_archive_query_condition">
+        <trim prefixOverrides="and">
+            <where>
+                employment_type = 0 and group_id = #{queryParam.groupId}
+                <if test="queryParam.withDisabled ==null">
+                    and state = 1
+                </if>
+                <if test="queryParam.withDisabled !=null and queryParam.withDisabled == true">
+                   and deleted_flag=0
+                </if>
+                <if test="queryParam.hasUser!=null and queryParam.hasUser==true">
+                    <if test="queryParam.boundUserStaffIds !=null and  queryParam.boundUserStaffIds.size > 0">
+                        and id in
+                        <foreach collection="queryParam.boundUserStaffIds" item="id" separator="," open="(" close=")">
+                            #{id}
+                        </foreach>
+                    </if>
+                </if>
+                <if test="queryParam.hasUser==null or queryParam.hasUser==false">
+                    <if test="queryParam.boundUserStaffIds !=null and  queryParam.boundUserStaffIds.size > 0">
+                        and id not in
+                        <foreach collection="queryParam.boundUserStaffIds" item="id" separator="," open="(" close=")">
+                            #{id}
+                        </foreach>
+                    </if>
+                    <if test="queryParam.boundUserStaffIds ==null">
+                        and user_id=0
+                    </if>
+                </if>
+                <if test="queryParam.archiveName !=null and queryParam.archiveName !=''">
+                    and realname like CONCAT('%',#{queryParam.archiveName},'%')
+                </if>
+            </where>
+        </trim>
+    </sql>
+
+    <select id="queryStaffByPojo" resultMap="staff_info_result">
+        select * from base_staff where 1=1
+        <if test="param.userId != null">and user_id=#{param.userId}</if>
+        <if test="param.orgId != null">and org_id=#{param.orgId}</if>
+        <if test="param.depId != null">and dep_id=#{param.depId}</if>
+        <if test="param.groupId !=null and param.groupId>0">and group_id=#{param.groupId}</if>
+        <if test="param.realname !=null and param.realname !='' ">and realname like CONCAT('%',#{param.realname},'%')</if>
+        <if test="param.directSupervisor != null">and direct_supervisor=#{param.directSupervisor} </if>
+        <if test="param.employmentType !=null">and employment_type=#{param.employmentType}</if>
+        <if test="param.id !=null">and id = #{param.id}</if>
+        <if test="param.registSource !=null">and regist_source = #{param.registSource}</if>
+        <if test="param.registSourceId !=null">and regist_source_id = #{param.registSourceId}</if>
+        and state = 1  ORDER BY CONVERT (realname USING gbk) ASC
+    </select>
+
+    <select id="queryStaffForCrm" resultMap="staff_info_result" parameterType="com.org.permission.common.org.param.StaffForCrmParam">
+        select * from base_staff where 1=1
+        <include refid="queryConditionForCrm"></include>
+    </select>
+
+    <select id="queryStaffForCrmTotalCount" resultType="integer">
+        select count(DISTINCT(id)) from base_staff where 1=1
+        <include refid="queryConditionForCrm"></include>
+    </select>
+
+    <sql id="queryConditionForCrm">
+        <if test="queryParam.orgId!=null">
+            and org_id=#{queryParam.orgId}
+        </if>
+        <if test="queryParam.realname !=null and queryParam.realname != '' ">
+            and realname like CONCAT('%',#{queryParam.realname},'%')
+        </if>
+        /*不排除*/
+        <if test="queryParam.flag !=true">
+            <if test="queryParam.ids !=null ">
+                and id in
+                <foreach collection="queryParam.ids" item="id" separator="," open="(" close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </if>
+        /*排除*/
+        <if test="queryParam.flag==true">
+            <if test="queryParam.ids !=null ">
+                and id not in
+                <foreach collection="queryParam.ids" item="id" separator="," open="(" close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </if>
+        <if test="queryParam.depId !=null">
+            and dep_id=#{queryParam.depId}
+        </if>
+        <if test="queryParam.orgId !=null">
+            and org_id=#{queryParam.orgId}
+        </if>
+        <if test="queryParam.state !=null and queryParam.state !=0">
+            and state=#{queryParam.state}
+        </if>
+        and deleted_flag=0
+    </sql>
+
+    <resultMap id="staff_with_duty_result" type="com.org.permission.common.org.dto.StaffWithDutyInfoDto">
+        <id column="id" property="id"/>
+        <result column="dep_id" property="depId"/>
+        <result column="org_id" property="orgId"/>
+        <result column="staff_code" property="staffCode"/>
+        <result column="realname" property="realname"/>
+        <result column="sex" property="sex"/>
+        <result column="certificate_type" property="certificateType"/>
+        <result column="certificate_no" property="certificateNo"/>
+        <result column="birthday" property="birthday"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="employment_type" property="employmentType"/>
+        <result column="state" property="state"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="user_id" property="userId"></result>
+        <result column="biz_code" property="bizCode"></result>
+        <association property="addressDetail" resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+        <association property="orgName" column="org_id" javaType="string"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="depName" column="dep_id" javaType="string"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="staffDuty" column="id" javaType="com.org.permission.common.org.dto.StaffDutyInfoDvo"
+                     select="com.org.permission.mapper.PersonDutyMapper.queryInfoByStaffId"/>
+    </resultMap>
+
+    <!--部门人员任职实体与字段映射-->
+    <resultMap id="staff_info_with_duty_result" type="com.org.permission.server.org.bean.StaffInfoBean">
+        <id column="id" property="id"/>
+        <result column="dep_id" property="depId"/>
+        <result column="org_id" property="orgId"/>
+        <result column="group_id" property="groupId"/>
+        <result column="staff_code" property="staffCode"/>
+        <result column="realname" property="realname"/>
+        <result column="sex" property="sex"/>
+        <result column="certificate_type" property="certificateType"/>
+        <result column="certificate_no" property="certificateNo"/>
+        <result column="birthday" property="birthday"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="employment_type" property="employmentType"/>
+        <result column="state" property="state"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+        <result column="user_id" property="userId"/>
+        <result column="staff_type_id" property="staffTypeId" />
+        <result column="direct_supervisor" property="directSupervisorId"/>
+        <result column="regist_source" property="registSource"/>
+        <result column="regist_source_id" property="registSourceId"/>
+        <association property="addressDetail" resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+        <association property="orgName" column="org_id" javaType="string"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="depName" column="dep_id" javaType="string"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="staffDuties" column="id"  select="com.org.permission.server.org.mapper.StaffDutyMapper.queryDutyInfoListByStaffId"/>
+    </resultMap>
+
+    <resultMap id="staff_info_result" type="com.org.permission.common.org.dto.StaffInfoDto">
+        <id column="id" property="id"/>
+        <result column="dep_id" property="depId"/>
+        <result column="org_id" property="orgId"/>
+        <result column="group_id" property="groupId"/>
+        <result column="staff_code" property="staffCode"/>
+        <result column="realname" property="realname"/>
+        <result column="sex" property="sex"/>
+        <result column="certificate_type" property="certificateType"/>
+        <result column="certificate_no" property="certificateNo"/>
+        <result column="birthday" property="birthday"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="employment_type" property="employmentType"/>
+        <result column="state" property="state"/>
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_name" jdbcType="VARCHAR" property="createdName" />
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+
+        <result column="modified_by" jdbcType="BIGINT" property="modifiedBy" />
+        <result column="modified_name" jdbcType="VARCHAR" property="modifiedName" />
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate" />
+        <result column="user_id" property="userId"/>
+        <result column="regist_source" property="registSource"/>
+        <result column="regist_source_id" property="registSourceId"/>
+        <association property="addressDetail" resultMap="com.org.permission.server.org.mapper.GroupMapper.base_address_map"/>
+        <association property="orgName" column="org_id" javaType="string"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+        <association property="depName" column="dep_id" javaType="string"
+                     select="com.org.permission.server.org.mapper.CommonOrgMapper.queryOrgNameByOrgId"/>
+    </resultMap>
+
+    <!--人员表基础信息查询字段-->
+    <sql id="base_staff_info_sql">
+        staff.id,
+        staff.dep_id,
+        staff.org_id,
+        staff.group_id,
+        staff.staff_code,
+        staff.realname,
+        staff.sex,
+        staff.certificate_type,
+        staff.certificate_no,
+        staff.birthday,
+        staff.phone,
+        staff.email,
+        staff.employment_type,
+        staff.state,
+        staff.user_id,
+        staff.biz_code,
+        staff.province_code,
+        staff.province_name,
+        staff.city_code,
+        staff.city_name,
+        staff.district_code,
+        staff.district_name,
+        staff.street_code,
+        staff.street_name,
+        staff.address,
+        staff.created_by,
+        staff.created_date,
+        staff.modified_by,
+        staff.modified_date,
+        staff.direct_supervisor,
+        staff.regist_source,
+        staff.regist_source_id,
+        duty.id as duty_id,
+        duty.state,
+        duty.staff_id,
+        duty.group_id,
+        duty.org_id,
+        duty.dep_id,
+        duty.start_date,
+        duty.end_date,
+        duty.created_date,
+        duty.created_by,
+        duty.modified_date,
+        duty.modified_by,
+        duty.staff_type_id,
+        type.id as staff_type_id,
+        type.type_name as staff_type_name
+    </sql>
+
+    <!--人员表基础信息查询字段-->
+    <sql id="base_staff_with_type_sql">
+        staff.id,
+        staff.dep_id,
+        staff.org_id,
+        staff.staff_code,
+        staff.realname,
+        staff.sex,
+        staff.certificate_type,
+        staff.certificate_no,
+        staff.birthday,
+        staff.phone,
+        staff.email,
+        staff.employment_type,
+        staff.state,
+        staff.user_id,
+        staff.biz_code,
+        staff.province_code,
+        staff.province_name,
+        staff.city_code,
+        staff.city_name,
+        staff.district_code,
+        staff.district_name,
+        staff.street_code,
+        staff.street_name,
+        staff.address,
+        staff.created_by,
+        staff.created_date,
+        staff.modified_by,
+        staff.modified_date,
+        type.id as staff_type_id,
+        type.type_name as staff_type_name
+    </sql>
+
+    <sql id="base_duty_sql">
+        duty.id,
+        duty.state,
+        duty.staff_id,
+        duty.group_id,
+        duty.org_id,
+        duty.dep_id,
+        duty.start_date,
+        duty.end_date,
+        duty.created_date,
+        duty.created_by,
+        duty.modified_date,
+        duty.modified_by,
+        duty.staff_type_id,
+        duty.staff_type_biz_code
+    </sql>
+    <sql id="staff_duty_type_column_list">
+        s.id ,
+        s.dep_id ,
+        s.org_id ,
+        s.staff_code ,
+        s.realname ,
+        s.direct_supervisor,
+        s.sex,
+        s.certificate_type,
+        s.certificate_no ,
+        s.birthday ,
+        s.phone ,
+        s.email ,
+        s.province_code,
+        s.province_name,
+        s.city_code,
+        s.city_name,
+        s.district_code,
+        s.district_name,
+        s.street_code,
+        s.street_name,
+        s.address ,
+        s.employment_type,
+        s.state ,
+        s.created_by ,
+        s.created_date ,
+        s.modified_by ,
+        s.modified_date,
+        s.regist_source,
+        s.user_id,
+        d.staff_type_id,
+        t.type_name
+    </sql>
+
+    <sql id="staff_list_query_condition">
+        <trim prefixOverrides="and">
+            <where> s.deleted_flag=0
+                <if test="queryParam.staffName !=null and queryParam.staffName !=''">
+                    and s.realname like CONCAT('%',#{queryParam.staffName},'%')
+                </if>
+
+                <if test="queryParam.staffCode !=null and queryParam.staffCode !=''">
+                    and s.staff_code like CONCAT('%',#{queryParam.staffCode},'%')
+                </if>
+
+                <if test="queryParam.certificateNo !=null and queryParam.certificateNo !=''">
+                    and s.certificate_no like CONCAT('%',#{queryParam.certificateNo},'%')
+                </if>
+
+                <if test="queryParam.sex != null ">
+                    and s.sex = #{queryParam.sex}
+                </if>
+
+                <if test="queryParam.isUser != null ">
+                    <if test="queryParam.isUser ==0">
+                        <if test="queryParam.isUserStaffIds != null and queryParam.isUserStaffIds.size > 0">
+                            and s.id not in
+                            <foreach collection="queryParam.isUserStaffIds" open="(" separator=","  item="staffId" close=")">
+                                #{staffId}
+                            </foreach>
+                        </if>
+                    </if>
+                    <if test="queryParam.isUser ==1">
+                        <if test="queryParam.isUserStaffIds != null and queryParam.isUserStaffIds.size > 0">
+                            and s.id  in
+                            <foreach collection="queryParam.isUserStaffIds" open="(" separator=","  item="staffId" close=")">
+                                #{staffId}
+                            </foreach>
+                        </if>
+                    </if>
+                </if>
+
+                <if test="queryParam.phone !=null and queryParam.phone !=''">
+                    and s.phone like CONCAT('%',#{queryParam.phone},'%')
+                </if>
+
+                <if test="queryParam.employmentType != null">
+                    and s.employment_type = #{queryParam.employmentType}
+                </if>
+
+                    <if test="queryParam.state != null ">
+                        and s.state = #{queryParam.state}
+                    </if>
+
+                <if test="queryParam.staffTypeIds != null and queryParam.staffTypeIds.size > 0">
+                    and t.id in
+                    <foreach collection="queryParam.staffTypeIds" open="(" separator="," item="staffTypeId" close=")">
+                        #{staffTypeId}
+                    </foreach>
+                </if>
+                <if test="queryParam.orgId !=null and queryParam.orgId > 0">
+                    and s.org_id = #{queryParam.orgId}
+                </if>
+                <if test="queryParam.groupId !=null and queryParam.groupId > 0">
+                    and s.group_id = #{queryParam.groupId}
+                </if>
+                <if test="queryParam.depIds !=null and queryParam.depIds.size > 0">
+                    and s.dep_id in (
+                    <foreach collection="queryParam.depIds" separator="," item="depId">
+                        #{depId}
+                    </foreach>
+                    )
+                </if>
+
+                <if test="queryParam.orgIds !=null and queryParam.orgIds.size > 0">
+                    and s.org_id in
+                    <foreach collection="queryParam.orgIds" separator="," item="item" open="(" close=")">
+                        #{item}
+                    </foreach>
+                </if>
+
+                <if test="queryParam.ids !=null and queryParam.ids.size>0">
+                    and s.id in(
+                    <foreach collection="queryParam.ids" item="item" separator=",">
+                        #{item}
+                    </foreach>
+                    )
+                </if>
+            </where>
+        </trim>
+    </sql>
+
+    <!-- 查询人员详细信息-->
+    <select id="findStaffListByCondition" resultMap="staff_info_result" parameterType="java.util.Map">
+        select * from base_staff where 1=1
+        <if test="condition != null and condition != ''">
+            and
+            (
+            staff_code LIKE CONCAT('%',#{condition,jdbcType=VARCHAR},'%')
+            or realname LIKE CONCAT('%',#{condition,jdbcType=VARCHAR},'%')
+            )
+        </if>
+    </select>
+    <!--停用业务单元下所有启用人员-->
+    <update id="disableStaffsByBUId">
+        update base_staff set
+                     state = 2,
+                     modified_date= #{modifiedDate},
+                     modified_by = #{userId}
+        where org_id = #{buId} and state = 1
+    </update>
+    <!--查询业务单元下所有人员绑定用户ID集合-->
+    <select id="queryStaffUserIdsByBUId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select user_id  from base_staff where state= 1 and user_id is not null and user_id != 0  and org_id = #{buId}
+    </select>
+</mapper>
+

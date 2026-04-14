@@ -1,0 +1,325 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.org.permission.server.permission.mapper.BasePermissionRoleMapper">
+    <resultMap type="com.org.permission.server.permission.dto.OutPutRoleDto"
+               id="base_permission_roles_manager">
+        <id property="id" column="id"/>
+        <result property="roleCode" column="role_code"/>
+        <result property="roleName" column="role_name"/>
+        <result property="remark" column="remark"/>
+        <result property="orgId" column="org_id"/>
+        <result property="orgName" column="org_name"/>
+    </resultMap>
+
+    <resultMap type="com.org.permission.common.permission.dto.RoleUser" id="base_roles_users">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="userCode" column="user_code"/>
+        <result property="userName" column="user_name"/>
+        <result property="orgName" column="org_name"/>
+        <result property="effectiveTime" column="effective_time"/>
+        <result property="expireTime" column="expire_time"/>
+        <result property="authorUser" column="author_user"/>
+        <result property="author" column="author"/>
+        <result property="authorTime" column="author_time"/>
+    </resultMap>
+
+    <select id="getRoleByOrgPermission" parameterType="java.util.Map"
+            resultMap="base_permission_roles_manager">
+        SELECT
+        bpr.id,
+        bpr.org_id,
+        bo.org_name,
+        bpr.role_code,
+        bpr.role_name,
+        bpr.remark
+        FROM
+        base_permission_role bpr
+        LEFT JOIN base_organization
+        bo ON
+        bpr.org_id = bo.id
+        WHERE 1=1 and bpr.state = 1
+        <if test="roleId!=null">and bpr.id=#{roleId}</if>
+        <if test="groupId!=null">and bpr.group_id = #{groupId}</if>
+        <if test="pojo.list != null and pojo.list.size()>0">
+            and bpr.org_id IN
+            <foreach collection="pojo.list" index="index" item="item"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="pojo.roleCode != null and pojo.roleCode != ''">and bpr.role_code like CONCAT('%',#{pojo.roleCode},'%')
+        </if>
+        <if test="pojo.roleName != null and pojo.roleName != ''">and bpr.role_name like CONCAT('%',#{pojo.roleName},'%')
+        </if>
+        <if test="pojo.groupId != null and pojo.groupId != ''">and bpr.group_id = #{pojo.groupId}</if>
+        <if test="list != null and list.size()>0">
+            and bpr.org_id IN
+            <foreach collection="list" index="index" item="item" open="("
+                     separator="," close=")">
+                #{item.permissionId}
+            </foreach>
+        </if>
+        order by bpr.created_date desc
+    </select>
+
+    <select id="getRoleMessageByRoleIdAndGroupId" parameterType="java.util.Map"
+            resultMap="base_permission_roles_manager">
+        SELECT
+        bpr.id,
+        bpr.org_id,
+        bo.org_name,
+        bpr.role_code,
+        bpr.role_name,
+        bpr.remark
+        FROM
+        base_permission_role bpr
+        LEFT JOIN base_organization
+        bo ON
+        bpr.org_id = bo.id
+        WHERE 1=1 and bpr.state = 1
+        <if test="roleId!=null">and bpr.id=#{roleId}</if>
+        <if test="groupId!=null">and bpr.group_id = #{groupId}</if>
+    </select>
+
+    <select id="getUserByRoleId" parameterType="java.util.Map"
+            resultMap="base_roles_users">
+        SELECT
+        bpur.id,
+        bpur.user_id,
+        bpur.org_id,
+        bo.org_name,
+        bpur.effective_time,
+        bpur.expire_time,
+        bpur.author_user author,
+        bpur.author_time
+        FROM
+        base_permission_role bpr
+        LEFT JOIN
+        base_permission_user_role bpur ON
+        bpr.id = bpur.role_id
+        AND
+        bpr.group_id = bpur.group_id
+        LEFT JOIN base_organization bo ON
+        bpur.org_id = bo.id
+        WHERE
+        bpr.`state` = 1
+        AND bpur.`state` = 1
+        <if test="roleId!=null">
+            AND bpr.id = #{roleId}
+        </if>
+        <if test="groupId!=null">
+            AND bpr.group_id = #{groupId}
+        </if>
+
+    </select>
+
+
+    <select id="getRoleUserCount" parameterType="java.util.Map"
+            resultType="java.lang.Integer">
+        SELECT
+        count(*)
+        FROM
+        base_permission_role bpr
+        LEFT JOIN
+        base_permission_user_role bpur ON
+        bpr.id = bpur.role_id
+        AND
+        bpr.group_id = bpur.group_id
+        LEFT JOIN base_organization bo ON
+        bpur.org_id = bo.id
+        WHERE
+        bpr.`state` = 1
+        AND bpur.`state` = 1
+        <if test="roleId!=null">
+            AND bpr.id = #{roleId}
+        </if>
+        <if test="groupId!=null">
+            AND bpr.group_id = #{groupId}
+        </if>
+        <if test="userId!=null">
+            AND bpur.user_id = #{userId}
+        </if>
+        <if test="userIdSet!=null and userIdSet.size>0">
+            AND bpur.user_id in
+            <foreach collection="userIdSet" item="userId" separator="," open="(" close=")">
+                #{userId}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="getRoleUserList" parameterType="java.util.Map"
+            resultMap="base_roles_users">
+        SELECT
+        bpur.id,
+        bpur.user_id,
+        bpur.org_id,
+        bo.org_name,
+        bpur.effective_time,
+        bpur.expire_time,
+        bpur.author_user author,
+        bpur.author_time
+        FROM
+        base_permission_role bpr
+        LEFT JOIN
+        base_permission_user_role bpur ON
+        bpr.id = bpur.role_id
+        AND
+        bpr.group_id = bpur.group_id
+        LEFT JOIN base_organization bo ON
+        bpur.org_id = bo.id
+        WHERE
+        bpr.`state` = 1
+        AND bpur.`state` = 1
+        <if test="roleId!=null">
+            AND bpr.id = #{roleId}
+        </if>
+        <if test="groupId!=null">
+            AND bpr.group_id = #{groupId}
+        </if>
+        <if test="userId!=null">
+            AND bpur.user_id = #{userId}
+        </if>
+        <if test="userIdSet!=null and userIdSet.size > 0">
+            AND bpur.user_id in
+            <foreach collection="userIdSet" item="userId" separator="," open="(" close=")">
+                #{userId}
+            </foreach>
+        </if>
+    </select>
+
+    <delete id="delBasePermissionRoleExtendTrue" parameterType="java.util.Map">
+        delete
+        from base_permission_role
+        where id = #{roleId}
+          and group_id = #{groupId}
+    </delete>
+
+    <resultMap type="com.org.permission.server.permission.dto.RolePermission"
+               id="base_getRoleFuncPermissions">
+        <result property="permissionId" column="permission_id"/>
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+        <result column="resource_desc" jdbcType="VARCHAR" property="resourceDesc" />
+        <result column="url" jdbcType="VARCHAR" property="url" />
+        <result column="type" jdbcType="VARCHAR" property="type" />
+        <result column="resource_type" jdbcType="INTEGER" property="resourceType" />
+        <result column="belong" jdbcType="BIGINT" property="belong" />
+        <result column="bussiness_system" jdbcType="VARCHAR" property="bussinessSystem" />
+        <result column="permission_group" jdbcType="VARCHAR" property="permissionGroup" />
+        <result column="control_display" jdbcType="TINYINT" property="controlDisplay" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="leaf_flag" jdbcType="INTEGER" property="leafFlag" />
+        <result column="icon" jdbcType="VARCHAR" property="icon" />
+        <result column="number" jdbcType="VARCHAR" property="number" />
+        <result column="hidden" jdbcType="INTEGER" property="hidden" />
+        <result column="target" jdbcType="VARCHAR" property="target" />
+        <result column="component" jdbcType="VARCHAR" property="component" />
+        <result column="keep_alive" jdbcType="INTEGER" property="keepAlive" />
+        <result column="redirect" jdbcType="VARCHAR" property="redirect" />
+        <result column="menu_order" jdbcType="INTEGER" property="menuOrder" />
+        <result column="iframe_path" jdbcType="VARCHAR" property="iframePath" />
+        <result column="source" jdbcType="INTEGER" property="source" />
+        <result column="operations" jdbcType="VARCHAR" property="operations" />
+        <result column="token" jdbcType="INTEGER" property="token" />
+    </resultMap>
+
+    <select id="getRoleFuncPermissions" parameterType="java.util.Map"
+            resultMap="base_getRoleFuncPermissions">
+        SELECT
+        bpr.id permission_id,
+        bpr.name,
+        bpr.parent_id,
+        bpr.resource_desc,
+        bpr.url,
+        bpr.type,
+        bpr.resource_type,
+        bpr.belong,
+        bpr.bussiness_system,
+        bpr.permission_group,
+        bpr.control_display,
+        bpr.state,
+        bpr.leaf_flag,
+        bpr.icon,
+        bpr.number,
+        bpr.hidden,
+        bpr.target,
+        bpr.component,
+        bpr.keep_alive,
+        bpr.redirect,
+        bpr.menu_order,
+        bpr.iframe_path,
+        bpr.source,
+        bpr.operations,
+        bpr.token
+        FROM
+        base_permission_role_func
+        bprf
+        LEFT JOIN base_permission_group_resource bpgr ON
+        bprf.permission_id = bpgr.permission_id
+        AND bprf.group_id = bpgr.group_id
+        LEFT JOIN base_permission_resource bpr ON bpr.id = bpgr.permission_id
+        WHERE
+        bprf.permission_type = 'func'
+        AND
+        bprf.`state` = 1
+        <if test="roleId != null and groupId != '' ">AND bprf.role_id = #{roleId}</if>
+        <if test="groupId != null and groupId != '' ">AND bprf.group_id = #{groupId}</if>
+        AND bpr.`state` = 1
+        AND bpgr.`state` = 1
+        group by bprf.`permission_id`
+    </select>
+    <resultMap type="com.org.permission.server.permission.dto.RoleOrgPermission"
+               id="base_getRoleOrgPermissions">
+        <result property="id" column="id"/>
+        <result property="orgCode" column="org_code"/>
+        <result property="orgName" column="org_name"/>
+        <result property="orgType" column="org_type"/>
+        <result property="groupId" column="group_id"/>
+        <result property="parentId" column="parent_id"/>
+    </resultMap>
+    <select id="getRoleOrgPermissions" parameterType="java.util.Map"
+            resultMap="base_getRoleOrgPermissions">
+
+        SELECT
+        bo.id,
+        bo.org_code,
+        bo.org_name,
+        bo.group_id,
+        (
+        CASE
+        WHEN bo.org_type = 1 THEN
+        '全局'
+        WHEN
+        bo.org_type = 2 THEN
+        '集团'
+        WHEN bo.org_type = 3 THEN
+        '业务单元'
+        WHEN
+        bo.org_type = 4 THEN
+        '部门'
+        ELSE
+        ''
+        END
+        ) org_type,
+        (
+        CASE
+        WHEN bo.org_type = 4 THEN
+        bo.parent_bu_id
+        ELSE
+        bo.parent_id
+        END
+        ) parent_id
+        FROM
+        base_permission_role_func bprf
+        LEFT JOIN
+        base_organization bo ON bo.id = bprf.permission_id
+        WHERE
+        bprf.permission_type = 'org'
+        AND bprf.`state` = 1
+        <![CDATA[  AND bo.org_type<>4 ]]>
+        <if test="roleId != null and groupId != '' ">AND bprf.role_id = #{roleId}</if>
+        <if test="groupId != null and groupId != '' ">AND bprf.group_id = #{groupId}</if>
+    </select>
+</mapper>
+
